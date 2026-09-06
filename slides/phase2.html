@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 2 — 7 thuật toán kinh điển · Quantum Zero→Hero</title>
+<link rel="stylesheet" href="assets/theme.css">
+</head>
+<body data-deck="phase2">
+<div class="deck">
+
+<!-- ══ 1 ══ -->
+<div class="slide" data-part="Mở đầu" data-title="Phase 2 — 7 thuật toán kinh điển">
+  <div class="wrap hero">
+    <div class="orb">🧠</div>
+    <h1>Phase 2 · Bảy thuật toán kinh điển</h1>
+    <p class="lead" style="max-width:680px">Giờ mới dùng framework — và bạn dùng nó với con mắt của người <em class="q">biết bên trong nó có gì</em>.</p>
+    <div class="row" style="justify-content:center">
+      <span class="chip cyan">Tuần 3–5</span>
+      <span class="chip violet">Kata Bậc 5–7 · 119 bài</span>
+      <span class="chip amber">Lần đầu chạy máy thật</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 2 ══ -->
+<div class="slide" data-title="Quy trình 3 bước">
+  <div class="wrap">
+    <h2><span class="k">01</span> Với mỗi thuật toán, làm đủ 3 bước</h2>
+    <div class="grid-3">
+      <div class="card">
+        <h3>Bước 1 · Cài trên qsim của bạn</h3>
+        <p>Dùng simulator tự viết ở Phase 1. Không có framework che chắn — sai là thấy ngay.</p>
+      </div>
+      <div class="card">
+        <h3>Bước 2 · Cài lại bằng Qiskit</h3>
+        <p>Ngắn hơn nhiều. So sánh hai bản để thấy framework đang giấu giùm bạn những gì.</p>
+      </div>
+      <div class="card good">
+        <h3>Bước 3 · Viết 5 dòng trả lời</h3>
+        <p><em class="q">"Thuật toán này khai thác giao thoa / vướng víu ở đúng chỗ nào?"</em></p>
+        <p class="tiny">Bước này mới là chỗ kiến thức đọng lại. Đừng bỏ.</p>
+      </div>
+    </div>
+    <div class="card warn">
+      <h3>Nếu chỉ có thời gian làm một bước</h3>
+      <p>Làm <b>bước 3</b>. Code chạy được mà không trả lời được câu hỏi đó thì bạn mới chỉ chép mạch, chưa hiểu thuật toán. Sáu tháng sau bạn sẽ quên sạch mạch, nhưng vẫn nhớ cơ chế.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 3 ══ -->
+<div class="slide" data-title="⭐ Phase kickback">
+  <div class="wrap wide">
+    <h2><span class="k">02</span> ⭐ Phase kickback — hiểu cái này là hiểu 5/7 thuật toán</h2>
+    <p class="lead">Hầu hết người học coi đây là chi tiết kỹ thuật. Thật ra nó là <em class="q">cơ chế trung tâm</em> của Deutsch–Jozsa, Bernstein–Vazirani, Simon, Grover và Phase Estimation.</p>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>Hiện tượng</h3>
+        <p>Đặt qubit đích vào trạng thái <span class="ket">|−⟩</span>. Rồi áp CNOT với qubit điều khiển đang ở chồng chập.</p>
+        <p><b>Kết quả bất ngờ:</b> qubit đích <b>không đổi</b>. Thay vào đó, dấu trừ "bật ngược" lên <b>qubit điều khiển</b>.</p>
+<pre class="code" data-lang="python">qc = QuantumCircuit(2)
+qc.h(0)              # q0 vào chồng chập
+qc.x(1); qc.h(1)     # q1 vào trạng thái |−⟩
+qc.cx(0, 1)          # CNOT
+
+Statevector(qc)  ->  [0.5, -0.5, -0.5, 0.5]</pre>
+      </div>
+      <div class="card">
+        <h3>Vì sao</h3>
+        <p>CNOT lật qubit đích. Nhưng lật <span class="ket">|−⟩</span> lại cho ra <span class="ket">−|−⟩</span> — vì <span class="ket">|−⟩ = <span class="frac"><span class="num">|0⟩ − |1⟩</span><span class="den">√2</span></span></span>, đổi chỗ hai số hạng thì được chính nó nhân −1.</p>
+        <p>Vậy CNOT <b>không đổi</b> qubit đích, chỉ nhân −1 vào những nhánh có điều khiển = 1. Dấu trừ đó thuộc về <b>toàn bộ trạng thái</b>, và ta gán nó cho qubit điều khiển.</p>
+        <p style="color:var(--text)"><b>Tác dụng:</b> đây là cách <em class="q">ghi kết quả của một hàm vào PHA</em> thay vì vào bit — rồi dùng H để biến pha thành kết quả đo được.</p>
+      </div>
+    </div>
+
+    <div class="quiz">
+      <span class="q-tag">Quiz</span>
+      <p class="q-text">Vì sao phải đặt qubit đích vào <span class="ket">|−⟩</span> chứ không phải <span class="ket">|0⟩</span>?</p>
+      <div class="opts">
+        <button class="opt">Vì |−⟩ có năng lượng thấp hơn</button>
+        <button class="opt" data-ok="1">Vì |−⟩ là trạng thái riêng của phép lật bit với trị riêng −1 — lật nó chỉ tạo ra dấu, không tạo ra thay đổi</button>
+        <button class="opt">Vì |0⟩ sẽ làm mạch không unitary</button>
+        <button class="opt">Chỉ là quy ước, dùng |0⟩ cũng được</button>
+      </div>
+      <div class="why">Với đích ở <span class="ket">|0⟩</span>, CNOT sẽ <b>thật sự</b> lật nó và làm hai qubit vướng víu — thông tin nằm ở bit, không ở pha. Chỉ khi đích là trạng thái riêng của X (tức <span class="ket">|−⟩</span>, trị riêng −1) thì tác động mới thu về đúng một hệ số pha, và qubit đích tách rời hoàn toàn.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ NEW · phase kickback tận mắt ═════════════════════════════════════ -->
+<div class="slide" data-title="🔬 Phase kickback · bấm ra được">
+  <div class="wrap wide">
+    <h2><span class="k">03</span> 🔬 Kickback — chạy hai mạch, so hai kết quả</h2>
+    <p>Câu chuyện kickback nghe khó tin: CNOT lẽ ra chỉ đổi <b>target</b>, nhưng ở đây nó lại đổi <b>control</b>. Cách duy nhất để tin là chạy cả hai phiên bản.</p>
+
+    <div class="grid-2">
+      <div class="card bad">
+        <h3>A · target ở <span class="ket">|+⟩</span> — không có gì xảy ra</h3>
+        <p class="tiny">Mạch <code>H(1), H(0), CX(0,1), H(0)</code>. Đọc q₀: luôn ra <b>0</b>. CNOT không để lại dấu vết nào trên control.</p>
+        <div class="qlab" data-n="2" data-gates="H1,H0,CX0-1,H0" data-lock="1" data-hide="hist" data-shots="512"
+             data-title="A · target = |+⟩"></div>
+      </div>
+      <div class="card good">
+        <h3>B · target ở <span class="ket">|−⟩</span> — control bị lật</h3>
+        <p class="tiny">Chỉ thêm một cổng <code>X(1)</code> ở đầu. Đọc q₀: luôn ra <b>1</b>. Dấu trừ của target đã "đá ngược" lên control.</p>
+        <div class="qlab" data-n="2" data-gates="X1,H1,H0,CX0-1,H0" data-lock="1" data-hide="hist" data-shots="512"
+             data-title="B · target = |−⟩"></div>
+      </div>
+    </div>
+
+    <div class="card info frag">
+      <h3>Vì sao — một dòng đại số</h3>
+      <p>Với target ở <span class="ket">|−⟩</span>: <code>CNOT |x⟩|−⟩ = (−1)<sup>x</sup> |x⟩|−⟩</code>.</p>
+      <p>Target <b>không đổi gì cả</b> — nó chỉ nhả ra một dấu <code>(−1)ˣ</code> bám vào nhánh control. Khi control đang ở chồng chập <span class="ket">(|0⟩+|1⟩)/√2</span>, dấu đó biến nó thành <span class="ket">(|0⟩−|1⟩)/√2</span> = <span class="ket">|−⟩</span>. Cổng H cuối đọc ra dấu đó thành số 1.</p>
+      <p><b>Đây là toàn bộ mẹo của Deutsch-Jozsa, Bernstein-Vazirani, Simon và Grover.</b> Oracle chỉ biết trả lời "đúng/sai"; kickback biến câu trả lời đó thành <em class="q">pha</em>, rồi H biến pha thành <em class="q">bit đọc được</em>.</p>
+    </div>
+
+    <div class="quiz frag">
+      <span class="q-tag">Quiz</span>
+      <p class="q-text">Nếu bỏ cổng <code>H(0)</code> <b>cuối cùng</b> ở mạch B thì đo q₀ ra gì?</p>
+      <div class="opts">
+        <button class="opt" data-ok="1" data-why="Không có H cuối, q₀ đang ở |−⟩ — đo theo hệ chuẩn thì |−⟩ cho 50/50. Pha vẫn ở đó, chỉ là bạn không đọc được nó.">50/50 — pha vẫn còn nhưng phép đo không thấy được</button>
+        <button class="opt" data-why="Kết quả xác định chỉ có được nhờ H cuối đổi hệ quy chiếu đo. Bỏ H đi là mất luôn tính xác định.">Vẫn 100% ra 1</button>
+        <button class="opt" data-why="Không có gì bị 'mất' — trạng thái vẫn đúng, chỉ là bạn đo sai hệ quy chiếu.">100% ra 0, vì kickback bị mất</button>
+      </div>
+      <div class="why">Bài học lặp lại từ Phase 0: <b>pha không tự nhìn thấy được</b>. Mọi thuật toán đều phải kết thúc bằng một bước (H, hoặc QFT⁻¹) để đổi pha thành xác suất.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 4 ══ -->
+<div class="slide" data-part="Công cụ chung" data-title="Oracle là gì">
+  <div class="wrap">
+    <h2><span class="k">04</span> Oracle — "hộp đen" mà mọi thuật toán đều gọi</h2>
+    <p>Oracle là một mạch cài đặt hàm <code>f(x)</code> mà bạn <em class="q">giả vờ</em> không biết bên trong. Câu hỏi luôn là: <b>cần gọi nó bao nhiêu lần</b> để biết được tính chất của f?</p>
+    <div class="grid-2">
+      <div class="card">
+        <h3>Marking oracle (đánh dấu vào bit)</h3>
+<pre class="code" data-lang="text">|x⟩|y⟩  →  |x⟩|y ⊕ f(x)⟩</pre>
+        <p>Ghi kết quả vào một qubit phụ. Đây là dạng tự nhiên khi cài đặt.</p>
+      </div>
+      <div class="card">
+        <h3>Phase oracle (đánh dấu vào pha)</h3>
+<pre class="code" data-lang="text">|x⟩  →  (−1)^f(x) |x⟩</pre>
+        <p>Không cần qubit phụ. Đây là dạng các thuật toán <b>thật sự dùng</b>.</p>
+      </div>
+    </div>
+    <div class="card info">
+      <h3>Nối hai dạng lại: chính là phase kickback</h3>
+      <p>Đặt qubit phụ vào <span class="ket">|−⟩</span> rồi chạy marking oracle → bạn được phase oracle miễn phí. Đó là lý do mọi mạch thuật toán đều bắt đầu bằng <code>x(aux); h(aux)</code>.</p>
+      <p class="tiny">Kata luyện đúng chỗ này: <code>tutorials/Oracles</code> (5 bài) và <code>MarkingOracles</code> (11 bài) — <b>làm trước</b> khi động vào Deutsch–Jozsa.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 5 ══ -->
+<div class="slide" data-part="Bảy thuật toán" data-title="Teleportation & Superdense">
+  <div class="wrap">
+    <h2><span class="k">05</span> Hai giao thức đối ngẫu</h2>
+    <div class="grid-2">
+      <div class="card">
+        <h3>1 · Quantum Teleportation</h3>
+        <p>Chuyển <b>1 qubit</b> từ An sang Bình, dùng: 1 cặp entangled + <b>2 bit cổ điển</b>.</p>
+        <ul>
+          <li>An đo qubit cần gửi cùng nửa cặp entangled của mình → được 2 bit</li>
+          <li>An <b>gọi điện</b> báo 2 bit đó cho Bình</li>
+          <li>Bình áp X và/hoặc Z tương ứng → qubit của An hiện ra ở chỗ Bình</li>
+        </ul>
+        <p class="tiny">Qubit gốc bị <b>phá huỷ</b> — nhất quán với định lý no-cloning. Và vì phải gọi điện nên không nhanh hơn ánh sáng.</p>
+      </div>
+      <div class="card">
+        <h3>2 · Superdense Coding</h3>
+        <p>Mặt đối ngẫu: gửi <b>2 bit cổ điển</b> bằng cách chuyển đi <b>1 qubit</b>, với điều kiện đã chia sẵn một cặp entangled.</p>
+        <ul>
+          <li>An chọn 1 trong 4 cổng (I, X, Z, XZ) áp lên qubit của mình</li>
+          <li>Bốn lựa chọn đó biến cặp Bell thành 4 trạng thái Bell khác nhau</li>
+          <li>Bình đo cả hai qubit trong cơ sở Bell → đọc ra đúng 2 bit</li>
+        </ul>
+        <p class="tiny">Nhớ được cả 4 trạng thái Bell ở Phase 0 giờ có tác dụng.</p>
+      </div>
+    </div>
+    <div class="ex">
+      <div class="ex-head"><span class="ex-tag">Kata</span><span class="ex-title">Bậc 5 · Giao thức lượng tử — 37 bài</span></div>
+      <div class="ex-body">
+        <div class="code-head"><div class="dots"><i></i><i></i><i></i></div><span>Terminal</span></div>
+<pre class="code" data-lang="bash">python qk.py list --bac 5      # examples, Teleportation, SuperdenseCoding, BB84</pre>
+        <p>Bắt đầu từ <code>examples/BasicQuantumTeleportation</code> — bài dễ nhất, cho bạn khung sườn trước khi vào 14 bài Teleportation chi tiết.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 6 ══ -->
+<div class="slide" data-title="Deutsch-Jozsa & Bernstein-Vazirani">
+  <div class="wrap">
+    <h2><span class="k">06</span> Hai thuật toán oracle đầu tiên</h2>
+    <div class="grid-2">
+      <div class="card">
+        <h3>3 · Deutsch–Jozsa</h3>
+        <p><b>Bài toán:</b> f nhận n bit, trả 0/1. Biết trước f hoặc <em class="q">hằng</em> (luôn cùng một giá trị) hoặc <em class="q">cân bằng</em> (đúng nửa ra 0, nửa ra 1). Hỏi là loại nào?</p>
+        <p><b>Cổ điển:</b> xấu nhất cần 2ⁿ⁻¹+1 lần gọi. <b>Lượng tử:</b> đúng <b>1</b> lần.</p>
+        <p class="tiny">Nói thẳng: bài toán này <b>vô dụng trong thực tế</b>. Giá trị của nó là chứng minh khoảng cách lượng tử–cổ điển tồn tại. Học để hiểu cơ chế, đừng học để dùng.</p>
+      </div>
+      <div class="card">
+        <h3>4 · Bernstein–Vazirani</h3>
+        <p><b>Bài toán:</b> f(x) = s·x mod 2 với chuỗi bí mật s. Tìm s.</p>
+        <p><b>Cổ điển:</b> n lần gọi (dò từng bit). <b>Lượng tử:</b> <b>1</b> lần, ra thẳng cả chuỗi.</p>
+<pre class="code" data-lang="python"># s = "1011" → đo ra đúng '1011' với xác suất 100%
+{'1011': 1024}</pre>
+        <p class="tiny">Rõ ràng hơn D–J và dễ debug hơn nhiều. <b>Nên làm bài này trước.</b></p>
+      </div>
+    </div>
+    <div class="card info">
+      <h3>Cả hai chạy theo đúng một khuôn</h3>
+      <p><b>H lên tất cả → oracle (phase kickback) → H lên tất cả → đo.</b> Khuôn này lặp lại ở Simon và là xương sống của Grover. Nhận ra khuôn rồi thì các thuật toán sau đọc rất nhanh.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 7 ══ -->
+<div class="slide" data-title="Simon & Grover">
+  <div class="wrap">
+    <h2><span class="k">07</span> Simon và Grover</h2>
+    <div class="grid-2">
+      <div class="card">
+        <h3>5 · Simon's Algorithm</h3>
+        <p><b>Bài toán:</b> f(x) = f(x ⊕ s) với chuỗi ẩn s. Tìm s.</p>
+        <p><b>Tăng tốc hàm mũ</b> — và đây là <em class="q">tiền thân trực tiếp của Shor</em>.</p>
+        <p>Điểm mới: có <b>hậu xử lý cổ điển</b>. Mạch lượng tử chỉ cho bạn các phương trình ngẫu nhiên <code>y·s = 0 (mod 2)</code>; bạn phải giải hệ trên GF(2) bằng khử Gauss thường.</p>
+        <p class="tiny">Đây là bài đầu tiên cho bạn thấy thuật toán lượng tử thật sự là <b>lai</b>: lượng tử làm phần cổ điển không làm nổi, cổ điển làm phần còn lại.</p>
+      </div>
+      <div class="card">
+        <h3>6 · Grover's Search</h3>
+        <p><b>Bài toán:</b> tìm phần tử đánh dấu trong danh sách N phần tử không sắp xếp.</p>
+        <p><b>Cổ điển:</b> O(N). <b>Grover:</b> O(√N) — tăng tốc <em class="q">bậc hai</em>, không phải hàm mũ.</p>
+<pre class="code" data-lang="python"># Grover 2 qubit, đánh dấu |11⟩ — 1 vòng lặp là đủ
+qc.h([0,1])
+qc.cz(0,1)                            # oracle
+qc.h([0,1]); qc.x([0,1])              # diffusion
+qc.cz(0,1); qc.x([0,1]); qc.h([0,1])
+# -> {'11': 4096}   chính xác 100%</pre>
+      </div>
+    </div>
+    <div class="card warn">
+      <h3>Bẫy Grover: nhiều vòng lặp hơn ≠ tốt hơn</h3>
+      <p>Số vòng tối ưu là ≈ <b><span class="frac"><span class="num">π</span><span class="den">4</span></span> · √N</b>. Chạy quá số đó, biên độ <b>quay ngược lại</b> và xác suất tìm đúng <em class="q">giảm</em>. Đây là lỗi kinh điển của người mới — hãy tự thử chạy 1, 2, 3, 5 vòng với N=4 và vẽ đồ thị xác suất.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ NEW · Grover chạy được ═══════════════════════════════════════════ -->
+<div class="slide" data-title="🔬 Grover 2 qubit · chạy đủ vòng">
+  <div class="wrap wide">
+    <h2><span class="k">08</span> 🔬 Grover đầy đủ trên 2 qubit — 12 cổng, 100% trúng</h2>
+    <p>Đây là Grover thật, không phải sơ đồ khối: tìm <span class="ket">|11⟩</span> trong 4 khả năng. Với N = 4 thì <b>đúng một vòng lặp</b> là đủ để xác suất lên 100%. Dùng nút <b>"xem trạng thái sau bước"</b> để tua qua từng giai đoạn.</p>
+
+    <div class="qlab" data-n="2" data-gates="H0,H1,CZ0-1,H0,H1,X0,X1,CZ0-1,X0,X1,H0,H1" data-shots="1024"
+         data-title="Grover · đánh dấu |11⟩ rồi khuếch đại"
+         data-goal="Tua tới bước 2: bốn ô đều 25%. Bước 3 (CZ = oracle): xác suất KHÔNG đổi, chỉ có pha của |11⟩ lật sang dấu âm. Bước 12: |11⟩ lên 100%."></div>
+
+    <div class="grid-3">
+      <div class="card frag">
+        <h3>Bước 1–2 · trải đều</h3>
+        <p class="tiny"><code>H(0), H(1)</code> → cả 4 trạng thái 25%. Chưa biết gì, đoán mò thì trúng 25%.</p>
+      </div>
+      <div class="card frag">
+        <h3>Bước 3 · oracle đánh dấu</h3>
+        <p class="tiny"><code>CZ</code> lật dấu riêng <span class="ket">|11⟩</span>. <b>Nhìn cột xác suất: không đổi gì.</b> Nhìn cột pha: kim của <span class="ket">|11⟩</span> quay 180°. Oracle không "nói" đáp án — nó chỉ ghi vào pha.</p>
+      </div>
+      <div class="card frag">
+        <h3>Bước 4–12 · diffuser</h3>
+        <p class="tiny">H·X·CZ·X·H = "lật quanh giá trị trung bình". Biên độ âm bị lật thành lớn vượt trội, ba biên độ kia co về 0.</p>
+      </div>
+    </div>
+
+    <div class="card warn frag">
+      <h3>Đừng chạy quá số vòng tối ưu</h3>
+      <p>Số vòng tối ưu là <code>≈ (π/4)·√N</code>. Chạy thêm vòng nữa thì xác suất <b>tụt xuống</b> — Grover là phép quay, quay quá thì đi qua đích. Thử ngay: thêm một vòng diffuser + oracle nữa vào widget trên và xem <span class="ket">|11⟩</span> rơi từ 100% về 25%.</p>
+      <p class="tiny">Đây là câu hỏi phỏng vấn kinh điển và cũng là bug hay gặp nhất khi tự cài Grover.</p>
+    </div>
+
+    <div class="notes">Nếu người học chỉ nhớ một điều: oracle đổi PHA chứ không đổi XÁC SUẤT. Slide này cho họ tự thấy điều đó ở bước 3.</div>
+  </div>
+</div>
+
+<!-- ══ 8 ══ -->
+<div class="slide" data-title="QFT">
+  <div class="wrap">
+    <h2><span class="k">09</span> 7 · Quantum Fourier Transform</h2>
+    <p class="lead">Phần toán nặng nhất lộ trình. Cũng là nền của Shor và Phase Estimation.</p>
+    <div class="grid-2">
+      <div class="card">
+        <h3>QFT làm gì</h3>
+        <p>Giống DFT cổ điển, nhưng tác động lên <b>biên độ</b>. Nó chuyển thông tin từ <em class="q">giá trị</em> sang <em class="q">tần số</em> — cụ thể là từ biên độ sang pha.</p>
+        <p>Với n qubit, QFT chỉ cần <b>O(n²)</b> cổng, trong khi FFT cổ điển cần O(n·2ⁿ) thao tác trên 2ⁿ số.</p>
+      </div>
+      <div class="card warn">
+        <h3>Cảnh báo quan trọng</h3>
+        <p>Tăng tốc này <b>không</b> dùng trực tiếp được để tăng tốc xử lý tín hiệu. Bạn không đọc ra được 2ⁿ hệ số Fourier — chỉ đo được <b>một</b> mẫu từ phân bố đó.</p>
+        <p>QFT hữu ích khi bài toán chỉ cần <b>một tính chất</b> của phổ, ví dụ chu kỳ. Đó chính xác là những gì Shor cần.</p>
+      </div>
+    </div>
+    <div class="card info">
+      <h3>Thứ tự học đúng cho QFT</h3>
+      <ol>
+        <li>QFT trên <b>1 qubit</b> — hoá ra chính là cổng H (<code>examples/QuantumFourierTransform1Qubit</code>)</li>
+        <li>QFT 2 qubit — thấy chỗ cần cổng quay có điều khiển</li>
+        <li>QFT n qubit — nhận ra mẫu đệ quy</li>
+        <li>Đừng quên <b>đảo thứ tự qubit ở cuối</b> — lỗi phổ biến nhất khi cài QFT</li>
+        <li>Phase Estimation — ứng dụng đầu tiên của QFT⁻¹</li>
+      </ol>
+      <p class="tiny">Kata Bậc 7: <code>QFT</code> (16 bài) + <code>PhaseEstimation</code> (7 bài).</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 9 ══ -->
+<div class="slide" data-title="Bảng tổng hợp 7 thuật toán">
+  <div class="wrap wide">
+    <h2><span class="k">10</span> Bảng tổng hợp</h2>
+    <div class="table-scroll">
+      <table class="t">
+        <tr><th>#</th><th>Thuật toán</th><th>Ý tưởng phải bắt được</th><th>Tăng tốc</th><th>Độ khó</th><th>Kata</th></tr>
+        <tr><td>1</td><td><b>Teleportation</b></td><td>Entanglement + kênh cổ điển. <b>Không</b> nhanh hơn ánh sáng</td><td>—</td><td>★★</td><td>Bậc 5</td></tr>
+        <tr><td>2</td><td><b>Superdense coding</b></td><td>Mặt đối ngẫu của teleportation</td><td>2× băng thông</td><td>★★</td><td>Bậc 5</td></tr>
+        <tr><td>3</td><td><b>Deutsch–Jozsa</b></td><td>1 truy vấn thay vì 2ⁿ⁻¹ — nhưng bài toán vô dụng thực tế</td><td>hàm mũ</td><td>★★</td><td>Bậc 6</td></tr>
+        <tr><td>4</td><td><b>Bernstein–Vazirani</b></td><td>Rõ ràng hơn D–J, dễ debug hơn — <b>làm trước</b></td><td>n → 1</td><td>★★</td><td>Bậc 6</td></tr>
+        <tr><td>5</td><td><b>Simon's</b></td><td>Tiền thân của Shor. Có hậu xử lý cổ điển trên GF(2)</td><td>hàm mũ</td><td>★★★</td><td>Bậc 6</td></tr>
+        <tr><td>6</td><td><b>Grover</b></td><td>Amplitude amplification. Quá số vòng thì tệ đi</td><td>√N</td><td>★★★</td><td>Bậc 6</td></tr>
+        <tr><td>7</td><td><b>QFT</b></td><td>Nền của Shor và phase estimation. Nhớ đảo qubit ở cuối</td><td>O(n²)</td><td>★★★★</td><td>Bậc 7</td></tr>
+      </table>
+    </div>
+    <div class="note"><b>Thứ tự làm khuyến nghị:</b> 1 → 2 → 4 → 3 → 6 → 5 → 7. Bernstein–Vazirani trước Deutsch–Jozsa vì dễ debug hơn; Grover trước Simon vì Simon cần thêm phần đại số tuyến tính trên GF(2).</div>
+  </div>
+</div>
+
+<!-- ══ 10 ══ -->
+<div class="slide" data-part="Luyện tập & phần cứng thật" data-title="Kata Bậc 5-7">
+  <div class="wrap">
+    <h2><span class="k">11</span> 119 kata cho phase này</h2>
+    <div class="table-scroll">
+      <table class="t">
+        <tr><th>Bậc</th><th>Chủ đề</th><th>Số bài</th><th>Làm khi nào</th></tr>
+        <tr><td><b>5</b></td><td>examples · Teleportation · SuperdenseCoding · BB84</td><td>37</td><td>Tuần 3</td></tr>
+        <tr><td><b>6</b></td><td>Oracles · MarkingOracles · DeutschJozsa · Simon · Grover · SAT</td><td>59</td><td>Tuần 4</td></tr>
+        <tr><td><b>7</b></td><td>QFT · PhaseEstimation</td><td>23</td><td>Tuần 5</td></tr>
+      </table>
+    </div>
+    <div class="ex">
+      <div class="ex-head"><span class="ex-tag">Thực hành 2.1</span><span class="ex-title">Thứ tự đúng trong Bậc 6</span></div>
+      <div class="ex-body">
+        <p>Bậc 6 là bậc lớn nhất. Đừng làm tuần tự từ trên xuống — làm theo thứ tự này:</p>
+        <ol>
+          <li><code>tutorials/Oracles</code> (5) — hiểu marking vs phase oracle</li>
+          <li><code>MarkingOracles</code> (11) — luyện dựng oracle</li>
+          <li><code>tutorials/ExploringDeutschJozsaAlgorithm</code> (2) — oracle hằng/cân bằng</li>
+          <li><code>DeutschJozsa</code> (15) → <code>SimonsAlgorithm</code> (7)</li>
+          <li><code>GroversAlgorithm</code> (8) → <code>SolveSATWithGrover</code> (10)</li>
+        </ol>
+        <p class="tiny">Runner đã xếp sẵn đúng thứ tự này — cứ <code>python qk.py next</code> là ra bài đúng.</p>
+      </div>
+    </div>
+    <div class="ex">
+      <div class="ex-head"><span class="ex-tag">Thực hành 2.2</span><span class="ex-title">Vẽ đồ thị Grover</span><span class="chip">tự làm</span></div>
+      <div class="ex-body">
+        <p>Với N = 16 (4 qubit), chạy Grover với 1, 2, 3, 4, 5, 6 vòng lặp. Vẽ xác suất đo đúng theo số vòng.</p>
+        <p>Bạn sẽ thấy đường cong <b>hình sin</b>, đỉnh ở khoảng 3 vòng rồi <em class="q">tụt xuống</em>. Đây là bài tập cho bạn cảm giác vật lý về amplitude amplification mà đọc lý thuyết không có được.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 11 ══ -->
+<div class="slide" data-title="Chạy phần cứng thật">
+  <div class="wrap">
+    <h2><span class="k">12</span> Khoảnh khắc quan trọng nhất lộ trình</h2>
+    <p class="lead">Cuối tuần 5: chạy Bell state và Grover 3 qubit trên <code>ibm_kingston</code>, rồi đặt kết quả cạnh simulator.</p>
+    <div class="code-head"><div class="dots"><i></i><i></i><i></i></div><span>hardware_run.py</span></div>
+<pre class="code" data-lang="python">from qiskit_ibm_runtime import QiskitRuntimeService, SamplerV2
+from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
+
+service = QiskitRuntimeService()               # token đã lưu trước đó
+backend = service.least_busy(operational=True, simulator=False)
+
+# BẮT BUỘC: transpile về tập cổng thật của máy
+pm = generate_preset_pass_manager(optimization_level=3, backend=backend)
+isa_qc = pm.run(qc)
+
+sampler = SamplerV2(mode=backend)
+result = sampler.run([isa_qc], shots=4096).result()</pre>
+    <div class="card warn">
+      <h3>Hai chỗ đã đổi trong 2025–2026 — đừng copy blog cũ</h3>
+      <ul>
+        <li>Chuỗi <code>channel=</code> khi lưu token đã đổi vài lần (<code>ibm_quantum</code> → <code>ibm_cloud</code> → <code>ibm_quantum_platform</code>). <b>Copy chính xác từ trang docs tại thời điểm bạn đăng ký.</b></li>
+        <li>Từ Qiskit 2.5, "Qiskit Runtime Service" được IBM đổi tên thành <b>IBM Quantum Compute Service</b> — API không đổi, chỉ tên đổi.</li>
+      </ul>
+    </div>
+    <div class="note"><b>Không bỏ qua bước transpile.</b> Máy thật chỉ có vài cổng cơ bản và topology kết nối hạn chế. Gửi mạch chưa transpile sẽ lỗi hoặc cho kết quả rác.</div>
+  </div>
+</div>
+
+<!-- ══ 12 ══ -->
+<div class="slide" data-title="Nhiễu — vì sao cả ngành đổ tiền vào QEC">
+  <div class="wrap wide">
+    <h2><span class="k">13</span> Thứ bạn sẽ thấy: nhiễu</h2>
+    <div class="grid-2">
+      <div class="card good">
+        <h3>Simulator (lý tưởng)</h3>
+        <div class="bars">
+          <div class="b"><span class="k">|00⟩</span><span class="track"><span class="fill" data-w="51"></span></span><span class="v">51%</span></div>
+          <div class="b mute"><span class="k">|01⟩</span><span class="track"><span class="fill" data-w="0"></span></span><span class="v">0%</span></div>
+          <div class="b mute"><span class="k">|10⟩</span><span class="track"><span class="fill" data-w="0"></span></span><span class="v">0%</span></div>
+          <div class="b"><span class="k">|11⟩</span><span class="track"><span class="fill" data-w="49"></span></span><span class="v">49%</span></div>
+        </div>
+      </div>
+      <div class="card bad">
+        <h3>Phần cứng thật (minh hoạ)</h3>
+        <div class="bars">
+          <div class="b"><span class="k">|00⟩</span><span class="track"><span class="fill" data-w="46"></span></span><span class="v">46%</span></div>
+          <div class="b"><span class="k">|01⟩</span><span class="track"><span class="fill" data-w="4"></span></span><span class="v">4%</span></div>
+          <div class="b"><span class="k">|10⟩</span><span class="track"><span class="fill" data-w="5"></span></span><span class="v">5%</span></div>
+          <div class="b"><span class="k">|11⟩</span><span class="track"><span class="fill" data-w="45"></span></span><span class="v">45%</span></div>
+        </div>
+        <p class="tiny">Vài phần trăm ở <code>'01'</code> và <code>'10'</code> — những trạng thái lẽ ra <b>không thể</b> xuất hiện.</p>
+      </div>
+    </div>
+    <div class="card info">
+      <h3>Đây là khoảnh khắc bạn thật sự hiểu ngành này</h3>
+      <p>Những phần trăm "không thể có" đó là <b>nhiễu</b>: qubit mất kết hợp, cổng thực hiện không hoàn hảo, đo sai. Đây là lý do cả ngành đang đổ tiền vào <b>error correction</b> chứ không phải vào thuật toán mới.</p>
+      <p>Và đây cũng là lý do câu "quantum sẽ phá RSA năm sau" là sai: Shor cho RSA-2048 cần <b>hàng triệu</b> qubit vật lý có sửa lỗi, trong khi máy hiện tại có vài trăm qubit vật lý đầy nhiễu.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 13 ══ -->
+<div class="slide" data-title="Deliverable Phase 2">
+  <div class="wrap">
+    <h2><span class="k">14</span> Xong Phase 2 khi nào?</h2>
+    <div class="card pad-lg">
+      <div class="row" style="justify-content:space-between">
+        <h3>Tick khi xong — trình duyệt nhớ giúp bạn</h3>
+        <span data-check-count="#p2-check">0/5</span>
+      </div>
+      <ul class="check" id="p2-check">
+        <li><b>Repo <code>quantum-algorithms</code></b> — 7 notebook, mỗi cái có bản qsim của bạn + bản Qiskit + ghi chú 5 dòng</li>
+        <li><b>1 notebook so sánh</b> simulator vs <code>ibm_kingston</code>, kèm biểu đồ nhiễu</li>
+        <li><b>Kata Bậc 5–7</b> xong (119 bài) → tổng cộng <b>211/350</b></li>
+        <li><b>Đồ thị Grover</b> theo số vòng lặp (Thực hành 2.2)</li>
+      </ul>
+    </div>
+    <div class="card warn">
+      <h3>Tự kiểm tra</h3>
+      <ul>
+        <li>Phase kickback hoạt động thế nào, và vì sao qubit phụ phải ở <span class="ket">|−⟩</span>?</li>
+        <li>Teleportation cần mấy bit cổ điển, và vì sao không thể bỏ chúng đi?</li>
+        <li>Vì sao chạy Grover quá số vòng tối ưu lại làm kết quả tệ đi?</li>
+        <li>Simon khác Deutsch–Jozsa ở chỗ nào về mặt hậu xử lý?</li>
+      </ul>
+    </div>
+    <div class="row" style="justify-content:center;margin-top:.5rem">
+      <a class="btn" href="phase1.html" style="background:var(--surface);border:1px solid var(--line);color:var(--text-2);border-radius:99px;padding:.55rem 1.1rem">← Phase 1</a>
+      <a class="btn" href="index.html" style="background:var(--surface);border:1px solid var(--line);color:var(--text-2);border-radius:99px;padding:.55rem 1.1rem">⌂ Trang chủ</a>
+      <a class="btn" href="phase3.html" style="background:rgba(94,234,212,.14);border:1px solid var(--cyan-dim);color:var(--cyan);border-radius:99px;padding:.55rem 1.1rem">Phase 3 · Rust →</a>
+    </div>
+  </div>
+</div>
+
+</div>
+<script src="assets/qlab.js"></script>
+<script src="assets/deck.js"></script>
+</body>
+</html>

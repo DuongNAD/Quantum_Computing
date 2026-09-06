@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 0 — Khởi động · Quantum Zero→Hero</title>
+<link rel="stylesheet" href="assets/theme.css">
+</head>
+<body data-deck="phase0">
+<div class="deck">
+
+<!-- ══ 1 ══════════════════════════════════════════════════════════════════ -->
+<div class="slide" data-part="Mở đầu" data-title="Phase 0 — Khởi động">
+  <div class="wrap hero">
+    <div class="orb">⚛</div>
+    <h1>Phase 0 · Khởi động</h1>
+    <p class="lead" style="max-width:660px">Hết deck này bạn sẽ hiểu qubit thật sự là gì, tự tay chạy được mạch lượng tử đầu tiên, và <em class="q">tận mắt thấy giao thoa lượng tử</em> — thứ khiến máy tính lượng tử khác máy tính thường.</p>
+    <div class="row" style="justify-content:center">
+      <span class="chip cyan">~45 phút</span>
+      <span class="chip">Không cần biết toán trước</span>
+      <span class="chip violet">6 bài thực hành</span>
+    </div>
+    <p class="kbd-hint">Dùng phím <kbd>→</kbd> để đi tiếp · <kbd>O</kbd> xem tổng quan · <kbd>?</kbd> xem phím tắt</p>
+  </div>
+</div>
+
+<!-- ══ 2 ══════════════════════════════════════════════════════════════════ -->
+<div class="slide" data-title="Bạn sẽ đi qua cái gì">
+  <div class="wrap">
+    <h2><span class="k">01</span> Bản đồ 45 phút tới</h2>
+    <div class="grid-2">
+      <div class="card">
+        <h3>Phần 1 · Bỏ 3 hiểu lầm</h3>
+        <p>Ba câu nói phổ biến về lượng tử mà nếu tin, bạn sẽ hiểu sai mọi thứ về sau.</p>
+      </div>
+      <div class="card">
+        <h3>Phần 2 · Một qubit</h3>
+        <p>Biên độ, xác suất, đo lường. Rồi thí nghiệm <b>H → H</b> chứng minh lượng tử ≠ ngẫu nhiên.</p>
+      </div>
+      <div class="card">
+        <h3>Phần 3 · Hai qubit</h3>
+        <p>CNOT, entanglement, trạng thái Bell — và vì sao nó <b>không</b> truyền tin nhanh hơn ánh sáng.</p>
+      </div>
+      <div class="card">
+        <h3>Phần 4 · Vào việc</h3>
+        <p>Tài khoản IBM Quantum, công cụ trực quan Quirk, và bật hệ thống 350 kata.</p>
+      </div>
+    </div>
+    <div class="note"><b>Cách dùng deck này:</b> gặp khối <span class="chip cyan">Thực hành</span> thì dừng lại làm thật, đừng đọc lướt. Toàn bộ giá trị của deck nằm ở đó.</div>
+  </div>
+</div>
+
+<!-- ══ 3 ══════════════════════════════════════════════════════════════════ -->
+<div class="slide" data-part="Phần 1 · Dọn đường" data-title="3 hiểu lầm phải bỏ ngay">
+  <div class="wrap">
+    <h2><span class="k">02</span> Ba hiểu lầm phải bỏ trước khi bắt đầu</h2>
+    <div class="grid-2">
+      <div class="card bad frag">
+        <h3>✗ "Qubit vừa là 0 vừa là 1"</h3>
+        <p>Câu này nghe hay nhưng dẫn tới hiểu sai. Qubit ở <b>một trạng thái xác định</b> — trạng thái đó được mô tả bởi <b>hai số phức</b>. Chỉ khi <em class="q">đo</em>, bạn mới nhận được 0 hoặc 1.</p>
+      </div>
+      <div class="card bad frag">
+        <h3>✗ "Máy lượng tử thử mọi khả năng cùng lúc"</h3>
+        <p>Nếu đúng vậy thì nó giải được mọi bài NP — không phải thế. Một mạch <i>có</i> chạm tới 2<sup>n</sup> biên độ, nhưng khi đo bạn chỉ lấy ra <b>một</b> kết quả. Tốc độ đến từ <b>giao thoa</b>: triệt tiêu đáp án sai, khuếch đại đáp án đúng.</p>
+      </div>
+      <div class="card bad frag">
+        <h3>✗ "Phải có bằng PhD Vật lý"</h3>
+        <p>Lập trình lượng tử ở mức này là <b>đại số tuyến tính với số phức</b>, không phải vật lý. Nếu bạn nhân được ma trận 2×2, bạn đủ vốn để bắt đầu.</p>
+      </div>
+    </div>
+    <div class="note">Giữ lại đúng một câu: <b>lượng tử mạnh là nhờ giao thoa, không phải nhờ song song.</b> Slide 09 sẽ cho bạn thấy tận mắt.</div>
+  </div>
+</div>
+
+<!-- ══ 4 ══════════════════════════════════════════════════════════════════ -->
+<div class="slide" data-title="Môi trường của bạn">
+  <div class="wrap">
+    <h2><span class="k">03</span> Môi trường đã sẵn sàng</h2>
+    <p>Máy bạn đã có sẵn một virtualenv tên <code>quantum-env</code> với đầy đủ đồ nghề. Không cần cài lại gì.</p>
+    <div class="grid-3">
+      <div class="card"><h3>Python 3.11.8</h3><p class="tiny">Đủ cho cả PennyLane ở Phase 4 (yêu cầu ≥ 3.11)</p></div>
+      <div class="card"><h3>Qiskit 2.5.1</h3><p class="tiny">Bản mới nhất, core đang được viết lại bằng Rust</p></div>
+      <div class="card"><h3>Aer 0.17.2</h3><p class="tiny">Simulator chạy local, nhanh</p></div>
+      <div class="card"><h3>NumPy 2.4.6</h3><p class="tiny">Qiskit 2.5 bắt buộc NumPy ≥ 2.0</p></div>
+      <div class="card"><h3>JupyterLab 4.6</h3><p class="tiny">Khi cần notebook để thí nghiệm</p></div>
+      <div class="card"><h3>matplotlib + pylatexenc</h3><p class="tiny">Để vẽ được mạch cho đẹp</p></div>
+    </div>
+
+    <div class="ex">
+      <div class="ex-head"><span class="ex-tag">Thực hành 0.1</span><span class="ex-title">Kiểm tra môi trường</span><span class="chip">2 phút</span></div>
+      <div class="ex-body">
+        <p>Mở Terminal, chạy đúng hai dòng này. Nếu in ra số phiên bản là xong.</p>
+        <div class="code-head"><div class="dots"><i></i><i></i><i></i></div><span>Terminal</span></div>
+<pre class="code" data-lang="bash">source ~/quantum-env/bin/activate
+python -c "import qiskit, qiskit_aer; print(qiskit.__version__, qiskit_aer.__version__)"</pre>
+        <p class="tiny">Dấu hiệu đúng: dòng đầu prompt có <code>(quantum-env)</code>, và output là <code>2.5.1 0.17.2</code>.</p>
+      </div>
+      <details class="reveal"><summary>Nếu lệnh báo lỗi</summary>
+        <div class="reveal-in">
+          <p><code>no such file or directory</code> → env nằm chỗ khác, tìm bằng: <code>ls -d ~/*env*</code></p>
+          <p><code>command not found: python</code> → bạn chưa activate. Chạy lại dòng <code>source</code>.</p>
+          <p>Muốn khỏi gõ <code>source</code> mỗi lần: thêm alias vào <code>~/.zshrc</code> → <code>alias qenv="source ~/quantum-env/bin/activate"</code></p>
+        </div>
+      </details>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 5 ══════════════════════════════════════════════════════════════════ -->
+<div class="slide" data-part="Phần 2 · Một qubit" data-title="Bit vs Qubit">
+  <div class="wrap">
+    <h2><span class="k">04</span> Bit cổ điển và qubit khác nhau ở đâu</h2>
+    <div class="grid-2">
+      <div class="card">
+        <h3>Bit cổ điển</h3>
+        <p>Mô tả bằng <b>1 số</b>, và số đó chỉ có 2 giá trị: <code>0</code> hoặc <code>1</code>.</p>
+        <p>Muốn biết nó là gì? Đọc. Đọc bao nhiêu lần cũng ra kết quả cũ, và đọc không làm nó đổi.</p>
+      </div>
+      <div class="card">
+        <h3>Qubit</h3>
+        <p>Mô tả bằng <b>2 số phức</b> gọi là <em class="q">biên độ</em>:</p>
+        <p style="font-family:var(--mono);font-size:1.1rem;color:var(--cyan);text-align:center;padding:.5rem 0">|ψ⟩ = α|0⟩ + β|1⟩</p>
+        <p>Đọc nó (=<b>đo</b>) chỉ trả về 0 hoặc 1 — và <b>phá huỷ</b> α, β vĩnh viễn.</p>
+      </div>
+    </div>
+
+    <div class="card info">
+      <h3>Quy tắc quan trọng nhất toàn bộ lượng tử — Born rule</h3>
+      <p style="font-size:1.15rem;text-align:center;font-family:var(--mono);color:var(--text);line-height:1.9">P(đo ra 0) = |α|²<br>P(đo ra 1) = |β|²</p>
+      <p>Vì tổng xác suất phải bằng 1, luôn có ràng buộc <code>|α|² + |β|² = 1</code>. Mọi trạng thái hợp lệ đều nằm trên ràng buộc này.</p>
+    </div>
+
+    <div class="note"><b>Chú ý chữ "phức":</b> α và β có thể âm, thậm chí có phần ảo. Đây <em class="q">không</em> phải chi tiết kỹ thuật vụn vặt — nó chính là chỗ sức mạnh lượng tử nằm. Slide 08 nói kỹ.</div>
+  </div>
+</div>
+
+<!-- ══ NEW · bàn thí nghiệm 1 qubit ═══════════════════════════════════════ -->
+<div class="slide" data-title="🔬 Bàn thí nghiệm · một qubit">
+  <div class="wrap wide">
+    <h2><span class="k">05</span> 🔬 Bàn thí nghiệm — nghịch ngay trong slide</h2>
+    <p>Khối bên dưới là một <b>simulator state-vector thật</b>, chạy bằng JavaScript ngay trong trình duyệt này — không cần mạng, không cần Python. Bấm một cổng ở bảng dưới để thêm vào mạch; bấm vào cổng trong mạch để xoá nó.</p>
+
+    <div class="qlab" data-n="1" data-gates="H0" data-shots="1024"
+         data-title="Một qubit — mạch tuỳ bạn"
+         data-goal="Thử: bấm H hai lần rồi nhìn cột xác suất. Bấm X. Bấm Z (xem cái gì đổi, cái gì không). Rồi bấm ▶ đo 1024 lần."></div>
+
+    <div class="grid-3">
+      <div class="card frag">
+        <h3>Cột "biên độ"</h3>
+        <p class="tiny">Chính là α và β. Đây là thứ <b>thật sự</b> mô tả qubit. Máy thật không cho bạn xem cột này — chỉ simulator mới cho.</p>
+      </div>
+      <div class="card frag">
+        <h3>Cột "pha" — cái đĩa nhỏ</h3>
+        <p class="tiny">Kim chỉ hướng của số phức. Kim sang phải = dấu dương, sang trái = dấu âm. <b>Xác suất không đổi khi kim quay</b> — nhưng giao thoa thì đổi.</p>
+      </div>
+      <div class="card frag">
+        <h3>Quả cầu Bloch</h3>
+        <p class="tiny">Mọi trạng thái 1 qubit là một điểm trên mặt cầu này. Đỉnh = <span class="ket">|0⟩</span>, đáy = <span class="ket">|1⟩</span>, xích đạo = các chồng chập 50/50.</p>
+      </div>
+    </div>
+
+    <div class="note frag"><b>Ba việc nên làm trước khi sang slide sau:</b> (1) bấm <code>H</code> rồi <code>H</code> — xác suất về đâu? (2) bấm <code>H</code> rồi <code>Z</code> — cột xác suất có đổi không, cột pha có đổi không? (3) bấm <code>Rx</code> với các góc khác nhau và nhìn mũi tên Bloch nghiêng dần.</div>
+
+    <div class="notes">Slide này thay cho việc "tin lời giảng viên". Người học tự bấm ra kết quả thì nhớ lâu hơn nhiều. Nếu đang dạy nhóm, cho 3 phút nghịch tự do trước khi đi tiếp.</div>
+  </div>
+</div>
+
+<!-- ══ 6 ══════════════════════════════════════════════════════════════════ -->
+<div class="slide" data-title="Quiz · biên độ">
+  <div class="wrap">
+    <h2><span class="k">06</span> Kiểm tra nhanh</h2>
+    <div class="quiz">
+      <span class="q-tag">Quiz 1</span>
+      <p class="q-text">Một qubit có α = 0.6 và β = 0.8. Đo 1000 lần thì kỳ vọng ra bao nhiêu lần kết quả <span class="ket">|1⟩</span>?</p>
+      <div class="opts">
+        <button class="opt">800 lần — vì β = 0.8</button>
+        <button class="opt" data-ok="1">640 lần — vì |β|² = 0.64</button>
+        <button class="opt">500 lần — đo lúc nào cũng 50/50</button>
+        <button class="opt">Không đoán được, hoàn toàn ngẫu nhiên</button>
+      </div>
+      <div class="why"><b>|β|² = 0.8² = 0.64</b> → khoảng 640 lần. Biên độ <em class="q">không</em> phải xác suất; bình phương độ lớn của nó mới là xác suất. Kiểm tra: 0.6² + 0.8² = 0.36 + 0.64 = 1 ✓</div>
+    </div>
+
+    <div class="quiz">
+      <span class="q-tag">Quiz 2</span>
+      <p class="q-text">Trạng thái nào <b>không</b> hợp lệ?</p>
+      <div class="opts">
+        <button class="opt">α = <span class="frac"><span class="num">1</span><span class="den">√2</span></span>, β = −<span class="frac"><span class="num">1</span><span class="den">√2</span></span></button>
+        <button class="opt">α = 0, β = 1</button>
+        <button class="opt" data-ok="1">α = 0.5, β = 0.5</button>
+        <button class="opt">α = <span class="frac"><span class="num">1</span><span class="den">√2</span></span>, β = <span class="frac"><span class="num">i</span><span class="den">√2</span></span></button>
+      </div>
+      <div class="why">0.5² + 0.5² = 0.5 ≠ 1 → chưa chuẩn hoá, không hợp lệ. Ba đáp án kia đều thoả |α|² + |β|² = 1 (lưu ý |<span class="frac"><span class="num">i</span><span class="den">√2</span></span>|² = <span class="frac"><span class="num">1</span><span class="den">2</span></span>, phần ảo vẫn tính bình thường).</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 7 ══════════════════════════════════════════════════════════════════ -->
+<div class="slide" data-title="Cổng lượng tử = phép quay">
+  <div class="wrap">
+    <h2><span class="k">07</span> Cổng lượng tử là phép quay, không phải if/else</h2>
+    <p>Trong lập trình thường, bạn <b>gán</b> giá trị. Trong lượng tử, bạn chỉ được <b>xoay</b> vector trạng thái — mọi cổng đều là ma trận unitary, nghĩa là <em class="q">luôn đảo ngược được</em>.</p>
+
+    <div class="grid-3">
+      <div class="card">
+        <h3>X — lật bit</h3>
+        <p class="tiny">Đổi chỗ α và β. Chính là cổng NOT.</p>
+        <p class="ket">|0⟩ → |1⟩</p>
+      </div>
+      <div class="card">
+        <h3>Z — lật dấu</h3>
+        <p class="tiny">Giữ nguyên α, đổi dấu β. Xác suất <b>không đổi</b> chút nào.</p>
+        <p class="ket">|1⟩ → −|1⟩</p>
+      </div>
+      <div class="card">
+        <h3>H — Hadamard</h3>
+        <p class="tiny">Máy tạo chồng chập. Cổng bạn sẽ dùng nhiều nhất.</p>
+        <p class="ket">|0⟩ → <span class="frac"><span class="num">|0⟩ + |1⟩</span><span class="den">√2</span></span></p>
+      </div>
+    </div>
+
+    <div class="card warn">
+      <h3>Cổng Z gây khó chịu — và đó là điểm mấu chốt</h3>
+      <p>Z biến <span class="ket">|1⟩</span> thành <span class="ket">−|1⟩</span>. Xác suất đo hoàn toàn không đổi (|−β|² = |β|²). Vậy nó có tác dụng gì?</p>
+      <p><b>Không tác dụng gì — cho tới khi bạn cho nó giao thoa với một nhánh khác.</b> Đây chính là cách mọi thuật toán lượng tử hoạt động: dùng pha để đánh dấu, rồi dùng giao thoa để biến dấu thành xác suất.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 8 ══════════════════════════════════════════════════════════════════ -->
+<div class="slide" data-title="Thực hành · cổng H">
+  <div class="wrap">
+    <h2><span class="k">08</span> Mạch đầu tiên của bạn</h2>
+    <div class="circ">
+      <div class="wire"><span class="lbl">q₀</span><span class="ln"></span><span class="g">H</span><span class="ln"></span><span class="m">📊</span><span class="ln"></span></div>
+    </div>
+    <p>Đọc mạch từ <b>trái sang phải</b> như dòng thời gian: qubit bắt đầu ở <span class="ket">|0⟩</span>, đi qua cổng H, rồi bị đo.</p>
+
+    <div class="ex">
+      <div class="ex-head"><span class="ex-tag">Thực hành 0.2</span><span class="ex-title">Chạy cổng H và đếm kết quả</span><span class="chip">5 phút</span></div>
+      <div class="ex-body">
+        <p>Tạo file <code>h_test.py</code> rồi chạy <code>python h_test.py</code>:</p>
+        <div class="code-head"><div class="dots"><i></i><i></i><i></i></div><span>h_test.py</span></div>
+<pre class="code" data-lang="python">from qiskit import QuantumCircuit
+from qiskit_aer.primitives import SamplerV2
+
+qc = QuantumCircuit(1)
+qc.h(0)              # đưa qubit vào chồng chập
+qc.measure_all()
+
+sampler = SamplerV2()
+result = sampler.run([qc], shots=4096).result()
+print(result[0].data.meas.get_counts())
+print(qc.draw("text"))</pre>
+        <p><b>Câu hỏi trước khi chạy:</b> bạn đoán ra gì? Ghi con số ra giấy rồi mới chạy.</p>
+      </div>
+      <details class="reveal"><summary>Kết quả thật (mình đã chạy sẵn)</summary>
+        <div class="reveal-in">
+          <div class="bars">
+            <div class="b"><span class="k">|0⟩</span><span class="track"><span class="fill" data-w="51"></span></span><span class="v">2086</span></div>
+            <div class="b"><span class="k">|1⟩</span><span class="track"><span class="fill" data-w="49"></span></span><span class="v">2010</span></div>
+          </div>
+          <p class="tiny">Số của bạn sẽ lệch vài chục — đó là dao động thống kê bình thường, không phải bug.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="note">Tới đây một cổng H trông y hệt <code>random.randint(0,1)</code>. Slide sau phá vỡ ấn tượng đó.</div>
+  </div>
+</div>
+
+<!-- ══ 9 ══════════════════════════════════════════════════════════════════ -->
+<div class="slide" data-title="⭐ Thí nghiệm quan trọng nhất deck">
+  <div class="wrap wide">
+    <h2><span class="k">09</span> ⭐ Thí nghiệm chứng minh lượng tử ≠ ngẫu nhiên</h2>
+    <p class="lead">Nếu H chỉ là "tung đồng xu", thì tung hai lần vẫn phải ra 50/50. Hãy thử.</p>
+
+    <div class="grid-3">
+      <div class="card frag">
+        <div class="circ sm"><div class="wire"><span class="lbl">q₀</span><span class="ln"></span><span class="g">H</span><span class="ln"></span><span class="m">📊</span></div></div>
+        <h3>A · Một cổng H</h3>
+        <div class="bars">
+          <div class="b"><span class="k">0</span><span class="track"><span class="fill" data-w="51"></span></span><span class="v">51%</span></div>
+          <div class="b"><span class="k">1</span><span class="track"><span class="fill" data-w="49"></span></span><span class="v">49%</span></div>
+        </div>
+        <p class="tiny">Ngẫu nhiên như mong đợi.</p>
+      </div>
+
+      <div class="card good frag">
+        <div class="circ sm"><div class="wire"><span class="lbl">q₀</span><span class="ln"></span><span class="g">H</span><span class="ln"></span><span class="g">H</span><span class="ln"></span><span class="m">📊</span></div></div>
+        <h3>B · Hai cổng H liên tiếp</h3>
+        <div class="bars">
+          <div class="b"><span class="k">0</span><span class="track"><span class="fill" data-w="100"></span></span><span class="v">100%</span></div>
+          <div class="b mute"><span class="k">1</span><span class="track"><span class="fill" data-w="0"></span></span><span class="v">0</span></div>
+        </div>
+        <p class="tiny"><b>4096/4096 lần ra 0.</b> Không một lần nào ra 1.</p>
+      </div>
+
+      <div class="card bad frag">
+        <div class="circ sm"><div class="wire"><span class="lbl">q₀</span><span class="ln"></span><span class="g">H</span><span class="ln"></span><span class="m">📊</span><span class="ln"></span><span class="g">H</span><span class="ln"></span><span class="m">📊</span></div></div>
+        <h3>C · H, <b>đo</b>, rồi H</h3>
+        <div class="bars">
+          <div class="b"><span class="k">0</span><span class="track"><span class="fill" data-w="50"></span></span><span class="v">50%</span></div>
+          <div class="b"><span class="k">1</span><span class="track"><span class="fill" data-w="50"></span></span><span class="v">50%</span></div>
+        </div>
+        <p class="tiny">Chỉ thêm một phép đo ở giữa — phép màu biến mất.</p>
+      </div>
+    </div>
+
+    <div class="card info frag">
+      <h3>Đọc kết quả này thế nào</h3>
+      <p><b>B chứng minh H không phải bộ tạo số ngẫu nhiên.</b> Sau H đầu tiên, qubit ở trạng thái <span class="ket"><span class="frac"><span class="num">|0⟩ + |1⟩</span><span class="den">√2</span></span></span> — một trạng thái <em class="q">xác định</em>, không phải "đã ngẫu nhiên rồi". H thứ hai làm hai nhánh giao thoa: nhánh dẫn tới <span class="ket">|1⟩</span> bị <b>triệt tiêu</b> (+<span class="frac"><span class="num">1</span><span class="den">2</span></span> và −<span class="frac"><span class="num">1</span><span class="den">2</span></span> cộng lại bằng 0), nhánh dẫn tới <span class="ket">|0⟩</span> được <b>khuếch đại</b>.</p>
+      <p><b>C chứng minh đo là thao tác phá huỷ.</b> Phép đo ở giữa ép qubit về 0 hoặc 1 thật sự, xoá mất thông tin pha — nên H thứ hai không còn gì để giao thoa nữa.</p>
+      <p style="color:var(--text)"><b>Đây chính là toàn bộ trò chơi:</b> mọi thuật toán lượng tử đều là sắp xếp cho các nhánh sai triệt tiêu nhau và nhánh đúng cộng dồn.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ NEW · giao thoa từng bước ═════════════════════════════════════════ -->
+<div class="slide" data-title="🔬 Giao thoa xảy ra ở bước nào">
+  <div class="wrap wide">
+    <h2><span class="k">10</span> 🔬 Bấm từng bước để xem dấu trừ triệt tiêu nhau</h2>
+    <p>Mạch dưới đây đã nạp sẵn <code>H</code> rồi <code>H</code>. Dùng hàng nút <b>"xem trạng thái sau bước"</b> để tua: <b>đầu → 1 → 2</b>. Nhìn cột <b>biên độ</b>, đừng chỉ nhìn cột xác suất.</p>
+
+    <div class="qlab" data-n="1" data-gates="H0,H0" data-hide="hist" data-shots="1024"
+         data-title="H rồi H — tua từng bước"
+         data-goal="Ở bước 1, biên độ của |1⟩ là +0.707. Ở bước 2 nó thành 0. Con số 0 đó không phải 'ít khả năng' — nó là triệt tiêu hoàn toàn."></div>
+
+    <div class="grid-3">
+      <div class="card frag">
+        <h3>Bước 0 · <span class="ket">|0⟩</span></h3>
+        <p class="tiny">Biên độ: <code>[1, 0]</code>. Đo là chắc chắn ra 0.</p>
+      </div>
+      <div class="card frag">
+        <h3>Bước 1 · sau H</h3>
+        <p class="tiny">Biên độ: <code>[0.707, 0.707]</code>. Hai nhánh <b>cùng dấu</b>, cùng độ lớn.</p>
+      </div>
+      <div class="card frag">
+        <h3>Bước 2 · sau H thứ hai</h3>
+        <p class="tiny">Biên độ: <code>[1, 0]</code>. Nhánh <span class="ket">|1⟩</span> nhận được +0.5 từ đường này và −0.5 từ đường kia → <b>cộng lại đúng bằng 0</b>.</p>
+      </div>
+    </div>
+
+    <div class="card info frag">
+      <h3>Vì sao là −0.5 chứ không phải +0.5?</h3>
+      <p>Ma trận H là <code>[[1,1],[1,−1]]/√2</code>. Cái dấu trừ ở ô cuối chính là toàn bộ câu chuyện: khi nhánh <span class="ket">|1⟩</span> đi qua H lần hai, nó bị nhân với −1/√2. Nhánh <span class="ket">|0⟩</span> thì nhân với +1/√2. Hai nhánh gặp nhau tại <span class="ket">|1⟩</span> và giết nhau.</p>
+      <p><b>Cộng xác suất thì không bao giờ ra 0.</b> 0.5 + 0.5 = 1, không thể triệt tiêu. Chỉ vì ta cộng <em class="q">biên độ</em> (có dấu) trước rồi mới bình phương, mới có chuyện triệt tiêu. Đây là khác biệt duy nhất giữa lượng tử và xác suất cổ điển.</p>
+    </div>
+
+    <div class="quiz frag">
+      <span class="q-tag">Quiz</span>
+      <p class="q-text">Trong widget trên, thêm cổng <code>Z</code> vào <b>giữa</b> hai cổng H (mạch thành H · Z · H). Đo ra gì?</p>
+      <div class="opts">
+        <button class="opt" data-why="Z không đổi xác suất khi đứng một mình, nhưng ở đây nó đứng giữa hai cổng H — nó đổi cái sẽ giao thoa ở bước sau.">Vẫn 100% ra 0, vì Z không đổi xác suất</button>
+        <button class="opt" data-ok="1" data-why="Z lật dấu nhánh |1⟩, nên ở H thứ hai hai nhánh đổi vai: nhánh |0⟩ triệt tiêu, nhánh |1⟩ cộng dồn. H·Z·H = X, đúng bằng cổng NOT.">100% ra 1 — vì H·Z·H chính là cổng X</button>
+        <button class="opt" data-why="50/50 là kết quả khi pha bị phá huỷ (ví dụ có phép đo chen giữa). Ở đây không có phép đo nào.">50/50, vì thêm cổng thì thêm ngẫu nhiên</button>
+      </div>
+      <div class="why">Tự kiểm chứng luôn: bấm <code>H</code>, <code>Z</code>, <code>H</code> ở widget phía trên. Đây là ví dụ nhỏ nhất của <b>toàn bộ nghề lập trình lượng tử</b> — dùng pha để đánh dấu, dùng H để biến dấu thành kết quả đo được.</div>
+    </div>
+
+    <div class="notes">Nếu chỉ giữ lại một slide trong cả deck này thì giữ slide này. Ai hiểu được "cộng biên độ có dấu rồi mới bình phương" là đã qua được rào cản khái niệm lớn nhất.</div>
+  </div>
+</div>
+
+<!-- ══ 10 ═════════════════════════════════════════════════════════════════ -->
+<div class="slide" data-title="Thực hành · tự chạy giao thoa">
+  <div class="wrap">
+    <h2><span class="k">11</span> Tự tay dựng lại thí nghiệm đó</h2>
+    <div class="ex">
+      <div class="ex-head"><span class="ex-tag">Thực hành 0.3</span><span class="ex-title">Ba mạch, ba kết quả</span><span class="chip">10 phút</span></div>
+      <div class="ex-body">
+        <p>Chạy file này. <b>Đừng đọc kết quả trước</b> — hãy đoán từng dòng rồi so.</p>
+        <div class="code-head"><div class="dots"><i></i><i></i><i></i></div><span>giao_thoa.py</span></div>
+<pre class="code" data-lang="python">from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister
+from qiskit_aer.primitives import SamplerV2
+
+sampler = SamplerV2()
+
+def dem(qc, shots=4096):
+    return sampler.run([qc], shots=shots).result()[0].data
+
+# A — một cổng H
+a = QuantumCircuit(1); a.h(0); a.measure_all()
+print("A  H      ->", dem(a).meas.get_counts())
+
+# B — hai cổng H liên tiếp
+b = QuantumCircuit(1); b.h(0); b.h(0); b.measure_all()
+print("B  H,H    ->", dem(b).meas.get_counts())
+
+# C — H, đo giữa chừng, rồi H
+q    = QuantumRegister(1, "q")
+giua = ClassicalRegister(1, "giua")
+cuoi = ClassicalRegister(1, "cuoi")
+c = QuantumCircuit(q, giua, cuoi)
+c.h(0); c.measure(0, giua[0]); c.h(0); c.measure(0, cuoi[0])
+print("C  H,đo,H ->", dict(dem(c).cuoi.get_counts()))</pre>
+      </div>
+      <details class="reveal"><summary>Kết quả đúng để đối chiếu</summary>
+        <div class="reveal-in">
+<pre class="code" data-lang="text">A  H      -> {'0': 2086, '1': 2010}
+B  H,H    -> {'0': 4096}
+C  H,đo,H -> {'1': 2042, '0': 2054}</pre>
+          <p class="tiny">B phải ra <b>đúng</b> 4096 cho '0' và không có key '1'. Nếu bạn thấy vài shot ra '1' thì bạn đang chạy trên phần cứng thật chứ không phải simulator.</p>
+        </div>
+      </details>
+      <details class="reveal"><summary>Thử thêm: nghịch cho hiểu sâu</summary>
+        <div class="reveal-in">
+          <ul>
+            <li>Thêm <code>z</code> vào giữa hai cổng H: <code>qc.h(0); qc.z(0); qc.h(0)</code> → đoán xem ra gì? (gợi ý: H·Z·H = X)</li>
+            <li>Thay Z bằng <code>s</code> rồi <code>t</code> — quan sát tỉ lệ đổi dần thế nào.</li>
+            <li>Ba cổng H liên tiếp thì sao?</li>
+          </ul>
+        </div>
+      </details>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 11 ═════════════════════════════════════════════════════════════════ -->
+<div class="slide" data-title="Pha: |+⟩ và |−⟩">
+  <div class="wrap">
+    <h2><span class="k">12</span> Hai trạng thái trông giống hệt nhau khi đo</h2>
+    <div class="grid-2">
+      <div class="card">
+        <h3><span class="ket">|+⟩</span> = H|0⟩</h3>
+<pre class="code" data-lang="text">[0.707+0j,  0.707+0j]</pre>
+        <p>Đo → 50% ra 0, 50% ra 1</p>
+      </div>
+      <div class="card">
+        <h3><span class="ket">|−⟩</span> = H|1⟩ = H·X|0⟩</h3>
+<pre class="code" data-lang="text">[0.707+0j, -0.707+0j]</pre>
+        <p>Đo → 50% ra 0, 50% ra 1</p>
+      </div>
+    </div>
+
+    <div class="card warn">
+      <h3>Đo thì không phân biệt được — nhưng chúng là hai trạng thái khác nhau</h3>
+      <p>Chỉ khác nhau <b>một dấu trừ</b>. Bằng phép đo tiêu chuẩn, không cách nào phân biệt. Nhưng cho cả hai đi qua thêm một cổng H:</p>
+      <div class="row" style="margin-top:.3rem">
+        <span class="chip green">H|+⟩ = |0⟩ (100%)</span>
+        <span class="chip rose">H|−⟩ = |1⟩ (100%)</span>
+      </div>
+      <p style="margin-top:.4rem">Giao thoa đã <b>biến pha ẩn thành kết quả đo được</b>. Đây là mẫu hình lặp lại trong mọi thuật toán bạn sắp học: <em class="q">giấu đáp án vào pha → dùng H để lộ nó ra</em>.</p>
+    </div>
+
+    <div class="quiz">
+      <span class="q-tag">Quiz 3</span>
+      <p class="q-text">Bạn nhận được một qubit, được cho biết nó là <span class="ket">|+⟩</span> hoặc <span class="ket">|−⟩</span>. Làm sao biết chắc nó là cái nào?</p>
+      <div class="opts">
+        <button class="opt">Đo nó nhiều lần rồi xem tỉ lệ</button>
+        <button class="opt" data-ok="1">Cho qua cổng H rồi mới đo — ra 0 là |+⟩, ra 1 là |−⟩</button>
+        <button class="opt">Không thể, hai trạng thái đó giống hệt nhau</button>
+        <button class="opt">Đo phần ảo của biên độ</button>
+      </div>
+      <div class="why">Đo trực tiếp luôn ra 50/50 với cả hai nên vô ích — và bạn chỉ có <b>một</b> qubit, đo một lần là mất. Cách đúng là đổi hệ quy chiếu đo bằng H trước, khi đó kết quả trở nên xác định 100%.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ NEW · Bloch sphere ════════════════════════════════════════════════ -->
+<div class="slide" data-title="Quả cầu Bloch — bản đồ 1 qubit">
+  <div class="wrap wide">
+    <h2><span class="k">13</span> Quả cầu Bloch — cái bản đồ để khỏi lạc</h2>
+    <p>Một qubit có 2 số phức = 4 số thực. Trừ đi ràng buộc chuẩn hoá và pha toàn cục vô nghĩa, còn lại đúng <b>2 bậc tự do</b> — vừa đủ để vẽ thành một điểm trên mặt cầu.</p>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>Đọc quả cầu thế nào</h3>
+        <ul>
+          <li><b>Đỉnh (z = +1)</b> = <span class="ket">|0⟩</span>, <b>đáy (z = −1)</b> = <span class="ket">|1⟩</span></li>
+          <li><b>Xích đạo</b> = mọi trạng thái đo ra 50/50. <span class="ket">|+⟩</span> ở phía +x, <span class="ket">|−⟩</span> ở phía −x</li>
+          <li><b>Mọi cổng 1 qubit đều là một phép quay</b> quanh một trục nào đó. X quay 180° quanh trục x, Z quay 180° quanh z, H quay 180° quanh trục chéo x+z</li>
+          <li>Cổng <code>Rx(θ)</code>, <code>Ry(θ)</code>, <code>Rz(θ)</code> là "quay θ độ quanh trục đó" — đúng nghĩa đen</li>
+        </ul>
+      </div>
+      <div class="card warn">
+        <h3>Chỗ quả cầu Bloch đánh lừa bạn</h3>
+        <p><span class="ket">|0⟩</span> và <span class="ket">|1⟩</span> vuông góc với nhau <em class="q">về mặt toán</em>, nhưng trên quả cầu chúng ở hai cực đối nhau (180°). Góc trên quả cầu = <b>gấp đôi</b> góc thật trong không gian trạng thái.</p>
+        <p class="tiny">Và quan trọng: quả cầu Bloch <b>chỉ vẽ được cho 1 qubit</b>. Từ 2 qubit trở lên, nếu có vướng víu thì mỗi qubit riêng lẻ không còn là điểm trên mặt cầu nữa — nó nằm <em class="q">bên trong</em> quả cầu. Đó chính là dấu hiệu của vướng víu.</p>
+      </div>
+    </div>
+
+    <div class="qlab" data-n="1" data-gates="" data-hide="hist" data-shots="1024"
+         data-title="Quay thử — nhìn mũi tên di chuyển"
+         data-goal="Kéo thanh góc về π/4 rồi bấm Ry nhiều lần: mũi tên bò dần từ cực bắc xuống xích đạo, xác suất trượt dần từ 100/0 sang 50/50. Đây là toàn bộ ý nghĩa của 'quay'."></div>
+
+    <div class="note frag">Bạn sẽ gặp lại quả cầu này ở Quirk và ở hàm <code>plot_bloch_multivector()</code> của Qiskit. Ở Phase 1 bạn sẽ tự tính ra 3 toạ độ x, y, z này từ α và β.</div>
+  </div>
+</div>
+
+<!-- ══ 12 ═════════════════════════════════════════════════════════════════ -->
+<div class="slide" data-part="Phần 3 · Nhiều qubit" data-title="Nhiều qubit">
+  <div class="wrap">
+    <h2><span class="k">14</span> Thêm qubit thì trạng thái phình theo hàm mũ</h2>
+    <div class="table-scroll">
+      <table class="t">
+        <tr><th>Số qubit</th><th>Số biên độ cần lưu</th><th>Bộ nhớ (complex128)</th><th>Ghi chú</th></tr>
+        <tr><td>1</td><td>2</td><td>32 B</td><td>α, β</td></tr>
+        <tr><td>10</td><td>1 024</td><td>16 KB</td><td>chạy trên đồng hồ thông minh cũng được</td></tr>
+        <tr><td>20</td><td>1 048 576</td><td>16 MB</td><td>thoải mái trên laptop</td></tr>
+        <tr><td>30</td><td>~10⁹</td><td>16 GB</td><td>bắt đầu chạm trần RAM máy bạn</td></tr>
+        <tr><td>50</td><td>~10¹⁵</td><td>16 PB</td><td>không siêu máy tính nào chứa nổi</td></tr>
+        <tr><td>300</td><td>2³⁰⁰</td><td>—</td><td>nhiều hơn số nguyên tử trong vũ trụ quan sát được</td></tr>
+      </table>
+    </div>
+    <div class="note"><b>Đây là lý do người ta muốn máy tính lượng tử.</b> Mô phỏng n qubit bằng máy thường tốn 2ⁿ bộ nhớ; còn một máy lượng tử n qubit chỉ cần… n qubit. Cũng chính là lý do simulator bạn viết ở Phase 1 sẽ dừng ở khoảng 25–28 qubit.</div>
+
+    <div class="card">
+      <h3>Ký hiệu 2 qubit</h3>
+      <p>Với 2 qubit có 4 biên độ, ứng với 4 khả năng khi đo:</p>
+      <p style="font-family:var(--mono);color:var(--cyan);text-align:center;font-size:1.05rem">|ψ⟩ = α₀₀|00⟩ + α₀₁|01⟩ + α₁₀|10⟩ + α₁₁|11⟩</p>
+      <p class="tiny">Trong Qiskit, chuỗi <code>"01"</code> nghĩa là <b>q₁=0, q₀=1</b> — bit phải nhất là qubit 0. Quy ước little-endian này gây nhầm lẫn nhiều nhất khi mới học; Phase 1 sẽ nói kỹ.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 13 ═════════════════════════════════════════════════════════════════ -->
+<div class="slide" data-title="CNOT & Bell state">
+  <div class="wrap">
+    <h2><span class="k">15</span> CNOT và trạng thái Bell</h2>
+    <p><b>CNOT</b> = lật qubit đích, <em class="q">nhưng chỉ khi</em> qubit điều khiển đang là 1. Đơn giản đến mức tưởng vô hại — cho tới khi qubit điều khiển đang ở chồng chập.</p>
+
+    <div class="circ">
+      <div class="wire"><span class="lbl">q₀</span><span class="ln"></span><span class="g">H</span><span class="ln"></span><span class="ctrl vlink"><b></b></span><span class="ln"></span><span class="m">📊</span></div>
+      <div class="wire"><span class="lbl">q₁</span><span class="ln"></span><span class="ln" style="flex:1 1 34px"></span><span class="ln"></span><span class="targ"><b>⊕</b></span><span class="ln"></span><span class="m">📊</span></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>Diễn biến từng bước</h3>
+        <ul>
+          <li>Bắt đầu: <span class="ket">|00⟩</span></li>
+          <li>Sau H trên q₀: <span class="ket"><span class="frac"><span class="num">|00⟩ + |10⟩</span><span class="den">√2</span></span></span></li>
+          <li>Sau CNOT (q₀ điều khiển, q₁ đích): nhánh <span class="ket">|00⟩</span> giữ nguyên (q₀ = 0), nhánh <span class="ket">|10⟩</span> bị lật thành <span class="ket">|11⟩</span> (q₀ = 1)</li>
+          <li>Kết quả: <span class="ket">|Φ⁺⟩ = <span class="frac"><span class="num">|00⟩ + |11⟩</span><span class="den">√2</span></span></span></li>
+        </ul>
+      </div>
+      <div class="card good">
+        <h3>Vì sao đây là entanglement</h3>
+        <p>Trạng thái này <b>không tách được</b> thành "q₀ thế này, q₁ thế kia". Không tồn tại cách viết nó dưới dạng tích của hai trạng thái 1-qubit riêng lẻ.</p>
+        <p>Hệ quả: đo q₀ ra 0 thì q₁ <b>chắc chắn</b> là 0; ra 1 thì q₁ chắc chắn là 1 — dù hai qubit cách nhau bao xa.</p>
+      </div>
+    </div>
+    <p class="tiny">Chỉ có <span class="ket">|00⟩</span> và <span class="ket">|11⟩</span>; <span class="ket">|01⟩</span> và <span class="ket">|10⟩</span> có biên độ bằng 0 — về nguyên tắc <b>không bao giờ</b> xuất hiện trên simulator.</p>
+  </div>
+</div>
+
+<!-- ══ NEW · bàn thí nghiệm 2 qubit ══════════════════════════════════════ -->
+<div class="slide" data-title="🔬 Bàn thí nghiệm · 2 qubit &amp; vướng víu">
+  <div class="wrap wide">
+    <h2><span class="k">16</span> 🔬 Tự tay tạo vướng víu — và tự tay phá nó</h2>
+    <p>Mạch đã nạp sẵn <b>H rồi CNOT</b> = mạch Bell. Dòng chữ dưới bảng biên độ sẽ tự báo khi hai qubit <b>đang vướng víu</b>.</p>
+
+    <div class="qlab" data-n="2" data-gates="H0,CX0-1" data-shots="1024"
+         data-title="Mạch Bell — và mọi biến thể của nó"
+         data-goal="Bốn thí nghiệm: (1) xoá CNOT đi — còn vướng víu không? (2) thêm X lên q0 trước H → được |Φ⁻⟩ hay |Ψ⁺⟩? (3) đổi CNOT thành CZ. (4) thêm cổng M (đo giữa mạch) rồi xem chuyện gì xảy ra."></div>
+
+    <div class="grid-2">
+      <div class="card good frag">
+        <h3>Dấu hiệu vướng víu trên bảng biên độ</h3>
+        <p>Chỉ <span class="ket">|00⟩</span> và <span class="ket">|11⟩</span> có biên độ; <span class="ket">|01⟩</span> và <span class="ket">|10⟩</span> <b>đúng bằng 0</b>. Kết quả của hai qubit bị khoá chặt với nhau.</p>
+        <p class="tiny">So sánh: xoá CNOT đi, bạn được <span class="ket">|00⟩+|10⟩</span> — q₀ ngẫu nhiên, q₁ luôn là 0. Hai qubit độc lập, <b>không</b> vướng víu.</p>
+      </div>
+      <div class="card bad frag">
+        <h3>Cổng M phá vướng víu như thế nào</h3>
+        <p>Thêm cổng <code>M</code> lên q₀ sau CNOT rồi bấm lại vài lần: mỗi lần bảng biên độ sập về <b>một</b> trạng thái duy nhất — <span class="ket">|00⟩</span> hoặc <span class="ket">|11⟩</span>, ngẫu nhiên.</p>
+        <p class="tiny">Đây là "sập trạng thái" mà sách hay nói. Không có phép màu: một khi đã đo, chồng chập biến mất vĩnh viễn.</p>
+      </div>
+    </div>
+
+    <div class="card info frag">
+      <h3>Bốn trạng thái Bell — thử tự dựng đủ cả bốn</h3>
+      <div class="table-scroll">
+        <table class="t">
+          <tr><th>Tên</th><th>Trạng thái</th><th>Mạch</th></tr>
+          <tr><td><span class="ket">|Φ⁺⟩</span></td><td><span class="ket">(|00⟩ + |11⟩)/√2</span></td><td><code>H(0), CX(0,1)</code></td></tr>
+          <tr><td><span class="ket">|Φ⁻⟩</span></td><td><span class="ket">(|00⟩ − |11⟩)/√2</span></td><td><code>H(0), CX(0,1), Z(0)</code></td></tr>
+          <tr><td><span class="ket">|Ψ⁺⟩</span></td><td><span class="ket">(|01⟩ + |10⟩)/√2</span></td><td><code>H(0), CX(0,1), X(1)</code></td></tr>
+          <tr><td><span class="ket">|Ψ⁻⟩</span></td><td><span class="ket">(|01⟩ − |10⟩)/√2</span></td><td><code>H(0), CX(0,1), X(1), Z(0)</code></td></tr>
+        </table>
+      </div>
+      <p class="tiny">Bốn trạng thái này là "bảng chữ cái" của giao thức lượng tử. Teleportation ở Phase 2 chạy được chính là nhờ phân biệt được bốn cái này.</p>
+    </div>
+
+    <div class="notes">Cho người học tự dựng đủ 4 trạng thái Bell là bài tập tốt hơn bất kỳ câu hỏi lý thuyết nào. Ai dựng được |Ψ⁻⟩ là đã hiểu cả CNOT lẫn pha.</div>
+  </div>
+</div>
+
+<!-- ══ 14 ═════════════════════════════════════════════════════════════════ -->
+<div class="slide" data-title="Thực hành · Bell state">
+  <div class="wrap">
+    <h2><span class="k">17</span> Deliverable của Phase 0</h2>
+    <div class="ex">
+      <div class="ex-head"><span class="ex-tag">Thực hành 0.4</span><span class="ex-title">bell_test.py — bài nộp chính thức</span><span class="chip">10 phút</span></div>
+      <div class="ex-body">
+        <div class="code-head"><div class="dots"><i></i><i></i><i></i></div><span>bell_test.py</span></div>
+<pre class="code" data-lang="python">from qiskit import QuantumCircuit
+from qiskit_aer.primitives import SamplerV2
+
+qc = QuantumCircuit(2)
+qc.h(0)              # q0 vào chồng chập
+qc.cx(0, 1)          # vướng víu q0 với q1
+qc.measure_all()
+
+sampler = SamplerV2()
+result = sampler.run([qc], shots=4096).result()
+counts = result[0].data.meas.get_counts()
+
+print(counts)        # kỳ vọng: ~50% '00', ~50% '11'
+print(qc.draw("text"))</pre>
+        <p><b>Tiêu chí đạt:</b> chỉ có key <code>'00'</code> và <code>'11'</code>, mỗi cái ~2048. Tuyệt đối không có <code>'01'</code> hay <code>'10'</code>.</p>
+      </div>
+      <details class="reveal"><summary>Kết quả thật</summary>
+        <div class="reveal-in">
+          <div class="bars">
+            <div class="b"><span class="k">|00⟩</span><span class="track"><span class="fill" data-w="51"></span></span><span class="v">2097</span></div>
+            <div class="b mute"><span class="k">|01⟩</span><span class="track"><span class="fill" data-w="0"></span></span><span class="v">0</span></div>
+            <div class="b mute"><span class="k">|10⟩</span><span class="track"><span class="fill" data-w="0"></span></span><span class="v">0</span></div>
+            <div class="b"><span class="k">|11⟩</span><span class="track"><span class="fill" data-w="49"></span></span><span class="v">1999</span></div>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <div class="ex">
+      <div class="ex-head"><span class="ex-tag">Thực hành 0.5</span><span class="ex-title">Tìm cả 4 trạng thái Bell</span><span class="chip">nâng cao</span></div>
+      <div class="ex-body">
+        <p>Mạch trên cho ra <span class="ket">|Φ⁺⟩ = <span class="frac"><span class="num">|00⟩ + |11⟩</span><span class="den">√2</span></span></span>. Còn 3 trạng thái Bell nữa. Hãy tìm cách tạo chúng bằng cách chèn thêm <b>đúng một hoặc hai cổng</b> X/Z trước CNOT.</p>
+        <p>Kiểm tra bằng <code>Statevector</code> thay vì đo — vì đo không phân biệt được dấu:</p>
+<pre class="code" data-lang="python">from qiskit.quantum_info import Statevector
+print(Statevector(qc).data.round(3))   # bỏ measure_all() đi trước khi chạy</pre>
+      </div>
+      <details class="reveal"><summary>Lời giải</summary>
+        <div class="reveal-in">
+<pre class="code" data-lang="python">|Φ⁺⟩ : h(0);              cx(0,1)   ->  [ 0.707,  0,      0,     0.707]
+|Φ⁻⟩ : h(0); z(0);        cx(0,1)   ->  [ 0.707,  0,      0,    -0.707]
+|Ψ⁺⟩ : h(0); x(1);        cx(0,1)   ->  [ 0,      0.707,  0.707, 0    ]
+|Ψ⁻⟩ : h(0); x(1); z(0);  cx(0,1)   ->  [ 0,     -0.707,  0.707, 0    ]</pre>
+            <p class="tiny"><span class="ket">|Ψ⁻⟩</span> ở đây ra <span class="ket"><span class="frac"><span class="num">−|01⟩ + |10⟩</span><span class="den">√2</span></span></span>, sách thường viết <span class="ket"><span class="frac"><span class="num">|01⟩ − |10⟩</span><span class="den">√2</span></span></span>. Hai cái chỉ khác nhau hệ số −1 chung cho <b>toàn bộ</b> trạng thái — gọi là <em class="q">pha toàn cục</em>, và pha toàn cục <b>không quan sát được</b>. Chúng là cùng một trạng thái vật lý.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 15 ═════════════════════════════════════════════════════════════════ -->
+<div class="slide" data-title="Không truyền tin nhanh hơn ánh sáng">
+  <div class="wrap wide">
+    <h2><span class="k">18</span> Entanglement <b>không</b> truyền tin nhanh hơn ánh sáng</h2>
+    <p class="lead">Đây là hiểu lầm được lan truyền nhiều nhất về lượng tử. Hiểu đúng chỗ này giúp bạn nói chuyện có trọng lượng.</p>
+
+    <div class="grid-2">
+      <div class="card bad frag">
+        <h3>✗ Lập luận sai</h3>
+        <p>"An đo qubit của mình ra 1 → qubit của Bình lập tức thành 1 → An vừa gửi được 1 bit tức thời cho Bình."</p>
+      </div>
+      <div class="card good">
+        <h3>✓ Chỗ sai nằm ở đâu</h3>
+        <p>An <b>không chọn được</b> kết quả đo của mình — nó ngẫu nhiên 50/50. Và Bình, nếu chỉ nhìn qubit của riêng mình, cũng chỉ thấy 50/50 ngẫu nhiên, <em class="q">y hệt như khi không có entanglement</em>.</p>
+        <p>Mối tương quan chỉ lộ ra khi hai người <b>so sánh kết quả</b> — mà so sánh thì phải gọi điện, nhắn tin: kênh cổ điển, không nhanh hơn ánh sáng.</p>
+      </div>
+    </div>
+
+    <div class="card info">
+      <h3>Cách nhớ</h3>
+      <p>Entanglement tạo ra <b>tương quan mạnh hơn mọi thứ cổ điển cho phép</b> — nhưng không tạo ra <b>tín hiệu</b>. Nó là tài nguyên để làm những việc như teleportation hay superdense coding, và <em class="q">cả hai giao thức đó đều bắt buộc phải gửi kèm bit cổ điển</em>. Bạn sẽ tự cài đặt chúng ở Phase 2.</p>
+    </div>
+
+    <!-- ── PHÒNG THÍ NGHIỆM TRỰC QUAN TƯƠNG TÁC ── -->
+    <div class="entangle-lab" id="entangle-lab">
+      <div class="elab-header">
+        <div class="elab-title-wrap">
+          <span class="elab-tag">Trực Quan Hóa</span>
+          <span class="elab-title">Phòng Thí Nghiệm & Mô Phỏng Entanglement</span>
+        </div>
+        <div class="elab-tabs">
+          <button onclick="switchElabTab('intuition')" id="elab-tab-intuition" class="elab-tab-btn active">
+            ⚛️ 1. Cổ Điển vs Lượng Tử
+          </button>
+          <button onclick="switchElabTab('nosignal')" id="elab-tab-nosignal" class="elab-tab-btn">
+            📡 2. Thử Bắn Tín Hiệu
+          </button>
+          <button onclick="switchElabTab('teleport')" id="elab-tab-teleport" class="elab-tab-btn">
+            ⚡ 3. Dịch Chuyển (Teleport)
+          </button>
+          <button onclick="switchElabTab('lookup')" id="elab-tab-lookup" class="elab-tab-btn">
+            📋 4. Bảng Tra Cứu Toàn Diện
+          </button>
+          <button onclick="switchElabTab('superdense')" id="elab-tab-superdense" class="elab-tab-btn">
+            💻 5. Mã Hóa Siêu Mật Độ
+          </button>
+          <button onclick="switchElabTab('quiz')" id="elab-tab-quiz" class="elab-tab-btn">
+            🎯 6. Mini Quiz
+          </button>
+        </div>
+      </div>
+
+      <!-- TAB 1: CỔ ĐIỂN VS LƯỢNG TỬ (CANVAS) -->
+      <div id="elab-pane-intuition" class="elab-pane active">
+        <div class="elab-desc-box">
+          <b>Tương quan lượng tử khác đôi găng tay cổ điển:</b> Trước khi đo, các hạt không mang giá trị định sẵn mà ở trạng thái sóng chồng chập. Chỉ khi bạn bấm <b>Đo</b> ở một trạm, hạt đó mới chọn ngẫu nhiên 0 hoặc 1, và hạt còn lại tức thì sụp đổ theo cùng giá trị!
+        </div>
+
+        <div class="elab-canvas-box">
+          <canvas id="canvas-elab-intuition" height="190"></canvas>
+          <div class="elab-canvas-tag">Bell State: |Φ⁺⟩ = (|00⟩ + |11⟩) / √2</div>
+        </div>
+
+        <div class="elab-stations">
+          <div class="elab-card an">
+            <div class="elab-card-head">
+              <span class="elab-station-name cyan">🪐 Trạm An (Trái Đất)</span>
+              <span id="elab-an-state" class="elab-badge">Chồng chập |?⟩</span>
+            </div>
+            <p style="font-size:0.8rem;color:var(--text-3)">Qubit 0 đang quay đều trong không gian 50% |0⟩ và 50% |1⟩.</p>
+            <button id="btn-elab-meas-an" onclick="measureIntuition('an')" class="elab-btn cyan">
+              Đo Qubit Của An
+            </button>
+          </div>
+
+          <div class="elab-card binh">
+            <div class="elab-card-head">
+              <span class="elab-station-name indigo">🚀 Trạm Bình (Sao Hỏa)</span>
+              <span id="elab-binh-state" class="elab-badge">Chồng chập |?⟩</span>
+            </div>
+            <p style="font-size:0.8rem;color:var(--text-3)">Qubit 1 vướng víu với Qubit 0 bất kể khoảng cách không gian.</p>
+            <button id="btn-elab-meas-binh" onclick="measureIntuition('binh')" class="elab-btn indigo">
+              Đo Qubit Của Bình
+            </button>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:0.8rem;flex-wrap:wrap">
+          <button onclick="resetIntuition()" class="elab-btn ghost" style="font-size:0.76rem">
+            ↺ Đặt lại trạng thái
+          </button>
+          <div id="elab-intuit-result" class="elab-result hidden" style="flex:1">
+            ⚛️ <b>Quan sát:</b> Dù An hay Bình đo trước, hạt đo sẽ sụp đổ ngẫu nhiên ra 0 hoặc 1. Ngay lập tức, hạt ở đầu kia khớp 100% cùng giá trị!
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: NO-SIGNALING SIMULATOR -->
+      <div id="elab-pane-nosignal" class="elab-pane">
+        <div class="elab-desc-box rose">
+          <b>Định lý Không-Truyền-Tin (No-Communication Theorem):</b> Hãy thử giả lập An muốn gửi một thông điệp bí mật (ví dụ <code>1011</code>) cho Bình qua các cặp hạt vướng víu:
+        </div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:0.8rem;flex-wrap:wrap;background:rgba(0,0,0,0.3);padding:0.6rem 0.8rem;border-radius:var(--r-sm);border:1px solid var(--line-soft)">
+          <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.84rem">
+            <span style="color:var(--text-2)">Chọn chuỗi bit An muốn truyền:</span>
+            <div class="elab-pill-grid" style="display:flex;gap:0.3rem">
+              <button onclick="setNoSigPattern('1011')" class="elab-pill-nosig elab-pill-btn active" style="padding:0.25rem 0.6rem">1011</button>
+              <button onclick="setNoSigPattern('1100')" class="elab-pill-nosig elab-pill-btn" style="padding:0.25rem 0.6rem">1100</button>
+              <button onclick="setNoSigPattern('0101')" class="elab-pill-nosig elab-pill-btn" style="padding:0.25rem 0.6rem">0101</button>
+              <button onclick="setNoSigPattern('1111')" class="elab-pill-nosig elab-pill-btn" style="padding:0.25rem 0.6rem">1111</button>
+            </div>
+          </div>
+
+          <button id="btn-run-nosig" onclick="runNoSigSim()" class="elab-btn rose">
+            🚀 Bắt Đầu Bắn Tín Hiệu Thử
+          </button>
+        </div>
+
+        <div class="elab-nosignal-grid">
+          <div class="elab-col-box">
+            <div style="font-size:0.8rem;font-weight:700;color:var(--rose)">1. An Muốn Gửi</div>
+            <div id="elab-ns-target" style="display:grid;gap:0.35rem"></div>
+          </div>
+
+          <div class="elab-col-box">
+            <div style="font-size:0.8rem;font-weight:700;color:var(--amber)">2. An Đo Hạt Của Mình</div>
+            <div id="elab-ns-an-meas" style="display:grid;gap:0.35rem"></div>
+          </div>
+
+          <div class="elab-col-box">
+            <div style="font-size:0.8rem;font-weight:700;color:var(--cyan)">3. Bình Nhìn Thấy Ở Đích</div>
+            <div id="elab-ns-binh-meas" style="display:grid;gap:0.35rem"></div>
+          </div>
+        </div>
+
+        <div id="elab-nosig-exp" class="elab-result warn hidden">
+          ⚠️ <b>Kết quả thực tế:</b> Bình chỉ nhận được <b>"Tiếng Ồn Trắng"</b> ngẫu nhiên 50/50! Vì An không thể chủ động ép hạt của mình phải ra bit mong muốn, Bình ở xa hoàn toàn không đọc được thông điệp mà chỉ thấy kết quả ngẫu nhiên như khi tung đồng xu.
+        </div>
+      </div>
+
+      <!-- TAB 3: QUANTUM TELEPORTATION (MÁY FAX LƯỢNG TỬ) -->
+      <div id="elab-pane-teleport" class="elab-pane">
+        <div class="elab-desc-box">
+          <b>Ẩn dụ Máy Fax Lượng Tử:</b> An muốn gửi một <b>"Viên Ngọc Bí Mật |ψ⟩"</b> cho Bình ở Sao Hỏa. Vật lý cấm nhìn trộm (sẽ làm vỡ ngọc) và cấm nhân bản. Vậy làm sao chuyển được?
+          <div style="font-family:var(--mono);font-size:0.8rem;color:var(--cyan);margin-top:0.3rem">
+            Công thức: 1 Cặp Vướng Víu + 2 Con Số Tin Nhắn (tốc độ c) ➔ Tái Sinh Viên Ngọc ở Trạm Bình
+          </div>
+        </div>
+
+        <div class="elab-stepper" id="elab-tele-stepper"></div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:0.8rem;background:rgba(0,0,0,0.3);padding:0.6rem 0.8rem;border-radius:var(--r-sm);border:1px solid var(--line-soft)">
+          <div>
+            <div id="elab-tele-title" style="font-weight:700;color:var(--text);font-size:0.88rem">Bước 0: Có một "Viên Ngọc Bí Mật" |ψ⟩</div>
+            <div id="elab-tele-desc" style="font-size:0.8rem;color:var(--text-3)">An đang giữ một trạng thái lượng tử bí mật (viên ngọc phát sáng).</div>
+          </div>
+          <div style="display:flex;gap:0.4rem;align-items:center">
+            <button onclick="resetTeleport()" class="elab-btn ghost" style="font-size:0.75rem">↺ Làm lại</button>
+            <button id="btn-tele-next" onclick="nextTeleStep()" class="elab-btn cyan">Chuẩn Bị Cặp Vướng Víu →</button>
+          </div>
+        </div>
+
+        <div class="elab-canvas-box" style="min-height:175px">
+          <canvas id="canvas-elab-teleport" height="175"></canvas>
+        </div>
+
+        <div class="elab-stations">
+          <div class="elab-card an">
+            <div class="elab-card-head">
+              <span class="elab-station-name cyan">🪐 Trạm An (Người Gửi)</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:0.8rem;padding:0.35rem 0.5rem;background:rgba(0,0,0,0.3);border-radius:6px">
+              <span style="color:var(--text-3)">Trạng thái gốc:</span>
+              <b id="elab-tele-an-q" style="color:var(--cyan);font-family:var(--mono)">Viên Ngọc Bí Mật |ψ⟩</b>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:0.8rem;padding:0.35rem 0.5rem;background:rgba(0,0,0,0.3);border-radius:6px">
+              <span style="color:var(--text-3)">Mã số đo được:</span>
+              <b id="elab-tele-an-bits" style="color:var(--amber);font-family:var(--mono)">--</b>
+            </div>
+          </div>
+
+          <div class="elab-card" style="justify-content:center;text-align:center;align-items:center">
+            <div style="font-size:0.75rem;font-family:var(--mono);color:var(--violet)">🔗 Dây Vướng Víu (Bell Link)</div>
+            <div style="font-size:0.75rem;font-family:var(--mono);color:var(--amber)">✉️ Kênh Tin Nhắn (Cáp quang: c)</div>
+            <div id="elab-tele-chan-status" style="font-size:0.76rem;color:var(--text-3);font-family:var(--mono)">Chờ gửi tin nhắn...</div>
+          </div>
+
+          <div class="elab-card binh">
+            <div class="elab-card-head">
+              <span class="elab-station-name indigo">🚀 Trạm Bình (Người Nhận)</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:0.8rem;padding:0.35rem 0.5rem;background:rgba(0,0,0,0.3);border-radius:6px">
+              <span style="color:var(--text-3)">Hạt tại trạm Bình:</span>
+              <b id="elab-tele-binh-q" style="color:var(--text-3);font-family:var(--mono)">Chưa có hạt</b>
+            </div>
+            <div id="elab-tele-binh-status" style="font-size:0.75rem;color:var(--text-3)">
+              Chờ tin nhắn 2 con số của An để biến hình...
+            </div>
+          </div>
+        </div>
+
+        <button onclick="switchElabTab('lookup')" class="elab-btn cyan" style="width:100%;padding:0.65rem 1rem;font-size:0.86rem;margin-top:0.3rem">
+          📖 Xem Bảng Tra Cứu Toàn Diện & Giải Thích Chi Tiết 4 Trường Hợp (Tab 4) ➔
+        </button>
+      </div>
+
+      <!-- TAB 4: BẢNG TRA CỨU TOÀN DIỆN & GIẢI THÍCH CHI TIẾT -->
+      <div id="elab-pane-lookup" class="elab-pane">
+        <div class="elab-desc-box">
+          <div style="font-size:0.95rem;font-weight:700;color:var(--text);margin-bottom:0.3rem">
+            📋 Bảng Tra Cứu Áp Cổng Của Bình (Quy Chuẩn Toán Học 100%)
+          </div>
+          Sau khi An cho Hạt Bí Mật đi qua cổng <b>CNOT + H</b> rồi bấm Đo, hạt của Bình ở Sao Hỏa lập tức rơi vào đúng 1 trong 4 trạng thái dưới đây. Bình chỉ cần nhìn tin nhắn 2 bit của An để áp cổng sửa lại:
+        </div>
+
+        <!-- 4 LARGE CARDS -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));gap:0.85rem">
+          <!-- CARD 00 -->
+          <div style="background:rgba(6,182,212,0.06);border:1.5px solid rgba(6,182,212,0.4);border-radius:var(--r);padding:1rem;display:grid;gap:0.6rem">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:0.5rem;flex-wrap:wrap">
+              <span style="font-family:var(--mono);font-size:0.95rem;font-weight:900;color:var(--cyan);background:rgba(6,182,212,0.15);padding:0.2rem 0.55rem;border-radius:6px;white-space:nowrap">
+                Mã 00
+              </span>
+              <span style="font-family:var(--mono);font-weight:800;font-size:0.88rem;color:var(--cyan)">➔ Cổng I (Giữ nguyên)</span>
+            </div>
+            <div style="background:rgba(0,0,0,0.4);padding:0.55rem 0.7rem;border-radius:6px;font-size:0.82rem;font-family:var(--mono)">
+              <div style="color:var(--text-3)">Hạt Bình nhận được:</div>
+              <div style="color:#ffffff;font-weight:bold;margin-top:0.15rem">α|0⟩ + β|1⟩</div>
+            </div>
+            <div style="font-size:0.82rem;color:var(--text-2);line-height:1.45">
+              ✅ <b>Hành động:</b> Không cần làm gì cả! Hạt tự động đúng 100% như hạt gốc của An.
+            </div>
+          </div>
+
+          <!-- CARD 01 -->
+          <div style="background:rgba(244,63,94,0.06);border:1.5px solid rgba(244,63,94,0.4);border-radius:var(--r);padding:1rem;display:grid;gap:0.6rem">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:0.5rem;flex-wrap:wrap">
+              <span style="font-family:var(--mono);font-size:0.95rem;font-weight:900;color:var(--rose);background:rgba(244,63,94,0.15);padding:0.2rem 0.55rem;border-radius:6px;white-space:nowrap">
+                Mã 01
+              </span>
+              <span style="font-family:var(--mono);font-weight:800;font-size:0.88rem;color:var(--rose)">➔ Cổng X (Đảo Bit)</span>
+            </div>
+            <div style="background:rgba(0,0,0,0.4);padding:0.55rem 0.7rem;border-radius:6px;font-size:0.82rem;font-family:var(--mono)">
+              <div style="color:var(--text-3)">Hạt Bình nhận được:</div>
+              <div style="color:var(--rose);font-weight:bold;margin-top:0.15rem">α|1⟩ + β|0⟩ <span style="font-size:0.72rem;color:var(--text-3)">(Lộn 0↔1)</span></div>
+            </div>
+            <div style="font-size:0.82rem;color:var(--text-2);line-height:1.45">
+              🔄 <b>Hành động:</b> Bấm <b>Cổng X</b> để lật bit 0↔1 trở lại dạng chuẩn: α|0⟩ + β|1⟩.
+            </div>
+          </div>
+
+          <!-- CARD 10 -->
+          <div style="background:rgba(251,191,36,0.06);border:1.5px solid rgba(251,191,36,0.4);border-radius:var(--r);padding:1rem;display:grid;gap:0.6rem">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:0.5rem;flex-wrap:wrap">
+              <span style="font-family:var(--mono);font-size:0.95rem;font-weight:900;color:var(--amber);background:rgba(251,191,36,0.15);padding:0.2rem 0.55rem;border-radius:6px;white-space:nowrap">
+                Mã 10
+              </span>
+              <span style="font-family:var(--mono);font-weight:800;font-size:0.88rem;color:var(--amber)">➔ Cổng Z (Đổi Pha)</span>
+            </div>
+            <div style="background:rgba(0,0,0,0.4);padding:0.55rem 0.7rem;border-radius:6px;font-size:0.82rem;font-family:var(--mono)">
+              <div style="color:var(--text-3)">Hạt Bình nhận được:</div>
+              <div style="color:var(--amber);font-weight:bold;margin-top:0.15rem">α|0⟩ − β|1⟩ <span style="font-size:0.72rem;color:var(--text-3)">(Bị dấu trừ −)</span></div>
+            </div>
+            <div style="font-size:0.82rem;color:var(--text-2);line-height:1.45">
+              ⚡ <b>Hành động:</b> Bấm <b>Cổng Z</b> để đổi dấu trừ thành cộng: α|0⟩ + β|1⟩.
+            </div>
+          </div>
+
+          <!-- CARD 11 -->
+          <div style="background:rgba(196,162,255,0.06);border:1.5px solid rgba(196,162,255,0.4);border-radius:var(--r);padding:1rem;display:grid;gap:0.6rem">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:0.5rem;flex-wrap:wrap">
+              <span style="font-family:var(--mono);font-size:0.95rem;font-weight:900;color:var(--violet);background:rgba(196,162,255,0.15);padding:0.2rem 0.55rem;border-radius:6px;white-space:nowrap">
+                Mã 11
+              </span>
+              <span style="font-family:var(--mono);font-weight:800;font-size:0.88rem;color:var(--violet)">➔ Cổng X rồi Z (Cả hai)</span>
+            </div>
+            <div style="background:rgba(0,0,0,0.4);padding:0.55rem 0.7rem;border-radius:6px;font-size:0.82rem;font-family:var(--mono)">
+              <div style="color:var(--text-3)">Hạt Bình nhận được:</div>
+              <div style="color:var(--violet);font-weight:bold;margin-top:0.15rem">α|1⟩ − β|0⟩ <span style="font-size:0.72rem;color:var(--text-3)">(Lộn bit & Dấu −)</span></div>
+            </div>
+            <div style="font-size:0.82rem;color:var(--text-2);line-height:1.45">
+              🔧 <b>Hành động:</b> Bấm <b>Cổng X</b> (sửa lộn bit) $\rightarrow$ rồi bấm tiếp <b>Cổng Z</b> (sửa dấu trừ).
+            </div>
+          </div>
+        </div>
+
+        <!-- 2-COLUMN SUMMARY -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));gap:0.75rem;margin-top:0.4rem">
+          <div style="background:rgba(0,0,0,0.3);border:1px solid rgba(6,182,212,0.3);border-radius:var(--r-sm);padding:0.85rem;display:grid;gap:0.4rem">
+            <div style="font-weight:700;color:var(--cyan);font-size:0.88rem">🪐 Tóm Tắt Phía An (Trái Đất):</div>
+            <ol style="font-size:0.8rem;color:var(--text-2);padding-left:1.2rem;line-height:1.55">
+              <li>Ghép Hạt Bí Mật chung với Hạt 1 (vướng víu).</li>
+              <li>Chạy cổng <b>CNOT</b>, rồi chạy cổng <b>H</b>.</li>
+              <li>Bấm <b>ĐO</b> cả 2 hạt ➔ Thu được 2 bit (Hạt gốc bị hủy).</li>
+              <li>Nhắn tin 2 bit đó cho Bình (tốc độ ánh sáng $c$).</li>
+            </ol>
+          </div>
+
+          <div style="background:rgba(0,0,0,0.3);border:1px solid rgba(129,140,248,0.3);border-radius:var(--r-sm);padding:0.85rem;display:grid;gap:0.4rem">
+            <div style="font-weight:700;color:#818cf8;font-size:0.88rem">🚀 Tóm Tắt Phía Bình (Sao Hỏa):</div>
+            <ol style="font-size:0.8rem;color:var(--text-2);padding-left:1.2rem;line-height:1.55">
+              <li>Giữ sẵn Hạt 2 trong tay (chưa làm gì).</li>
+              <li>Nhận tin nhắn 2 bit từ An qua điện thoại.</li>
+              <li>Tra bảng 4 trường hợp ở trên ➔ Bấm cổng tương ứng.</li>
+              <li>Thu được chính xác 100% trạng thái hạt ban đầu của An!</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: SUPERDENSE CODING -->
+      <div id="elab-pane-superdense" class="elab-pane">
+        <div class="elab-desc-box violet">
+          <b>Công thức Mã Hóa Siêu Mật Độ (Superdense Coding):</b><br />
+          <code>1 Cặp Entanglement + 1 Qubit Gửi Đi = Truyền 2 Bit Cổ Điển</code>
+        </div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:0.8rem;flex-wrap:wrap;background:rgba(0,0,0,0.3);padding:0.6rem 0.8rem;border-radius:var(--r-sm);border:1px solid var(--line-soft)">
+          <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.84rem">
+            <span style="color:var(--text-2)">Chọn 2 Bit Cổ Điển muốn gửi:</span>
+            <div class="elab-pill-grid" style="display:flex;gap:0.3rem">
+              <button onclick="selectDenseBits('00')" class="dense-sel-btn elab-pill-btn active" style="padding:0.25rem 0.65rem">00</button>
+              <button onclick="selectDenseBits('01')" class="dense-sel-btn elab-pill-btn" style="padding:0.25rem 0.65rem">01</button>
+              <button onclick="selectDenseBits('10')" class="dense-sel-btn elab-pill-btn" style="padding:0.25rem 0.65rem">10</button>
+              <button onclick="selectDenseBits('11')" class="dense-sel-btn elab-pill-btn" style="padding:0.25rem 0.65rem">11</button>
+            </div>
+          </div>
+
+          <button id="btn-dense-send" onclick="sendDenseQubit()" class="elab-btn indigo">
+            🚀 Gửi 1 Qubit Sang Bình
+          </button>
+        </div>
+
+        <div class="elab-stations">
+          <div class="elab-card an">
+            <div class="elab-card-head">
+              <span class="elab-station-name cyan">1. An Mã Hóa Cục Bộ</span>
+            </div>
+            <p style="font-size:0.8rem;color:var(--text-3)">An áp cổng lượng tử lên duy nhất 1 qubit của mình:</p>
+            <div style="background:rgba(0,0,0,0.35);padding:0.5rem;border-radius:6px;font-size:0.8rem;font-family:var(--mono)">
+              <div>Cổng: <b id="elab-dense-gate" style="color:var(--violet)">I (Không đổi)</b></div>
+              <div id="elab-dense-gate-desc" style="color:var(--text-3);font-size:0.72rem">Giữ nguyên trạng thái Bell |Φ⁺⟩</div>
+            </div>
+          </div>
+
+          <div class="elab-card" style="justify-content:center;text-align:center;align-items:center;position:relative;min-height:90px">
+            <div style="font-size:0.72rem;font-family:var(--mono);color:var(--text-3)">Bay qua không gian (1 Qubit)</div>
+            <div style="width:100%;height:2px;background:var(--line);position:relative;margin:0.8rem 0">
+              <div id="elab-dense-particle" style="position:absolute;top:50%;left:15%;transform:translate(0,-50%);width:24px;height:24px;border-radius:50%;background:var(--violet-dim);display:grid;place-items:center;color:#fff;font-size:0.68rem;font-family:var(--mono);box-shadow:0 0 10px var(--violet);transition:transform 0.9s ease">
+                |q⟩
+              </div>
+            </div>
+            <div id="elab-dense-flight-stat" style="font-size:0.72rem;color:var(--text-3);font-style:italic">Sẵn sàng truyền 1 qubit</div>
+          </div>
+
+          <div class="elab-card binh">
+            <div class="elab-card-head">
+              <span class="elab-station-name indigo">2. Bình Đo Bell & Giải Mã</span>
+            </div>
+            <div style="background:rgba(0,0,0,0.35);padding:0.5rem;border-radius:6px;text-align:center">
+              <div style="font-size:0.75rem;color:var(--text-3)">2 Bit Bình Đọc Được:</div>
+              <div id="elab-dense-decoded" style="font-size:1.6rem;font-weight:900;color:var(--green);font-family:var(--mono)">??</div>
+            </div>
+            <div id="elab-dense-badge" class="elab-result success hidden" style="padding:0.35rem 0.6rem;font-size:0.75rem">
+              ✓ Giải mã chuẩn xác 2 bit dữ liệu!
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 5: MINI QUIZ -->
+      <div id="elab-pane-quiz" class="elab-pane">
+        <div style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line-soft);padding-bottom:0.6rem">
+          <div style="font-weight:700;color:var(--text);font-size:0.92rem">Kiểm Tra Mức Độ Hiểu Bài (3 Câu)</div>
+          <span id="elab-quiz-score" class="elab-badge success hidden" style="font-size:0.8rem">Điểm: 0/3</span>
+        </div>
+
+        <div id="elab-quiz-box" style="display:grid;gap:0.75rem"></div>
+
+        <div style="display:flex;justify-content:flex-end;gap:0.5rem;margin-top:0.4rem">
+          <button id="btn-quiz-sub" onclick="submitQuiz()" class="elab-btn cyan">Nộp Bài & Xem Lời Giải</button>
+          <button id="btn-quiz-res" onclick="resetQuiz()" class="elab-btn ghost hidden">Làm Lại Quiz</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 16 ═════════════════════════════════════════════════════════════════ -->
+<div class="slide" data-part="Phần 4 · Vào việc" data-title="Cảnh báo API cũ">
+  <div class="wrap">
+    <h2><span class="k">19</span> 90% tutorial trên mạng đã chết</h2>
+    <p>Qiskit 1.0 (2024) bỏ hẳn <code>execute()</code>. Nếu bạn copy code từ blog cũ, nó sẽ không chạy — và bạn sẽ tưởng mình cài sai.</p>
+    <div class="grid-2">
+      <div class="card bad frag">
+        <h3>✗ Code trước 2024 — đã chết</h3>
+<pre class="code" data-lang="python">from qiskit import execute, Aer
+
+backend = Aer.get_backend('qasm_simulator')
+job = execute(qc, backend, shots=1024)
+counts = job.result().get_counts()</pre>
+        <p class="tiny">Thấy dòng <code>from qiskit import execute</code> ở đâu → đóng tab, tìm nguồn khác.</p>
+      </div>
+      <div class="card good">
+        <h3>✓ Chuẩn hiện tại — primitives</h3>
+<pre class="code" data-lang="python">from qiskit_aer.primitives import SamplerV2
+
+sampler = SamplerV2()
+result = sampler.run([qc], shots=1024).result()
+counts = result[0].data.meas.get_counts()</pre>
+        <p class="tiny">Hai primitive cần nhớ: <b>SamplerV2</b> lấy phân bố bit, <b>EstimatorV2</b> lấy kỳ vọng của observable.</p>
+      </div>
+    </div>
+    <div class="note"><b>Mẹo lọc nguồn:</b> tài liệu nào không nhắc tới <code>SamplerV2</code>/<code>EstimatorV2</code> thì gần như chắc chắn viết trước 2024. Ưu tiên docs chính thức tại <code>quantum.cloud.ibm.com/docs</code>.</div>
+  </div>
+</div>
+
+<!-- ══ 17 ═════════════════════════════════════════════════════════════════ -->
+<div class="slide" data-title="Quirk & IBM Quantum">
+  <div class="wrap">
+    <h2><span class="k">20</span> Hai việc làm ngoài code</h2>
+    <div class="grid-2">
+      <div class="card">
+        <h3>🎮 Chơi Quirk — 30 phút, không code</h3>
+        <p><a href="https://algassert.com/quirk">algassert.com/quirk</a> — kéo thả cổng, thấy biên độ và pha đổi <b>realtime</b>. Công cụ trực quan tốt nhất từng có cho phần này.</p>
+        <p><b>Thử đúng 3 việc:</b></p>
+        <ul>
+          <li>Kéo H vào rồi kéo thêm H nữa — xem thanh xác suất nhảy về 100%</li>
+          <li>Kéo H, rồi Z, rồi H — quan sát nó biến thành X</li>
+          <li>Dựng mạch Bell rồi bật hiển thị "Bloch sphere" cho từng qubit — bạn sẽ thấy quả cầu <b>rỗng</b>: qubit vướng víu không có trạng thái riêng</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>☁️ Đăng ký IBM Quantum — làm luôn, dùng sau</h3>
+        <p>Tạo tài khoản tại IBM Quantum Platform. Gói <b>Open Plan</b> miễn phí, không cần thẻ:</p>
+        <ul>
+          <li><b>10 phút runtime QPU thật</b> mỗi 28 ngày (rolling)</li>
+          <li>Truy cập <code>ibm_kingston</code> — Heron r2, 156 qubit</li>
+          <li>Đủ 20 phút dùng trong 12 tháng → opt-in gói 180 phút</li>
+        </ul>
+        <p class="tiny">10 phút nghe ít, nhưng mỗi mạch nhỏ chỉ tốn vài chục mili-giây QPU. Thứ tốn thời gian là <b>hàng đợi</b>, không phải quota. Bạn sẽ dùng nó lần đầu ở cuối Phase 2.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 18 ═════════════════════════════════════════════════════════════════ -->
+<div class="slide" data-title="Bật hệ thống 350 kata">
+  <div class="wrap">
+    <h2><span class="k">21</span> Bật hệ thống luyện tập</h2>
+    <p>Từ đây trở đi, mỗi khái niệm học xong sẽ đi kèm bài tập chấm tự động. 350 bài, xếp theo 9 bậc từ dễ đến khó.</p>
+
+    <div class="ex">
+      <div class="ex-head"><span class="ex-tag">Thực hành 0.6</span><span class="ex-title">Giải kata đầu tiên</span><span class="chip">10 phút</span></div>
+      <div class="ex-body">
+        <div class="code-head"><div class="dots"><i></i><i></i><i></i></div><span>Terminal</span></div>
+<pre class="code" data-lang="bash">source ~/quantum-env/bin/activate
+cd ~/Documents/project/Quantum_Computing/katas
+
+python qk.py            # xem bảng tiến độ
+python qk.py next       # đọc đề bài kế tiếp
+python qk.py run        # chấm bài đang làm</pre>
+        <p>Bài đầu tiên là <code>tutorials/ComplexArithmetic/1</code> — tính module của số phức. Thuần Python, chưa động tới qubit. Mục đích là để bạn quen vòng lặp <b>đọc đề → viết code → chấm</b>.</p>
+        <p><b>Mục tiêu Phase 0:</b> xong <b>Bậc 1 (4 bài)</b> và <b>Bậc 2 (21 bài)</b>. Bậc 2 là toàn bộ cổng 1-qubit — chính là thứ bạn vừa học ở deck này.</p>
+      </div>
+      <details class="reveal"><summary>Chế độ watch — cách dùng thoải mái nhất</summary>
+        <div class="reveal-in">
+          <p>Chia màn hình: trái là VS Code mở file bài tập, phải là terminal chạy watch. Cứ <kbd>⌘S</kbd> là tự chấm.</p>
+<pre class="code" data-lang="bash">python qk.py watch</pre>
+        </div>
+      </details>
+      <details class="reveal"><summary>Khi bí — thang gợi ý 3 mức</summary>
+        <div class="reveal-in">
+          <ul>
+            <li><code>python qk.py hint &lt;id&gt;</code> lần 1 → cho biết dùng cổng/hàm nào, dài bao nhiêu dòng</li>
+            <li>lần 2 → hiện chú thích của tác giả lời giải</li>
+            <li>lần 3 → hiện lời giải rút gọn</li>
+            <li><code>python qk.py solution &lt;id&gt;</code> → bản đầy đủ. <b>Đọc hiểu rồi tự gõ lại</b>, đừng copy-paste.</li>
+          </ul>
+          <p class="tiny">Quy tắc tự đặt: vật lộn ít nhất 10 phút rồi mới mở hint. Chỗ khó chịu đó chính là chỗ kiến thức bám lại.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</div>
+
+<!-- ══ NEW · từ điển bỏ túi ══════════════════════════════════════════════ -->
+<div class="slide" data-title="Từ điển bỏ túi Phase 0">
+  <div class="wrap wide">
+    <h2><span class="k">22</span> Từ điển bỏ túi — 12 chữ bạn vừa gặp</h2>
+    <p class="sub">Đọc lướt qua. Chữ nào giải thích lại được bằng lời của mình thì bỏ qua; chữ nào ngập ngừng thì quay lại slide tương ứng.</p>
+    <div class="table-scroll">
+      <table class="t">
+        <tr><th>Tiếng Việt</th><th>Tiếng Anh</th><th>Nói ngắn gọn là</th></tr>
+        <tr><td><b>Biên độ</b></td><td>amplitude</td><td>Số phức α, β. Bình phương độ lớn của nó mới là xác suất.</td></tr>
+        <tr><td><b>Chồng chập</b></td><td>superposition</td><td>Nhiều biên độ khác 0 cùng lúc. <em>Không</em> phải "vừa 0 vừa 1".</td></tr>
+        <tr><td><b>Giao thoa</b></td><td>interference</td><td>Biên độ cộng lại có dấu → nhánh triệt tiêu, nhánh cộng dồn. Nguồn sức mạnh thật sự.</td></tr>
+        <tr><td><b>Pha</b></td><td>phase</td><td>Hướng của số phức. Vô hình khi đo, quyết định khi giao thoa.</td></tr>
+        <tr><td><b>Vướng víu</b></td><td>entanglement</td><td>Trạng thái không tách được thành từng qubit riêng.</td></tr>
+        <tr><td><b>Đo / sập</b></td><td>measure / collapse</td><td>Lấy ra 1 bit và phá huỷ biên độ. Không đảo ngược được.</td></tr>
+        <tr><td><b>Cổng</b></td><td>gate</td><td>Ma trận unitary. Luôn đảo ngược được, luôn là phép quay.</td></tr>
+        <tr><td><b>Unitary</b></td><td>unitary</td><td>Ma trận giữ nguyên tổng xác suất. U†U = I.</td></tr>
+        <tr><td><b>Mạch</b></td><td>circuit</td><td>Dãy cổng đọc từ trái sang phải theo thời gian.</td></tr>
+        <tr><td><b>Shots</b></td><td>shots</td><td>Số lần chạy lại cả mạch để lấy thống kê. Đo một lần thì chả biết gì.</td></tr>
+        <tr><td><b>Trạng thái Bell</b></td><td>Bell state</td><td>Bốn trạng thái vướng víu tối đa của 2 qubit.</td></tr>
+        <tr><td><b>Born rule</b></td><td>Born rule</td><td>P(kết quả) = |biên độ|². Quy tắc nối toán với thực nghiệm.</td></tr>
+      </table>
+    </div>
+    <div class="note">Bản đầy đủ hơn (60+ mục, có cả ký hiệu toán và cách phát âm) nằm ở <a href="../docs/thuat-ngu.md">docs/thuat-ngu.md</a>. Bảng tra cổng và ma trận: <a href="../docs/bang-tra-cong.md">docs/bang-tra-cong.md</a>.</div>
+  </div>
+</div>
+
+<!-- ══ 19 ═════════════════════════════════════════════════════════════════ -->
+<div class="slide" data-title="Checklist Phase 0">
+  <div class="wrap">
+    <h2><span class="k">23</span> Xong Phase 0 khi nào?</h2>
+    <div class="card pad-lg">
+      <div class="row" style="justify-content:space-between">
+        <h3>Tick từng dòng khi làm xong — trình duyệt nhớ giúp bạn</h3>
+        <span data-check-count="#p0-check">0/6</span>
+      </div>
+      <ul class="check" id="p0-check">
+        <li><b>Môi trường</b> — <code>source ~/quantum-env/bin/activate</code> chạy được, in ra <code>2.5.1</code></li>
+        <li><b>bell_test.py</b> — ra ~50/50 giữa <code>'00'</code> và <code>'11'</code>, không có <code>'01'</code>/<code>'10'</code></li>
+        <li><b>Thí nghiệm giao thoa</b> — tự chạy được cả 3 mạch A/B/C và <em class="q">giải thích được</em> vì sao B ra 100%</li>
+        <li><b>Tài khoản IBM Quantum</b> — đã tạo (chưa cần dùng)</li>
+        <li><b>Quirk</b> — đã nghịch ≥ 30 phút</li>
+        <li><b>Kata</b> — xong Bậc 1 (4 bài) và Bậc 2 (21 bài)</li>
+      </ul>
+    </div>
+    <div class="card warn">
+      <h3>Tự kiểm tra thật sự hiểu — trả lời không nhìn slide</h3>
+      <ul>
+        <li>Vì sao H rồi H lại ra 100% số 0, trong khi H một lần ra 50/50?</li>
+        <li><span class="ket">|+⟩</span> và <span class="ket">|−⟩</span> khác nhau chỗ nào, và làm sao phân biệt được?</li>
+        <li>Vì sao entanglement không dùng để truyền tin nhanh hơn ánh sáng?</li>
+      </ul>
+      <p class="tiny">Trả lời trôi chảy cả ba câu = sẵn sàng sang Phase 1. Còn ngập ngừng câu nào thì quay lại slide tương ứng — đừng đi tiếp.</p>
+    </div>
+    <div class="row" style="justify-content:center;margin-top:.5rem">
+      <a class="btn" href="index.html" style="background:var(--surface);border:1px solid var(--line);color:var(--text-2);border-radius:99px;padding:.55rem 1.1rem">⌂ Trang chủ</a>
+      <a class="btn" href="phase1.html" style="background:rgba(94,234,212,.14);border:1px solid var(--cyan-dim);color:var(--cyan);border-radius:99px;padding:.55rem 1.1rem">Phase 1 · Tự viết simulator →</a>
+    </div>
+  </div>
+</div>
+
+</div>
+<script src="assets/qlab.js"></script>
+<script src="assets/entangle_lab.js"></script>
+<script src="assets/deck.js"></script>
+</body>
+</html>

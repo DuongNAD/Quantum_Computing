@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.DS_Store
+.DS_Store?
+._*
+.idea/
+.vscode/
+*.swp
+katas/.state.json
+slides/assets/progress.json
+.venv/
+venv/
+_backup-truoc-nang-cap/

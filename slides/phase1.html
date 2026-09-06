@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 1 — Tự viết simulator · Quantum Zero→Hero</title>
+<link rel="stylesheet" href="assets/theme.css">
+</head>
+<body data-deck="phase1">
+<div class="deck">
+
+<!-- ══ 1 ══ -->
+<div class="slide" data-part="Mở đầu" data-title="Phase 1 — Tự viết simulator">
+  <div class="wrap hero">
+    <div class="orb">🧮</div>
+    <h1>Phase 1 · Tự viết simulator</h1>
+    <p class="lead" style="max-width:680px">Bạn sẽ học đại số tuyến tính lượng tử <em class="q">vì code không chạy nếu hiểu sai</em> — không phải vì sách bảo thế.</p>
+    <div class="row" style="justify-content:center">
+      <span class="chip cyan">Tuần 1–2</span>
+      <span class="chip">~120 dòng NumPy</span>
+      <span class="chip violet">39 test phải xanh</span>
+      <span class="chip amber">Kata Bậc 1–4</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 2 ══ -->
+<div class="slide" data-title="Vì sao tự viết thay vì đọc sách">
+  <div class="wrap">
+    <h2><span class="k">01</span> Vì sao viết simulator thay vì đọc Nielsen &amp; Chuang</h2>
+    <div class="grid-2">
+      <div class="card bad">
+        <h3>Đường đọc sách</h3>
+        <p>Mở N&amp;C chương 2. Đọc 40 trang ký hiệu Dirac, tích tensor, toán tử Hermitian. Hiểu mang máng, không có gì kiểm chứng được là mình hiểu đúng hay sai.</p>
+        <p class="tiny">Đây là cách bỏ cuộc phổ biến nhất — thường xảy ra ở ngày thứ 4.</p>
+      </div>
+      <div class="card good">
+        <h3>Đường viết code</h3>
+        <p>Viết <code>apply_1q()</code>. Test đỏ. Nhận ra mình chưa hiểu tích tensor thật sự. Đọc <b>đúng 20 phút</b> về tích tensor. Test xanh.</p>
+        <p class="tiny">Kiến thức nạp vào đúng lúc bạn đang cần nó — nên nó bám lại.</p>
+      </div>
+    </div>
+    <div class="card info">
+      <h3>Thêm một lợi ích ít ai nói</h3>
+      <p>Sau phase này, bạn sẽ <b>không bao giờ</b> còn sợ Qiskit. Vì bạn biết bên dưới <code>qc.h(0)</code> chỉ là một vòng lặp ghép cặp số phức. Framework mất hết vẻ huyền bí — và đó chính là lúc bạn dùng nó tốt.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 3 ══ -->
+<div class="slide" data-title="Bạn sẽ xây gì">
+  <div class="wrap">
+    <h2><span class="k">02</span> 5 mốc trong 10 ngày</h2>
+    <div class="table-scroll">
+      <table class="t">
+        <tr><th>Mốc</th><th>Ngày</th><th>Nội dung</th><th>Test chuyển xanh</th></tr>
+        <tr><td><b>1</b></td><td>1–2</td><td>Ma trận cổng 1 qubit (X, Y, Z, H, S, T, Rx/Ry/Rz) + khởi tạo state</td><td><code>test_moc1_*</code> (6)</td></tr>
+        <tr><td><b>2</b></td><td>3–4</td><td><code>apply_1q()</code> bằng ghép cặp biên độ — <b>đây là mốc khó nhất</b></td><td><code>test_moc2_*</code> (6)</td></tr>
+        <tr><td><b>3</b></td><td>5–6</td><td>CNOT, CZ, SWAP — chỗ entanglement thật sự xuất hiện</td><td><code>test_moc3_*</code> (6)</td></tr>
+        <tr><td><b>4</b></td><td>7–8</td><td>Xác suất, lấy mẫu, và đo có sụp đổ trạng thái</td><td><code>test_moc4_*</code> (6)</td></tr>
+        <tr><td><b>5</b></td><td>9–10</td><td>Kiểm chứng chéo với qiskit-aer trên mạch ngẫu nhiên</td><td><code>test_khop_qiskit_*</code> (13)</td></tr>
+      </table>
+    </div>
+    <div class="ex">
+      <div class="ex-head"><span class="ex-tag">Bắt đầu</span><span class="ex-title">Khung code đã có sẵn trong dự án</span></div>
+      <div class="ex-body">
+        <div class="code-head"><div class="dots"><i></i><i></i><i></i></div><span>Terminal</span></div>
+<pre class="code" data-lang="bash">source ~/quantum-env/bin/activate
+cd ~/Documents/project/Quantum_Computing/qsim
+
+pytest test_qsim.py -x -q     # -x = dừng ở lỗi đầu tiên</pre>
+        <p>Lệnh trên sẽ báo <code>X vẫn còn None — điền ma trận đi</code>. Đó là TODO đầu tiên của bạn. Mở <code>qsim.py</code>, điền, chạy lại.</p>
+        <p class="tiny">Vòng lặp: <b>chạy pytest → sửa đúng một TODO → chạy lại</b>. Đừng viết cả file rồi mới test.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 4 ══ -->
+<div class="slide" data-part="Nền tảng cần có" data-title="4 khái niệm cần nạp">
+  <div class="wrap">
+    <h2><span class="k">03</span> Bốn khái niệm — mỗi cái ~20 phút, nạp khi cần</h2>
+    <div class="grid-2">
+      <div class="card">
+        <h3>1 · Số phức: biên độ và pha</h3>
+        <p>Một số phức <code>a + bi</code> có <b>độ lớn</b> và <b>góc pha</b>. Xác suất là <code>|amplitude|²</code> — chỉ phụ thuộc độ lớn. Pha thì <em class="q">vô hình khi đo</em> nhưng quyết định kết quả giao thoa.</p>
+        <p class="tiny">Kata: <b>Bậc 1</b> — <code>tutorials/ComplexArithmetic</code>, <code>tutorials/LinearAlgebra</code></p>
+      </div>
+      <div class="card">
+        <h3>2 · Tích tensor (Kronecker)</h3>
+        <p>Vì sao n qubit cần 2ⁿ số? Vì trạng thái ghép là tích tensor: mỗi qubit thêm vào <b>nhân đôi</b> số biên độ. <code>np.kron</code> là cách viết ra điều đó.</p>
+        <p class="tiny">Bạn sẽ <b>không dùng</b> np.kron trong code cuối — nhưng phải hiểu nó để biết vì sao ghép cặp lại đúng.</p>
+      </div>
+      <div class="card">
+        <h3>3 · Ma trận unitary</h3>
+        <p><code>U @ U.conj().T == I</code>. Hệ quả: mọi cổng lượng tử <b>đảo ngược được</b>, và tổng xác suất luôn giữ bằng 1. Không có cổng nào "xoá" thông tin.</p>
+        <p class="tiny">Test <code>test_moc1_cac_cong_deu_unitary</code> kiểm tra đúng tính chất này.</p>
+      </div>
+      <div class="card">
+        <h3>4 · Born rule</h3>
+        <p>Đo cho ra <code>i</code> với xác suất <code>|state[i]|²</code>, và sau đó trạng thái <b>sập</b> về đúng nhánh vừa đo. Đây là chỗ duy nhất trong toàn bộ lượng tử có tính ngẫu nhiên thật.</p>
+      </div>
+    </div>
+    <div class="note">Nguồn khi cần đào sâu: khóa <b>Basics of Quantum Information</b> của John Watrous trên IBM Quantum Learning. Chỉ đọc đúng mục đang bí — đừng đọc tuần tự.</div>
+  </div>
+</div>
+
+<!-- ══ 5 ══ -->
+<div class="slide" data-title="⚠ Bẫy endianness">
+  <div class="wrap">
+    <h2><span class="k">04</span> ⚠ Cái bẫy sẽ ngốn của bạn nửa ngày</h2>
+    <div class="card warn pad-lg">
+      <h3>Endianness — thứ tự đánh số qubit</h3>
+      <p>Qiskit dùng <b>little-endian</b>: qubit 0 là bit <b>phải nhất</b> của chuỗi bit.</p>
+      <div class="table-scroll" style="margin:.4rem 0">
+        <table class="t">
+          <tr><th>Chỉ số</th><th>Nhị phân</th><th>q₂</th><th>q₁</th><th>q₀</th><th>Qiskit in ra</th></tr>
+          <tr><td>1</td><td>001</td><td>0</td><td>0</td><td><b style="color:var(--cyan)">1</b></td><td><code>'001'</code></td></tr>
+          <tr><td>2</td><td>010</td><td>0</td><td><b style="color:var(--cyan)">1</b></td><td>0</td><td><code>'010'</code></td></tr>
+          <tr><td>4</td><td>100</td><td><b style="color:var(--cyan)">1</b></td><td>0</td><td>0</td><td><code>'100'</code></td></tr>
+        </table>
+      </div>
+      <p><b>Nếu simulator của bạn ra <code>'10'</code> còn Qiskit ra <code>'01'</code> — bạn không sai vật lý, bạn sai quy ước.</b> Chốt quy ước từ dòng code đầu tiên và ghi vào docstring.</p>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <h3>Hai phép toán bit dùng suốt phase này</h3>
+<pre class="code" data-lang="python">(i &gt;&gt; q) &amp; 1        # bit q của chỉ số i là 0 hay 1?
+i ^ (1 &lt;&lt; q)        # lật bit q của chỉ số i
+i | (1 &lt;&lt; q)        # bật bit q lên 1</pre>
+      </div>
+      <div class="card info">
+        <h3>Test bắt lỗi này cho bạn</h3>
+        <p><code>test_moc2_x_tren_qubit_1_kiem_tra_endian</code> — nếu bạn đảo ngược thứ tự, test này đỏ ngay ở mốc 2 chứ không để bạn phát hiện muộn ở mốc 5.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ NEW · kiểm chứng endianness ═══════════════════════════════════════ -->
+<div class="slide" data-title="🔬 Endianness · nhìn tận mắt">
+  <div class="wrap wide">
+    <h2><span class="k">05</span> 🔬 Đừng tin bảng — tự bấm ra rồi tin</h2>
+    <p>Bảng ở slide trước có thể học thuộc rồi quên. Thay vào đó: bấm <code>X</code> lên <b>q₀</b> ở widget dưới và đọc nhãn trạng thái. Rồi đổi sang <b>q₂</b>.</p>
+
+    <div class="qlab" data-n="3" data-gates="X0" data-hide="hist" data-shots="512"
+         data-title="3 qubit — X đặt lên đâu thì bit nào đổi?"
+         data-goal="X lên q0 → |001⟩. X lên q2 → |100⟩. Nếu bạn kỳ vọng ngược lại thì bạn đang nghĩ big-endian — và simulator của bạn sẽ trượt test mốc 2."></div>
+
+    <div class="grid-2">
+      <div class="card good frag">
+        <h3>Cách nhớ không bao giờ sai</h3>
+        <p>Chuỗi hiển thị viết như <b>số nhị phân bình thường</b>: bit ngoài cùng bên phải có trọng số 1 = <b>q₀</b>. Đúng như khi bạn viết số 5 = <code>101</code>.</p>
+        <p class="tiny">Nói cách khác: <code>index = Σ bit_q · 2^q</code>. Chỉ cần nhớ đúng công thức này là không bao giờ lẫn.</p>
+      </div>
+      <div class="card warn frag">
+        <h3>Chỗ nó cắn bạn</h3>
+        <ul>
+          <li><code>qc.measure_all()</code> in ra chuỗi <b>q₂q₁q₀</b> — ngược với thứ tự bạn khai báo</li>
+          <li><code>Statevector(qc)</code> đánh chỉ số theo cùng quy ước — nhưng <code>qc.draw()</code> vẽ q₀ ở <b>trên cùng</b></li>
+          <li>Nếu bạn tự viết <code>np.kron</code>, thứ tự tensor phải là <code>kron(U_{n-1}, …, U_0)</code> — ngược với trực giác đọc từ trái sang</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="note frag">Việc đầu tiên nên làm trong <code>qsim.py</code>: viết đúng một dòng docstring <em class="q">"qubit 0 = bit thấp nhất của chỉ số, khớp Qiskit"</em>. Mọi hàm sau đó bám vào dòng đó.</div>
+
+    <div class="notes">Kinh nghiệm: người học mất trung bình nửa ngày ở lỗi này. Bắt họ bấm widget 30 giây tiết kiệm được nửa ngày đó.</div>
+  </div>
+</div>
+
+<!-- ══ 6 ══ -->
+<div class="slide" data-part="Năm mốc xây dựng" data-title="Mốc 1 · ma trận cổng">
+  <div class="wrap">
+    <h2><span class="k">06</span> Mốc 1 · Ma trận cổng</h2>
+    <div class="grid-3">
+      <div class="card"><h3>X</h3><p class="tiny">Đổi chỗ α, β</p><pre class="code" data-lang="text">[[0, 1],
+ [1, 0]]</pre></div>
+      <div class="card"><h3>Z</h3><p class="tiny">Đổi dấu β</p><pre class="code" data-lang="text">[[1,  0],
+ [0, -1]]</pre></div>
+      <div class="card"><h3>H</h3><p class="tiny">Tạo chồng chập</p><pre class="code" data-lang="text">[[1,  1],
+ [1, -1]] / √2</pre></div>
+    </div>
+
+    <div class="ex">
+      <div class="ex-head"><span class="ex-tag">Thực hành 1.1</span><span class="ex-title">Điền 6 ma trận + 3 cổng quay</span></div>
+      <div class="ex-body">
+        <p>Mở <code>qsim/qsim.py</code>, làm TODO 1.1 → 1.5. Quan hệ kiểm chứng mà test dùng:</p>
+        <ul>
+          <li><code>H·H = I</code> · <code>S·S = Z</code> · <code>T·T = S</code></li>
+          <li><code>rx(π) = −i·X</code> · <code>ry(π) = −i·Y</code> · <code>rz(π) = −i·Z</code></li>
+        </ul>
+        <p>Ba quan hệ dưới là chỗ hầu hết người viết sai. Chúng nói: quay 180° <b>không</b> bằng đúng cổng Pauli — nó lệch một pha toàn cục <code>−i</code>.</p>
+      </div>
+      <details class="reveal"><summary>Bẫy ở rz — đọc trước khi mất 1 tiếng</summary>
+        <div class="reveal-in">
+          <p>Nhiều tài liệu viết <code>rz(θ) = diag(1, e^{iθ})</code>. Bản đó <b>lệch pha toàn cục</b> so với Qiskit và sẽ làm test mốc 5 đỏ dù mọi thứ khác đúng.</p>
+          <p>Dạng khớp Qiskit là dạng đối xứng:</p>
+<pre class="code" data-lang="python">rz(θ) = [[exp(-1j*θ/2), 0],
+         [0, exp(+1j*θ/2)]]</pre>
+        </div>
+      </details>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 7 ══ -->
+<div class="slide" data-title="⭐ Mốc 2 · ghép cặp biên độ">
+  <div class="wrap wide">
+    <h2><span class="k">07</span> ⭐ Mốc 2 · Ý tưởng cốt lõi của cả phase</h2>
+    <div class="grid-2">
+      <div class="card bad frag">
+        <h3>✗ Cách naive — đừng làm</h3>
+        <p>Dựng ma trận đầy đủ 2ⁿ×2ⁿ bằng <code>np.kron</code> rồi nhân với state.</p>
+<pre class="code" data-lang="python">U_full = np.kron(np.kron(I, U), I)
+state = U_full @ state</pre>
+        <p><b>O(4ⁿ) mỗi cổng.</b> Với 15 qubit, ma trận đầy đủ là 32768² số phức ≈ <b>17 GB</b>. Máy bạn sẽ treo.</p>
+      </div>
+      <div class="card good frag">
+        <h3>✓ Ghép cặp biên độ</h3>
+        <p>Cổng 1 qubit chỉ trộn các biên độ theo <b>từng cặp</b> — cặp chỉ khác nhau đúng ở bit <code>t</code>.</p>
+<pre class="code" data-lang="python">for i in ...:                 # với mọi i có bit t = 0
+    j = i + (1 &lt;&lt; t)
+    a, b = state[i], state[j]  # đọc ra TRƯỚC
+    state[i] = U[0,0]*a + U[0,1]*b
+    state[j] = U[1,0]*a + U[1,1]*b</pre>
+        <p><b>O(2ⁿ) mỗi cổng.</b> Đây là design principle của mọi simulator nghiêm túc, kể cả Aer.</p>
+      </div>
+    </div>
+
+    <div class="card info">
+      <h3>Vì sao chỉ cần ghép cặp — trực giác</h3>
+      <p>Cổng tác động lên qubit <code>t</code> <b>không quan tâm</b> các qubit khác đang thế nào. Với mỗi cấu hình cố định của những qubit còn lại, ta có đúng một cặp <span class="ket">|…0…⟩</span> / <span class="ket">|…1…⟩</span> — và cổng chỉ trộn hai biên độ đó với nhau bằng ma trận 2×2. Toàn bộ 2ⁿ biên độ chia thành 2ⁿ⁻¹ cặp độc lập.</p>
+    </div>
+
+    <div class="quiz">
+      <span class="q-tag">Quiz</span>
+      <p class="q-text">Test <code>test_moc2_khong_dung_ma_tran_day_du</code> áp H lên cả 15 qubit. Vì sao test này bắt được cách naive?</p>
+      <div class="opts">
+        <button class="opt">Vì cách naive cho kết quả sai</button>
+        <button class="opt" data-ok="1">Vì ma trận 32768×32768 tốn ~17 GB — máy hết RAM hoặc treo rất lâu</button>
+        <button class="opt">Vì np.kron không hỗ trợ quá 10 qubit</button>
+        <button class="opt">Vì H không giao hoán với chính nó</button>
+      </div>
+      <div class="why">Cách naive vẫn cho kết quả <b>đúng</b> — nó chỉ chậm và tốn bộ nhớ đến mức không dùng được. Test này là bài kiểm tra hiệu năng trá hình: nó ép bạn phải nghĩ ra ghép cặp thay vì chấp nhận bản chạy được nhưng vô dụng.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ NEW · ghép cặp biên độ, xem tận mắt ══════════════════════════════ -->
+<div class="slide" data-title="🔬 Ghép cặp biên độ · 3 qubit">
+  <div class="wrap wide">
+    <h2><span class="k">08</span> 🔬 Ghép cặp — nhìn thấy 4 cặp độc lập</h2>
+    <p>Với 3 qubit có 8 biên độ. Áp cổng lên <b>q₁</b> thì 8 biên độ đó chia thành <b>4 cặp</b>, mỗi cặp chỉ khác nhau ở bit 1. Cổng trộn từng cặp riêng, không cặp nào biết cặp nào.</p>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>4 cặp khi t = 1 (n = 3)</h3>
+        <div class="table-scroll">
+          <table class="t">
+            <tr><th>i (bit 1 = 0)</th><th>j = i + 2</th><th>hai trạng thái</th></tr>
+            <tr><td><code>0</code> = 000</td><td><code>2</code> = 010</td><td><span class="ket">|000⟩</span> ↔ <span class="ket">|010⟩</span></td></tr>
+            <tr><td><code>1</code> = 001</td><td><code>3</code> = 011</td><td><span class="ket">|001⟩</span> ↔ <span class="ket">|011⟩</span></td></tr>
+            <tr><td><code>4</code> = 100</td><td><code>6</code> = 110</td><td><span class="ket">|100⟩</span> ↔ <span class="ket">|110⟩</span></td></tr>
+            <tr><td><code>5</code> = 101</td><td><code>7</code> = 111</td><td><span class="ket">|101⟩</span> ↔ <span class="ket">|111⟩</span></td></tr>
+          </table>
+        </div>
+        <p class="tiny">Đúng 2³⁻¹ = 4 cặp. Vòng lặp của bạn chỉ cần duyệt i, bỏ qua mọi i có bit 1 đang bật.</p>
+      </div>
+      <div class="card good">
+        <h3>Vòng lặp đúng, viết một lần dùng mãi</h3>
+<pre class="code" data-lang="python">bit = 1 &lt;&lt; t
+for i in range(len(state)):
+    if i &amp; bit:          # nửa trên của cặp — bỏ qua
+        continue
+    j = i | bit
+    a, b = state[i], state[j]      # ĐỌC RA TRƯỚC
+    state[i] = U[0,0]*a + U[0,1]*b
+    state[j] = U[1,0]*a + U[1,1]*b</pre>
+        <p class="tiny"><b>Đọc ra trước</b> là bắt buộc: nếu ghi <code>state[i]</code> rồi mới dùng nó để tính <code>state[j]</code>, bạn đang dùng giá trị đã bị ghi đè. Đây là bug #1 của mốc 2.</p>
+      </div>
+    </div>
+
+    <div class="qlab" data-n="3" data-gates="H1" data-hide="hist,bloch" data-shots="512"
+         data-title="Áp cổng lên q₁ — 8 biên độ, 4 cặp"
+         data-goal="Bấm X0 trước rồi H1: chỉ cặp (001, 011) có biên độ, đúng như bảng bên trên. Thêm H2 xem 8 ô sáng lên thế nào."></div>
+
+    <div class="card info frag">
+      <h3>Cổng có điều khiển chỉ thêm đúng một dòng</h3>
+      <p>CNOT không cần thuật toán mới: vẫn ghép cặp theo bit <b>target</b>, chỉ thêm điều kiện bỏ qua những cặp mà bit <b>control</b> đang bằng 0.</p>
+<pre class="code" data-lang="python">if not (i &gt;&gt; c) &amp; 1:      # control = 0 → cặp này không đổi
+    continue</pre>
+      <p class="tiny">Toàn bộ Phase 3 (Rust) cũng chỉ là vòng lặp này, cộng thêm <code>rayon</code> để chạy song song các cặp — vì các cặp <b>độc lập</b> nên song song hoá là chuyện hiển nhiên.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 8 ══ -->
+<div class="slide" data-title="Mốc 3 · cổng 2 qubit">
+  <div class="wrap">
+    <h2><span class="k">09</span> Mốc 3 · Cổng 2 qubit và entanglement</h2>
+    <div class="grid-3">
+      <div class="card">
+        <h3>CNOT(c, t)</h3>
+        <p class="tiny">Hoán đổi <code>state[i]</code> ↔ <code>state[i lật bit t]</code>, chỉ với những <code>i</code> có bit <code>c</code> = 1.</p>
+        <p class="tiny">Điều kiện thêm "bit t = 0" để mỗi cặp chỉ đổi <b>một lần</b> — quên là hoán đổi hai lần thành ra không đổi gì.</p>
+      </div>
+      <div class="card">
+        <h3>CZ(c, t)</h3>
+        <p class="tiny">Nhân <code>−1</code> vào <code>state[i]</code> khi <b>cả</b> bit c và bit t đều bằng 1. Không hoán đổi gì cả.</p>
+        <p class="tiny">Đối xứng: <code>cz(a,b) == cz(b,a)</code>.</p>
+      </div>
+      <div class="card">
+        <h3>SWAP(a, b)</h3>
+        <p class="tiny">Ghép từ 3 cổng CNOT. Tự tìm thứ tự — gợi ý: cx(a,b), cx(b,a), cx(a,b).</p>
+      </div>
+    </div>
+
+    <div class="ex">
+      <div class="ex-head"><span class="ex-tag">Thực hành 1.2</span><span class="ex-title">Kiểm chứng bằng đẳng thức, không bằng mắt</span></div>
+      <div class="ex-body">
+        <p>Sau khi viết xong, test sẽ kiểm ba đẳng thức. Hiểu vì sao chúng đúng còn quan trọng hơn việc pass:</p>
+        <ul>
+          <li><code>CZ = H(t) · CNOT(c,t) · H(t)</code> — H đổi hệ quy chiếu giữa "lật bit" và "lật dấu"</li>
+          <li><code>SWAP · SWAP = I</code></li>
+          <li><code>H(0) · CNOT(0,1)</code> trên <span class="ket">|00⟩</span> → chỉ chỉ số 0 và 3 khác 0</li>
+        </ul>
+      </div>
+      <details class="reveal"><summary>Cách tự tay thấy entanglement</summary>
+        <div class="reveal-in">
+          <p>Sau khi có Bell state, thử tách nó thành tích của hai trạng thái 1-qubit: tìm α₀,β₀,α₁,β₁ sao cho tích tensor của chúng ra <code>[0.707, 0, 0, 0.707]</code>.</p>
+          <p>Bạn sẽ thấy hệ phương trình <b>vô nghiệm</b>: cần α₀·α₁ = 0.707 và α₀·β₁ = 0, tức α₀ = 0 hoặc β₁ = 0 — cả hai đều mâu thuẫn với ràng buộc còn lại. <b>Đó chính là định nghĩa của entanglement:</b> không tách được.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 9 ══ -->
+<div class="slide" data-title="Mốc 4 · đo lường">
+  <div class="wrap">
+    <h2><span class="k">10</span> Mốc 4 · Đo lường — chỗ dễ viết sai nhất</h2>
+    <div class="grid-2">
+      <div class="card">
+        <h3><code>sample()</code> — không phá trạng thái</h3>
+        <p>Mô phỏng việc <b>chạy lại mạch nhiều lần</b>. Lấy mẫu theo phân bố xác suất, state giữ nguyên. Đây là thứ tương ứng với <code>shots=1024</code> của Qiskit.</p>
+      </div>
+      <div class="card">
+        <h3><code>measure()</code> — có phá trạng thái</h3>
+        <p>Đo <b>một</b> qubit thật sự. Sau khi đo, mọi biên độ không khớp kết quả bị xoá về 0, phần còn lại phải <b>chuẩn hoá lại</b>.</p>
+      </div>
+    </div>
+
+    <div class="card warn">
+      <h3>Bước hay bị quên: chuẩn hoá lại</h3>
+      <p>Sau khi xoá nửa số biên độ, tổng xác suất không còn bằng 1. Phải chia phần còn lại cho <code>sqrt(p_nhánh_đã_chọn)</code>.</p>
+      <p>Quên bước này thì mọi phép đo <b>tiếp theo</b> đều sai — và bug sẽ hiện ra ở chỗ hoàn toàn không liên quan. Test <code>test_moc4_do_lai_ra_ket_qua_cu</code> bắt đúng lỗi này: đo lại qubit đã đo <b>phải</b> ra kết quả cũ 100%.</p>
+    </div>
+
+    <div class="quiz">
+      <span class="q-tag">Quiz</span>
+      <p class="q-text">Trạng thái Bell <span class="ket">|Φ⁺⟩ = <span class="frac"><span class="num">|00⟩ + |11⟩</span><span class="den">√2</span></span></span>. Bạn <code>measure(0)</code> và được kết quả 1. Đo tiếp qubit 1 sẽ ra gì?</p>
+      <div class="opts">
+        <button class="opt">50% ra 0, 50% ra 1 — chúng độc lập</button>
+        <button class="opt" data-ok="1">100% ra 1 — trạng thái đã sập về |11⟩</button>
+        <button class="opt">100% ra 0 — bảo toàn tổng</button>
+        <button class="opt">Không xác định được</button>
+      </div>
+      <div class="why">Đo qubit 0 ra 1 đã xoá nhánh <span class="ket">|00⟩</span>, chỉ còn <span class="ket">|11⟩</span> với biên độ 1 sau khi chuẩn hoá. Qubit 1 giờ hoàn toàn xác định. Nếu code của bạn ra 50/50 thì bạn chưa làm bước sụp đổ.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 10 ══ -->
+<div class="slide" data-title="Mốc 5 · kiểm chứng chéo">
+  <div class="wrap">
+    <h2><span class="k">11</span> Mốc 5 · Bài kiểm tra thật</h2>
+    <p>13 test cuối sinh <b>mạch ngẫu nhiên</b>, chạy song song trên simulator của bạn và trên Qiskit, rồi so từng biên độ với sai số <code>1e-10</code>.</p>
+<pre class="code" data-lang="python">lech = np.max(np.abs(Statevector(qc).data - np.asarray(sim.state)))
+assert lech &lt; 1e-10</pre>
+
+    <div class="card info">
+      <h3>Đọc độ lệch để đoán bệnh</h3>
+      <div class="table-scroll">
+        <table class="t">
+          <tr><th>Độ lệch</th><th>Nguyên nhân gần như chắc chắn</th></tr>
+          <tr><td><code>~1e-16</code></td><td>Đúng rồi — đó là sai số dấu phẩy động, không tránh được</td></tr>
+          <tr><td><code>~1e-1</code> trở lên</td><td>Sai quy ước endian, hoặc nhầm control/target</td></tr>
+          <tr><td>Chỉ lệch <b>dấu</b> hoặc <b>pha</b></td><td><code>rz</code> viết dạng <code>diag(1, e^{iθ})</code> — đổi sang dạng đối xứng</td></tr>
+          <tr><td>Đúng với 1 qubit, sai từ 2 qubit</td><td>CNOT đổi hai lần mỗi cặp (thiếu điều kiện bit t = 0)</td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="note"><b>Mốc tham chiếu:</b> bản làm đúng đạt sai số lớn nhất <code>3.7e-16</code> qua 200 mạch ngẫu nhiên tới 5 qubit. Nếu bạn ở cỡ đó là chuẩn.</div>
+  </div>
+</div>
+
+<!-- ══ 11 ══ -->
+<div class="slide" data-part="Luyện tập & nộp bài" data-title="Kata song song">
+  <div class="wrap">
+    <h2><span class="k">12</span> Kata chạy song song với việc code</h2>
+    <p>Đừng làm tuần tự "viết xong simulator rồi mới làm kata". Xen kẽ: viết mốc nào thì làm bậc kata tương ứng.</p>
+    <div class="table-scroll">
+      <table class="t">
+        <tr><th>Khi bạn đang làm</th><th>Làm kata bậc</th><th>Số bài</th><th>Vì sao khớp</th></tr>
+        <tr><td>Mốc 1 — ma trận cổng</td><td><b>Bậc 1</b> Toán nền</td><td>4</td><td>Số phức &amp; chuẩn hoá vector</td></tr>
+        <tr><td>Mốc 1–2 — cổng 1 qubit</td><td><b>Bậc 2</b> Qubit đầu tiên</td><td>21</td><td>Đúng những cổng bạn vừa viết</td></tr>
+        <tr><td>Mốc 3 — cổng 2 qubit</td><td><b>Bậc 3</b> Nhiều qubit</td><td>36</td><td>Tích tensor, CNOT, entanglement</td></tr>
+        <tr><td>Mốc 4 — đo lường</td><td><b>Bậc 4</b> Đo lường</td><td>31</td><td>Born rule, phân biệt trạng thái bằng đo</td></tr>
+      </table>
+    </div>
+    <div class="ex">
+      <div class="ex-head"><span class="ex-tag">Thực hành 1.3</span><span class="ex-title">Bố trí chỗ làm việc</span></div>
+      <div class="ex-body">
+        <p>Ba cửa sổ, mở suốt 2 tuần:</p>
+        <ul>
+          <li><b>VS Code</b> — <code>qsim/qsim.py</code> và file kata đang làm</li>
+          <li><b>Terminal 1</b> — <code>cd qsim &amp;&amp; pytest test_qsim.py -x -q</code></li>
+          <li><b>Terminal 2</b> — <code>cd katas &amp;&amp; python qk.py watch</code></li>
+        </ul>
+        <p class="tiny">Mục tiêu hết Phase 1: <b>39/39 test qsim xanh</b> và <b>92 kata</b> (hết Bậc 4).</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 12 ══ -->
+<div class="slide" data-title="Deliverable Phase 1">
+  <div class="wrap">
+    <h2><span class="k">13</span> Xong Phase 1 khi nào?</h2>
+    <div class="card pad-lg">
+      <div class="row" style="justify-content:space-between">
+        <h3>Tick khi xong — trình duyệt nhớ giúp bạn</h3>
+        <span data-check-count="#p1-check">0/4</span>
+      </div>
+      <ul class="check" id="p1-check">
+        <li><b>39/39 test</b> trong <code>qsim/test_qsim.py</code> xanh — <code>pytest test_qsim.py -q</code></li>
+        <li><b>Kata Bậc 1–4</b> xong (92 bài) — <code>python qk.py status</code></li>
+        <li><b>Push lên GitHub</b> repo <code>qsim-py</code>, README ghi rõ quy ước endian bạn dùng</li>
+        <li><b>Giải thích được</b> vì sao ghép cặp là O(2ⁿ) còn ma trận đầy đủ là O(4ⁿ)</li>
+      </ul>
+    </div>
+    <div class="card warn">
+      <h3>Tự kiểm tra — trả lời không nhìn code</h3>
+      <ul>
+        <li>Vì sao n qubit cần 2ⁿ biên độ chứ không phải 2n?</li>
+        <li>Trong <code>apply_1q</code>, vì sao phải đọc <code>a, b</code> ra biến tạm trước khi ghi?</li>
+        <li>Sau <code>measure()</code>, vì sao bắt buộc phải chuẩn hoá lại?</li>
+        <li>Cho một trạng thái 2 qubit bất kỳ, làm sao biết nó có entangled hay không?</li>
+      </ul>
+    </div>
+    <div class="row" style="justify-content:center;margin-top:.5rem">
+      <a class="btn" href="phase0.html" style="background:var(--surface);border:1px solid var(--line);color:var(--text-2);border-radius:99px;padding:.55rem 1.1rem">← Phase 0</a>
+      <a class="btn" href="index.html" style="background:var(--surface);border:1px solid var(--line);color:var(--text-2);border-radius:99px;padding:.55rem 1.1rem">⌂ Trang chủ</a>
+      <a class="btn" href="phase2.html" style="background:rgba(94,234,212,.14);border:1px solid var(--cyan-dim);color:var(--cyan);border-radius:99px;padding:.55rem 1.1rem">Phase 2 · 7 thuật toán →</a>
+    </div>
+  </div>
+</div>
+
+</div>
+<script src="assets/qlab.js"></script>
+<script src="assets/deck.js"></script>
+</body>
+</html>

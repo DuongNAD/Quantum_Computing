@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 4–5 — Chuyên sâu &amp; Hero · Quantum Zero→Hero</title>
+<link rel="stylesheet" href="assets/theme.css">
+</head>
+<body data-deck="phase45">
+<div class="deck">
+
+<!-- ══ 1 ══ -->
+<div class="slide" data-part="Mở đầu" data-title="Phase 4–5 — Chuyên sâu & Hero">
+  <div class="wrap hero">
+    <div class="orb">🎯</div>
+    <h1>Phase 4–5 · Chuyên sâu &amp; Hero</h1>
+    <p class="lead" style="max-width:680px">Chọn <em class="q">đúng một</em> nhánh, làm sâu. Rồi chuyển từ người học sang người đóng góp.</p>
+    <div class="row" style="justify-content:center">
+      <span class="chip violet">Tuần 10–14 + liên tục</span>
+      <span class="chip cyan">Kata Bậc 9 · 39 bài</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 2 ══ -->
+<div class="slide" data-title="Ba nhánh — chọn một">
+  <div class="wrap">
+    <h2><span class="k">01</span> Ba nhánh, chọn một, đừng học cả ba</h2>
+    <div class="grid-3">
+      <div class="card good">
+        <div class="row"><span class="chip green">Khuyến nghị</span></div>
+        <h3>A · Quantum Error Correction</h3>
+        <p class="tiny">Bài toán <b>hệ thống + thuật toán đồ thị + hiệu năng</b>, không phải bài toán vật lý. Đây là nơi 80% nỗ lực kỹ thuật thật của ngành đang đổ vào.</p>
+      </div>
+      <div class="card">
+        <h3>B · Quantum Machine Learning</h3>
+        <p class="tiny">Khớp trực tiếp với hồ sơ AI/ML. Nhưng đọc kỹ phần cảnh báo ở slide sau trước khi chọn.</p>
+      </div>
+      <div class="card">
+        <h3>C · Quantum Simulation</h3>
+        <p class="tiny">Ứng dụng có khả năng mang giá trị thật <b>sớm nhất</b>. Nhưng cần nền hoá lượng tử / vật lý chất rắn — tốn công nhất trên mỗi đơn vị kiến thức thu được.</p>
+      </div>
+    </div>
+    <div class="card warn">
+      <h3>Vì sao chỉ một</h3>
+      <p>Học cả ba = biết tên công cụ của cả ba, không làm được cái nào. Một dự án sâu có số liệu ăn đứt ba dự án tutorial. Bạn luôn có thể học nhánh khác sau — nền tảng Phase 1–3 dùng chung cho cả ba.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 3 ══ -->
+<div class="slide" data-part="Ba nhánh chuyên sâu" data-title="Nhánh A · QEC">
+  <div class="wrap">
+    <h2><span class="k">02</span> Nhánh A · Quantum Error Correction ⭐</h2>
+    <div class="grid-2">
+      <div class="card">
+        <h3>Vì sao hợp bạn</h3>
+        <p>Decoder là bài toán <b>minimum-weight perfect matching</b> — thuật toán đồ thị. Simulator là <b>code hiệu năng cao</b>. Đây đúng là bài toán hệ thống bạn đã quen, chỉ đổi domain.</p>
+        <p>Và nó ghép thẳng vào Phase 3: dự án cuối là <b>viết lại decoder bằng Rust</b>, benchmark với pymatching.</p>
+      </div>
+      <div class="card">
+        <h3>Công cụ</h3>
+        <ul>
+          <li><code>stim</code> — Clifford simulator của Craig Gidney. Nhanh kinh khủng, chạy được hàng triệu shot surface code</li>
+          <li><code>pymatching</code> — decoder MWPM, ghép trực tiếp với stim</li>
+        </ul>
+<pre class="code" data-lang="bash">pip install stim pymatching</pre>
+      </div>
+    </div>
+    <div class="card info">
+      <h3>Lộ trình QEC</h3>
+      <p><b>repetition code (3 qubit)</b> → <b>phase-flip code</b> → <b>Shor 9-qubit</b> → <b>surface code distance 3</b> → <b>distance 5</b> → <b>tự viết decoder</b></p>
+      <p class="tiny">Kata Bậc 9 có <code>QEC_BitFlipCode</code> (12 bài) — chính là bước đầu tiên. Làm hết trước khi chạm vào stim.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 4 ══ -->
+<div class="slide" data-title="Nhánh B · QML">
+  <div class="wrap">
+    <h2><span class="k">03</span> Nhánh B · Quantum Machine Learning</h2>
+    <div class="grid-2">
+      <div class="card">
+        <h3>Nội dung</h3>
+        <ul>
+          <li>Variational circuits, parameter-shift rule</li>
+          <li>Data encoding — chỗ quyết định thành bại</li>
+          <li>VQE, QAOA, quantum kernels</li>
+        </ul>
+        <p class="tiny">Công cụ: <code>pip install pennylane</code>, demos tại <code>pennylane.ai/qml</code>. Đây là lúc <b>duy nhất</b> trong lộ trình bạn cài framework thứ hai.</p>
+      </div>
+      <div class="card bad">
+        <h3>Nói thẳng trước khi bạn chọn nhánh này</h3>
+        <p>Tính đến 2026, QML <b>chưa</b> chứng minh được lợi thế thực tế so với ML cổ điển trên bài toán thật.</p>
+        <ul>
+          <li><b>Barren plateau</b> — gradient tiêu biến theo hàm mũ khi số qubit tăng — vẫn chưa có lời giải chung</li>
+          <li>Nhiều kết quả "quantum advantage" ban đầu đã <b>bị thuật toán cổ điển đuổi kịp</b></li>
+        </ul>
+        <p style="color:var(--text)">Học nhánh này <b>để hiểu và để nghiên cứu</b> thì tốt. Đừng học vì tin nó sắp thay thế PyTorch.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ NEW · mã sửa lỗi bit-flip, bấm được ══════════════════════════════ -->
+<div class="slide" data-title="🔬 Bit-flip code · tự tạo lỗi rồi tự thấy">
+  <div class="wrap wide">
+    <h2><span class="k">04</span> 🔬 Mã sửa lỗi nhỏ nhất — 3 qubit, bấm là hiểu</h2>
+    <p>Không định lý, không cú pháp. Mã bit-flip: sao chép thông tin của 1 qubit sang 3 qubit, rồi <b>bỏ phiếu đa số</b> khi có lỗi. Widget dưới đã mã hoá sẵn <span class="ket">|+⟩</span>.</p>
+
+    <div class="qlab" data-n="3" data-gates="H0,CX0-1,CX0-2" data-hide="bloch" data-shots="1024"
+         data-title="Mã hoá 1 qubit thành 3"
+         data-goal="Bước 1: chỉ |000⟩ và |111⟩ có biên độ — đó là trạng thái đã mã hoá. Bước 2: bấm X lên q1 (giả lập lỗi lật bit). Bây giờ chỉ còn |010⟩ và |101⟩. Đọc 3 bit rồi bỏ phiếu đa số: bit lẻ loi chính là qubit bị lỗi."></div>
+
+    <div class="grid-3">
+      <div class="card good frag">
+        <h3>Không lỗi</h3>
+        <p class="tiny">Chỉ ra <code>000</code> hoặc <code>111</code>. Ba bit luôn giống nhau → biết chắc là không có lỗi lật bit.</p>
+      </div>
+      <div class="card warn frag">
+        <h3>Lỗi trên q₁</h3>
+        <p class="tiny">Ra <code>010</code> hoặc <code>101</code>. Bit ở vị trí 1 luôn khác hai bit kia → <b>vị trí lỗi lộ ra ngay</b>, mà không cần biết trạng thái gốc là gì.</p>
+      </div>
+      <div class="card bad frag">
+        <h3>Lỗi trên hai qubit</h3>
+        <p class="tiny">Bỏ phiếu đa số ra kết quả <b>sai</b>. Mọi mã sửa lỗi đều có ngưỡng — vượt ngưỡng thì nó làm hại chứ không giúp.</p>
+      </div>
+    </div>
+
+    <div class="card info frag">
+      <h3>Chỗ mã lượng tử khác mã cổ điển — và cũng là chỗ khó</h3>
+      <p>Ở mã cổ điển bạn cứ đọc 3 bit rồi bỏ phiếu. Ở lượng tử, <b>đọc là phá huỷ</b> — đo 3 qubit là mất luôn chồng chập cần bảo vệ.</p>
+      <p>Lời giải: dùng thêm <b>qubit phụ (ancilla)</b> và đo <em class="q">so sánh</em> chứ không đo trực tiếp. Câu hỏi "q₀ và q₁ có giống nhau không?" trả lời được mà <b>không</b> tiết lộ q₀ là gì. Kết quả đó gọi là <b>syndrome</b>.</p>
+      <p class="tiny">Và bit-flip code chỉ chống được lỗi X. Chống cả X lẫn Z cần <b>9 qubit</b> (mã Shor). Chống lỗi tuỳ ý với ngưỡng chịu được thì cần <b>surface code</b> — hàng nghìn qubit vật lý cho một qubit logic. Đó là lý do cả ngành đang ở đâu hôm nay.</p>
+    </div>
+
+    <div class="notes">Đây là slide chuyển tiếp tốt nhất sang nhánh A. Ai bấm ra được "bit lẻ loi = vị trí lỗi" là đã có trực giác đúng về syndrome decoding.</div>
+  </div>
+</div>
+
+<!-- ══ 5 ══ -->
+<div class="slide" data-title="Kata Bậc 9">
+  <div class="wrap">
+    <h2><span class="k">05</span> Kata Bậc 9 — nghịch lý lượng tử &amp; sửa lỗi</h2>
+    <p>39 bài cuối cùng. Ba trò chơi đầu <b>chứng minh</b> lượng tử thật sự khác cổ điển — không phải bằng lời, bằng con số bạn tự tính ra.</p>
+    <div class="table-scroll">
+      <table class="t">
+        <tr><th>Chủ đề</th><th>Bài</th><th>Nội dung</th></tr>
+        <tr><td><code>CHSHGame</code></td><td>8</td><td>Chiến lược cổ điển tốt nhất thắng 75%. Chiến lược lượng tử thắng ~85.4%. Đây là <b>bất đẳng thức Bell</b> dưới dạng trò chơi — bạn tự tính ra con số đó.</td></tr>
+        <tr><td><code>GHZGame</code></td><td>7</td><td>Cổ điển thắng tối đa 75%, lượng tử thắng <b>100%</b>. Còn dứt khoát hơn CHSH.</td></tr>
+        <tr><td><code>MagicSquareGame</code></td><td>12</td><td>Bài toán bất khả thi về mặt cổ điển, giải được bằng lượng tử.</td></tr>
+        <tr><td><code>QEC_BitFlipCode</code></td><td>12</td><td>Viên gạch đầu tiên của error correction — mã sửa lỗi lật bit.</td></tr>
+      </table>
+    </div>
+    <div class="card info">
+      <h3>Vì sao để 3 trò chơi ở cuối</h3>
+      <p>Chúng cần bạn <b>thoải mái</b> với đo lường, entanglement và thay đổi cơ sở đo — tức toàn bộ Bậc 1–7. Làm sớm sẽ chỉ chép mạch. Làm đúng lúc này, chúng là phần thoả mãn nhất trong cả 350 bài.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 6 ══ -->
+<div class="slide" data-part="Phase 5 · Hero" data-title="Phase 5 · từ học sang đóng góp">
+  <div class="wrap">
+    <h2><span class="k">06</span> Phase 5 · "Hero" là 4 việc, không phải thêm khoá học</h2>
+    <div class="grid-2">
+      <div class="card">
+        <h3>1 · QGSS 2026 tự học</h3>
+        <p>Qiskit Global Summer School 2026 đã chạy 13–24/07/2026. Bạn lỡ đăng ký, nhưng lab public tại <code>github.com/qiskit-community/qgss-2026</code> và lecture được ghi hình.</p>
+        <p class="tiny">Làm hết lab — đây là nội dung cấp cao nhất còn miễn phí.</p>
+      </div>
+      <div class="card">
+        <h3>2 · Đóng góp open source</h3>
+        <ul>
+          <li><b>Qiskit</b> — issue nhãn <code>good first issue</code>, đặc biệt phần Rust trong <code>crates/</code></li>
+          <li><b>PennyLane</b> — nhận đóng góp demo</li>
+          <li><b>unitaryHACK</b> — hackathon tháng 6 hằng năm, có <b>bounty tiền thật</b> cho PR được merge. Đặt lịch nhắc tháng 5/2027.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>3 · Thi đấu</h3>
+        <p>IBM Quantum Challenge, hackathon quantum khu vực. Bạn đã có kinh nghiệm lead team — mảng này bạn biết cách chơi rồi.</p>
+      </div>
+      <div class="card">
+        <h3>4 · Đọc paper có chọn lọc</h3>
+        <p>Mỗi tuần <b>1</b> paper trên arXiv <code>quant-ph</code>, và <b>cài lại phần chính bằng code</b>.</p>
+        <p style="color:var(--text)">Không cài lại = không đọc.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 7 ══ -->
+<div class="slide" data-title="Sáu cái bẫy">
+  <div class="wrap wide">
+    <h2><span class="k">07</span> Sáu cái bẫy sẽ làm bạn bỏ cuộc</h2>
+    <div class="grid-2">
+      <div class="card bad"><h3>1 · Bắt đầu bằng đại số tuyến tính</h3><p class="tiny">Lý do #1 người ta bỏ. Code trước, toán khi bí.</p></div>
+      <div class="card bad"><h3>2 · Copy code trước 2024</h3><p class="tiny">Thấy <code>from qiskit import execute</code> → code đã chết từ Qiskit 1.0.</p></div>
+      <div class="card bad"><h3>3 · Học 3 framework song song</h3><p class="tiny">Qiskit trước. PennyLane chỉ khi tới Phase 4B.</p></div>
+      <div class="card bad"><h3>4 · Đốt quota QPU vào việc simulator làm được</h3><p class="tiny">10 phút/28 ngày để <b>quan sát nhiễu</b>, không phải để chạy thí nghiệm.</p></div>
+      <div class="card bad"><h3>5 · Tin hype</h3><p class="tiny">"Quantum sẽ phá RSA năm sau" — không. Shor cho RSA-2048 cần hàng triệu qubit vật lý có sửa lỗi.</p></div>
+      <div class="card bad"><h3>6 · Học một mình im lặng</h3><p class="tiny">Discord của Qiskit và forum PennyLane trả lời rất nhanh.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 8 ══ -->
+<div class="slide" data-title="Nói thẳng về nghề nghiệp">
+  <div class="wrap">
+    <h2><span class="k">08</span> Nói thẳng về mặt nghề nghiệp</h2>
+    <div class="card bad pad-lg">
+      <h3>Sự thật khó nghe</h3>
+      <p>Quantum computing năm 2026 vẫn là ngành <b>tiền-thương-mại</b>. Số vị trí quantum engineer toàn cầu rất nhỏ và phần lớn yêu cầu PhD vật lý hoặc CS.</p>
+      <p style="color:var(--text)">Lộ trình này <b>không</b> phải con đường ngắn tới việc làm. Nếu bạn học vì mục tiêu đó, hãy dừng lại và học thứ khác.</p>
+    </div>
+    <div class="grid-2">
+      <div class="card good">
+        <h3>Nhưng nó có giá trị thật · hướng 1</h3>
+        <p><b>Làm bạn khác biệt trong tuyển dụng Data &amp; AI.</b> Một simulator lượng tử viết bằng Rust có benchmark tử tế là bằng chứng năng lực mạnh hơn nhiều so với thêm một chứng chỉ. Nhà tuyển dụng không cần bạn biết quantum — họ cần bằng chứng bạn <em class="q">học được thứ khó và ship được sản phẩm</em>.</p>
+      </div>
+      <div class="card good">
+        <h3>Hướng 2 · Đặt cược sớm, chi phí thấp</h3>
+        <p>Nếu ngành cất cánh trong 5–10 năm, bạn đã ở trong. Nếu không, bạn vẫn giữ lại kỹ năng <b>Rust hiệu năng cao, tính toán số học, tư duy thuật toán</b> — những thứ có giá trị bất kể quantum đi về đâu.</p>
+      </div>
+    </div>
+    <div class="note">Học vì tò mò và vì thích những bài toán khó. Đó là lý do bền nhất — và cũng là lý do duy nhất đủ sức kéo bạn qua tuần thứ 7.</div>
+  </div>
+</div>
+
+<!-- ══ 9 ══ -->
+<div class="slide" data-title="Checklist tổng">
+  <div class="wrap">
+    <h2><span class="k">09</span> Checklist toàn lộ trình</h2>
+    <div class="card pad-lg">
+      <div class="row" style="justify-content:space-between">
+        <h3>Toàn bộ lộ trình — tick từng phase khi xong</h3>
+        <span data-check-count="#p45-check">0/6</span>
+      </div>
+      <ul class="check" id="p45-check">
+        <li><b>P0</b> (2h) — env chạy, Bell state 50/50, tài khoản IBM Quantum · kata <b>25</b></li>
+        <li><b>P1</b> (2 tuần) — <code>qsim.py</code> 39/39 test xanh, khớp qiskit-aer · kata <b>92</b></li>
+        <li><b>P2</b> (3 tuần) — 7 thuật toán × 2 bản + 1 lần chạy <code>ibm_kingston</code> có biểu đồ nhiễu · kata <b>211</b></li>
+        <li><b>P3</b> (4 tuần) — simulator Rust ≥ 26 qubit, có benchmark, có bài viết · kata <b>311</b></li>
+        <li><b>P4</b> (5 tuần) — 1 dự án chuyên sâu (khuyến nghị: QEC decoder bằng Rust) · kata <b>350</b></li>
+        <li><b>P5</b> (liên tục) — QGSS labs, PR đầu tiên vào Qiskit, unitaryHACK 2027</li>
+      </ul>
+    </div>
+    <div class="card info">
+      <h3>Nếu chỉ nhớ được một câu từ toàn bộ lộ trình</h3>
+      <p style="font-size:1.1rem;color:var(--text)">Lượng tử mạnh <b>không phải</b> vì thử mọi khả năng song song, mà vì <em class="q">sắp xếp cho các nhánh sai triệt tiêu nhau và nhánh đúng cộng dồn</em>.</p>
+      <p class="tiny">Mọi thuật toán trong 350 kata đều là một biến thể của câu đó.</p>
+    </div>
+    <div class="row" style="justify-content:center;margin-top:.5rem">
+      <a class="btn" href="phase3.html" style="background:var(--surface);border:1px solid var(--line);color:var(--text-2);border-radius:99px;padding:.55rem 1.1rem">← Phase 3</a>
+      <a class="btn" href="index.html" style="background:rgba(94,234,212,.14);border:1px solid var(--cyan-dim);color:var(--cyan);border-radius:99px;padding:.55rem 1.1rem">⌂ Trang chủ</a>
+    </div>
+  </div>
+</div>
+
+</div>
+<script src="assets/qlab.js"></script>
+<script src="assets/deck.js"></script>
+</body>
+</html>

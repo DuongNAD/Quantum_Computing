@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 3 — Simulator bằng Rust · Quantum Zero→Hero</title>
+<link rel="stylesheet" href="assets/theme.css">
+</head>
+<body data-deck="phase3">
+<div class="deck">
+
+<!-- ══ 1 ══ -->
+<div class="slide" data-part="Mở đầu" data-title="Phase 3 — Simulator bằng Rust">
+  <div class="wrap hero">
+    <div class="orb">🦀</div>
+    <h1>Phase 3 · Simulator bằng Rust</h1>
+    <p class="lead" style="max-width:700px">Phase này không ai bắt bạn làm. Nó là thứ <em class="q">tách bạn khỏi vài nghìn người</em> cũng "học Qiskit trên Coursera".</p>
+    <div class="row" style="justify-content:center">
+      <span class="chip violet">Tuần 6–9</span>
+      <span class="chip cyan">Mục tiêu ≥ 26 qubit</span>
+      <span class="chip amber">Kata Bậc 8 · 100 bài</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 2 ══ -->
+<div class="slide" data-title="Vì sao phase này đáng gấp đôi">
+  <div class="wrap">
+    <h2><span class="k">01</span> Vì sao đúng lúc này lại đáng làm</h2>
+    <div class="grid-2">
+      <div class="card good">
+        <h3>Qiskit đang được viết lại bằng Rust</h3>
+        <ul>
+          <li>v2.3 (01/2026) hoàn tất chuyển <code>ControlFlowOp</code> sang Rust — mảnh cuối cùng của core data model</li>
+          <li>v2.4 và v2.5 mở rộng <b>C API</b>: viết transpiler pass bằng C/Rust rồi nạp vào Qiskit dưới dạng compiled extension</li>
+        </ul>
+        <p style="color:var(--text)">Nghĩa là: người viết Rust tốt hiện đang là loại contributor mà <b>dự án quantum lớn nhất thế giới đang thiếu</b>.</p>
+      </div>
+      <div class="card info">
+        <h3>Giá trị nghề nghiệp thật</h3>
+        <p>Một simulator lượng tử viết bằng Rust có benchmark tử tế là bằng chứng năng lực kỹ thuật <b>mạnh hơn nhiều</b> so với thêm một chứng chỉ.</p>
+        <p>Nhà tuyển dụng Data/AI không cần bạn biết quantum — họ cần bằng chứng bạn <em class="q">học được thứ khó và ship được sản phẩm</em>. Phase này chính là bằng chứng đó.</p>
+      </div>
+    </div>
+    <div class="note"><b>Điều kiện vào:</b> Phase 1 đã xong (39/39 test xanh). Bạn cần bản NumPy chạy đúng để làm mốc đối chiếu — không có nó thì không debug nổi bản Rust.</div>
+  </div>
+</div>
+
+<!-- ══ 3 ══ -->
+<div class="slide" data-part="Thiết kế & thuật toán" data-title="Kiến trúc">
+  <div class="wrap">
+    <h2><span class="k">02</span> Kiến trúc gợi ý</h2>
+    <div class="grid-2">
+      <div class="card">
+        <h3>Cấu trúc dữ liệu</h3>
+<pre class="code" data-lang="rust">Vec&lt;Complex64&gt; độ dài 2^n
+
+// KHÔNG dùng ndarray cho state vector — thừa.
+// State vector là mảng 1 chiều phẳng, không cần
+// máy móc đa chiều.</pre>
+      </div>
+      <div class="card">
+        <h3>Crates cần dùng</h3>
+        <ul>
+          <li><code>num-complex</code> — kiểu Complex64</li>
+          <li><code>rayon</code> — song song hoá vòng lặp (tuần 8)</li>
+          <li><code>criterion</code> — benchmark tử tế, có thống kê</li>
+          <li><code>pyo3</code> + <code>maturin</code> — binding sang Python (tuần 9)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card warn">
+      <h3>Quy tắc bất di bất dịch của phase này</h3>
+      <p>Mỗi bước tối ưu <b>bắt buộc</b> phải kiểm chứng lại với <code>qsim.py</code> của Phase 1 hoặc với <code>qiskit-aer</code>. Tối ưu mà không kiểm chứng = viết bug nhanh hơn.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 4 ══ -->
+<div class="slide" data-title="⭐ Chìa khoá: pairwise indexing">
+  <div class="wrap wide">
+    <h2><span class="k">03</span> ⭐ Chìa khoá — đừng bao giờ dựng ma trận 2ⁿ×2ⁿ</h2>
+    <p>Bạn đã gặp ý tưởng này ở Phase 1. Ở Rust nó còn quan trọng hơn, vì đây là chỗ quyết định bạn dừng ở 12 qubit hay đi được tới 28.</p>
+<pre class="code" data-lang="rust">// áp cổng 1-qubit U lên qubit t:
+// cho mỗi i mà bit t của i bằng 0:
+//   let j = i | (1 &lt;&lt; t);
+//   let (a, b) = (state[i], state[j]);
+//   state[i] = U[0][0]*a + U[0][1]*b;
+//   state[j] = U[1][0]*a + U[1][1]*b;</pre>
+    <div class="grid-2">
+      <div class="card bad">
+        <h3>Ma trận đầy đủ</h3>
+        <p><b>O(4ⁿ)</b> mỗi cổng · bộ nhớ 2ⁿ×2ⁿ</p>
+        <p class="tiny">Trần thực tế: ~12 qubit</p>
+      </div>
+      <div class="card good">
+        <h3>Ghép cặp</h3>
+        <p><b>O(2ⁿ)</b> mỗi cổng · bộ nhớ 2ⁿ</p>
+        <p class="tiny">Trần thực tế: 26–28 qubit trên laptop</p>
+      </div>
+    </div>
+    <div class="note">Đây chính là design principle của <b>Spinoza</b> (<code>github.com/QuState/spinoza</code>, arXiv:2303.01493). <b>Đọc source của nó SAU KHI bạn tự nghĩ ra</b>, không phải trước — nếu đọc trước, bạn mất đúng phần giá trị nhất của phase này.</div>
+  </div>
+</div>
+
+<!-- ══ NEW · đặt mục tiêu bằng số ═══════════════════════════════════════ -->
+<div class="slide" data-title="Đặt mục tiêu bằng con số">
+  <div class="wrap wide">
+    <h2><span class="k">04</span> Đặt mục tiêu bằng con số, không bằng cảm giác</h2>
+    <p>"Viết simulator bằng Rust" là mục tiêu mơ hồ. Bốn con số dưới đây thì không — chúng là thứ bạn dán lên README và là thứ người đọc repo của bạn quan tâm.</p>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>Bốn con số phải đo được</h3>
+        <div class="steps-v">
+          <div class="sv"><span class="dot">1</span><div class="body">
+            <b>Trần số qubit</b>
+            <span class="tiny">Chạy được bao nhiêu qubit trước khi hết RAM? Mục tiêu ≥ 26 (16 GB RAM ≈ 30 qubit lý thuyết, thực tế thấp hơn vì bản sao tạm).</span>
+          </div></div>
+          <div class="sv"><span class="dot">2</span><div class="body">
+            <b>Thời gian một cổng H trên 24 qubit</b>
+            <span class="tiny">Con số so sánh được giữa mọi phiên bản của bạn. Đo bằng <code>criterion</code>, không bằng <code>Instant::now()</code>.</span>
+          </div></div>
+          <div class="sv"><span class="dot">3</span><div class="body">
+            <b>Hệ số tăng tốc khi bật rayon</b>
+            <span class="tiny">Máy 8 nhân mà chỉ nhanh 1.4× thì bạn đang bị giới hạn băng thông bộ nhớ, không phải CPU — và đó là một phát hiện đáng viết vào bài.</span>
+          </div></div>
+          <div class="sv"><span class="dot">4</span><div class="body">
+            <b>Tỉ lệ so với qiskit-aer</b>
+            <span class="tiny">Chậm hơn 3× là kết quả bình thường và trung thực. Nhanh hơn Aer thì hãy kiểm tra lại xem có đang so sai không.</span>
+          </div></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Hình dung mức chênh lệch</h3>
+        <p class="tiny">Một cổng H trên 24 qubit (16.7 triệu biên độ) — số minh hoạ, máy bạn sẽ khác:</p>
+        <div class="bars">
+          <div class="b"><span class="k">naive</span><span class="track"><span class="fill" data-w="100"></span></span><span class="v">≫ 1 phút</span></div>
+          <div class="b"><span class="k">pair</span><span class="track"><span class="fill" data-w="26"></span></span><span class="v">~210 ms</span></div>
+          <div class="b"><span class="k">rayon</span><span class="track"><span class="fill" data-w="9"></span></span><span class="v">~62 ms</span></div>
+          <div class="b"><span class="k">aer</span><span class="track"><span class="fill" data-w="5"></span></span><span class="v">~28 ms</span></div>
+        </div>
+        <p class="tiny" style="margin-top:.5rem"><b>Đọc biểu đồ này thế nào:</b> bước nhảy lớn nhất <em class="q">không</em> phải từ Rust hay từ song song hoá — nó đến từ việc đổi thuật toán (naive → ghép cặp). Đây là bài học chuyển được sang mọi lĩnh vực khác: chọn đúng thuật toán ăn đứt mọi micro-optimization.</p>
+      </div>
+    </div>
+
+    <div class="card warn frag">
+      <h3>Ba cái bẫy benchmark làm số của bạn vô nghĩa</h3>
+      <ul>
+        <li><b>Đo bản debug.</b> Rust debug chậm hơn release 10–50×. Luôn <code>cargo bench</code> hoặc <code>--release</code>.</li>
+        <li><b>Quên warm-up.</b> Lần chạy đầu tốn thời gian cấp phát và làm nóng cache. <code>criterion</code> lo giúp bạn chuyện này.</li>
+        <li><b>So sai đơn vị công việc.</b> Aer transpile mạch trước khi chạy; nếu bạn tính cả thời gian transpile vào thì đang so táo với cam.</li>
+      </ul>
+    </div>
+
+    <div class="notes">Slide này tồn tại vì "viết simulator Rust" thường chết ở chỗ không biết khi nào là xong. Bốn con số biến nó thành việc có điểm dừng.</div>
+  </div>
+</div>
+
+<!-- ══ 5 ══ -->
+<div class="slide" data-part="Thực thi & nộp bài" data-title="Lộ trình 4 tuần">
+  <div class="wrap wide">
+    <h2><span class="k">05</span> Bốn tuần, bốn mốc</h2>
+    <div class="table-scroll">
+      <table class="t">
+        <tr><th>Tuần</th><th>Mục tiêu</th><th>Trần qubit</th><th>Kiểm chứng</th></tr>
+        <tr><td><b>6</b></td><td>Naive — dựng ma trận đầy đủ, cho chạy được đã</td><td>~12</td><td>Khớp <code>qsim.py</code> của bạn</td></tr>
+        <tr><td><b>7</b></td><td>Pairwise indexing</td><td>22–24</td><td>Khớp <code>qiskit-aer</code></td></tr>
+        <tr><td><b>8</b></td><td><code>rayon</code> song song hoá vòng lặp cặp</td><td>26–28</td><td>Benchmark bằng <code>criterion</code></td></tr>
+        <tr><td><b>9</b></td><td>Binding Python bằng <code>pyo3</code> + <code>maturin</code></td><td>—</td><td>Benchmark đối đầu với <code>qiskit-aer</code></td></tr>
+      </table>
+    </div>
+    <div class="card warn">
+      <h3>Vì sao tuần 6 lại cố tình viết bản chậm?</h3>
+      <p>Để bạn <b>đo được</b> mức cải thiện ở tuần 7. Không có mốc so sánh thì "nhanh hơn" chỉ là cảm giác. Bản naive tuần 6 chính là baseline cho biểu đồ benchmark — thứ recruiter sẽ nhìn vào.</p>
+    </div>
+    <div class="ex">
+      <div class="ex-head"><span class="ex-tag">Thực hành 3.1</span><span class="ex-title">Ghi số liệu từ tuần 6</span></div>
+      <div class="ex-body">
+        <p>Ngay từ tuần 6, mỗi lần chạy hãy ghi lại: số qubit, số cổng, thời gian, RAM đỉnh. Vào một file CSV.</p>
+        <p>Cuối tuần 9 bạn sẽ có sẵn dữ liệu để vẽ biểu đồ, thay vì phải chạy lại tất cả.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 6 ══ -->
+<div class="slide" data-title="Hệ sinh thái Rust quantum">
+  <div class="wrap">
+    <h2><span class="k">06</span> Đọc để tham chiếu — đừng copy</h2>
+    <div class="grid-2">
+      <div class="card">
+        <h3>spinoza</h3>
+        <p class="tiny"><code>QuState/spinoza</code> — state-vector thuần Rust, rất nhanh, kèm paper. Gần nhất với thứ bạn đang viết.</p>
+      </div>
+      <div class="card">
+        <h3>roqoqo / qoqo</h3>
+        <p class="tiny">HQS Quantum Simulations — toolkit đầy đủ, có backend QuEST. Xem cách họ thiết kế API.</p>
+      </div>
+      <div class="card">
+        <h3>RustQIP</h3>
+        <p class="tiny"><code>Renmusxd/RustQIP</code> — tận dụng borrow checker để <b>enforce định lý no-cloning ngay ở mức kiểu dữ liệu</b>. Rất thú vị về mặt thiết kế.</p>
+      </div>
+      <div class="card">
+        <h3>qasmsim</h3>
+        <p class="tiny">Interpreter OpenQASM bằng Rust. Đọc nếu bạn muốn thêm phần parse mạch.</p>
+      </div>
+      <div class="card">
+        <h3>Qiskit <code>crates/</code></h3>
+        <p class="tiny"><code>github.com/Qiskit/qiskit</code> — production code trông thế nào. Cũng là nơi bạn sẽ gửi PR đầu tiên ở Phase 5.</p>
+      </div>
+      <div class="card">
+        <h3>arewequantumyet.github.io</h3>
+        <p class="tiny">Index tổng hợp hệ sinh thái Rust quantum.</p>
+      </div>
+    </div>
+    <div class="note"><b>Thứ tự đọc:</b> tự viết xong tuần 7 → đọc spinoza → so sánh cách mình làm với cách họ làm → viết lại phần nào thấy mình dở hơn. Đọc trước khi tự nghĩ là cách nhanh nhất để không học được gì.</div>
+  </div>
+</div>
+
+<!-- ══ 7 ══ -->
+<div class="slide" data-title="Kata Bậc 8 song song">
+  <div class="wrap">
+    <h2><span class="k">07</span> Kata Bậc 8 — luyện dựng mạch lớn</h2>
+    <p>Bậc 8 (100 bài) là bậc rèn <b>kỹ năng dựng mạch</b>, không phải học khái niệm mới. Rất hợp để làm xen kẽ khi đang chờ <code>cargo build</code>.</p>
+    <div class="table-scroll">
+      <table class="t">
+        <tr><th>Chủ đề</th><th>Bài</th><th>Vì sao hợp Phase 3</th></tr>
+        <tr><td><code>TruthTables</code></td><td>10</td><td>Biểu diễn hàm boolean — nền cho oracle lớn</td></tr>
+        <tr><td><code>UnitaryPatterns</code></td><td>18</td><td>Nghĩ theo <b>ma trận</b> thay vì theo cổng — đúng góc nhìn của người viết simulator</td></tr>
+        <tr><td><code>DistinguishUnitaries</code></td><td>15</td><td>Nhận diện cổng qua tác động của nó</td></tr>
+        <tr><td><code>RippleCarryAdder</code></td><td>23</td><td>Mạch lớn nhất bộ — test hiệu năng simulator của bạn rất tốt</td></tr>
+        <tr><td><code>GraphColoring</code> · <code>BoundedKnapsack</code></td><td>34</td><td>Ứng dụng thật của Grover trên bài toán tổ hợp</td></tr>
+      </table>
+    </div>
+    <div class="ex">
+      <div class="ex-head"><span class="ex-tag">Thực hành 3.2</span><span class="ex-title">Dùng kata làm bộ test cho simulator Rust</span><span class="chip">nâng cao</span></div>
+      <div class="ex-body">
+        <p>Sau khi có binding <code>pyo3</code> ở tuần 9: lấy các mạch trong <code>RippleCarryAdder</code> chạy trên simulator Rust của bạn và so với Qiskit.</p>
+        <p>Đây là bộ test tích hợp <b>miễn phí, đã kiểm chứng</b> — mạnh hơn nhiều so với vài mạch bạn tự nghĩ ra.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 8 ══ -->
+<div class="slide" data-title="Deliverable Phase 3">
+  <div class="wrap">
+    <h2><span class="k">08</span> Deliverable — thứ recruiter thật sự click vào</h2>
+    <div class="card pad-lg">
+      <div class="row" style="justify-content:space-between">
+        <h3>Tick khi xong — trình duyệt nhớ giúp bạn</h3>
+        <span data-check-count="#p3-check">0/5</span>
+      </div>
+      <ul class="check" id="p3-check">
+        <li><b>Repo Rust public</b> — simulator chạy được ≥ 26 qubit</li>
+        <li><b>README có biểu đồ benchmark</b> — naive vs pairwise vs rayon vs qiskit-aer</li>
+        <li><b>Binding Python</b> qua <code>pyo3</code> + <code>maturin</code>, cài được bằng <code>pip install</code></li>
+        <li><b>Một bài viết ngắn</b>: "Tôi viết quantum simulator bằng Rust — nhanh hơn/chậm hơn Aer bao nhiêu và vì sao"</li>
+        <li><b>Kata Bậc 8</b> xong (100 bài) → tổng <b>311/350</b></li>
+      </ul>
+    </div>
+    <div class="card info">
+      <h3>Về bài viết — đừng bỏ qua</h3>
+      <p>Nếu simulator của bạn <b>chậm hơn</b> Aer, hãy viết đúng như thế và giải thích vì sao (Aer có SIMD, có nhiều năm tối ưu, có cả backend chuyên biệt). Một bài viết trung thực phân tích được điểm yếu của chính mình gây ấn tượng <em class="q">mạnh hơn</em> một con số đẹp không giải thích được.</p>
+    </div>
+    <div class="row" style="justify-content:center;margin-top:.5rem">
+      <a class="btn" href="phase2.html" style="background:var(--surface);border:1px solid var(--line);color:var(--text-2);border-radius:99px;padding:.55rem 1.1rem">← Phase 2</a>
+      <a class="btn" href="index.html" style="background:var(--surface);border:1px solid var(--line);color:var(--text-2);border-radius:99px;padding:.55rem 1.1rem">⌂ Trang chủ</a>
+      <a class="btn" href="phase4_5.html" style="background:rgba(94,234,212,.14);border:1px solid var(--cyan-dim);color:var(--cyan);border-radius:99px;padding:.55rem 1.1rem">Phase 4–5 →</a>
+    </div>
+  </div>
+</div>
+
+</div>
+<script src="assets/qlab.js"></script>
+<script src="assets/deck.js"></script>
+</body>
+</html>

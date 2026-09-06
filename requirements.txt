@@ -1,0 +1,24 @@
+# Môi trường Quantum Zero→Hero — Python 3.11+
+# Cài lại từ đầu:
+#   python3.11 -m venv .venv && source .venv/bin/activate
+#   pip install -r requirements.txt
+
+qiskit==2.5.1
+qiskit-aer==0.17.2
+qiskit-ibm-runtime==0.48.0
+qiskit-qasm3-import==0.6.0
+
+numpy>=2.0
+scipy>=1.14
+matplotlib>=3.9
+pylatexenc>=2.10          # để qc.draw("mpl") vẽ được ký hiệu toán
+
+pytest>=8                 # chấm bài qsim/ và katas/
+jupyterlab>=4             # khi cần notebook
+
+# Phase 4B (Quantum Machine Learning) — chỉ cài khi tới đó
+# pennylane>=0.40
+
+# Phase 4A (Quantum Error Correction) — chỉ cài khi tới đó
+# stim
+# pymatching
