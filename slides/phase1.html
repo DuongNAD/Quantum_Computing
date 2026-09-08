@@ -285,6 +285,14 @@ for i in range(len(state)):
          data-title="Áp cổng lên q₁ — 8 biên độ, 4 cặp"
          data-goal="Bấm X0 trước rồi H1: chỉ cặp (001, 011) có biên độ, đúng như bảng bên trên. Thêm H2 xem 8 ô sáng lên thế nào."></div>
 
+    <div style="margin-top:0.8rem">
+      <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:0.4rem">
+        <span class="eyebrow" style="color:var(--cyan)">⚡ Bàn Mổ Ghép Cặp Tương Tác · Tự bấm đổi số qubit &amp; xem các cặp độc lập</span>
+        <a class="tiny" href="practice.html#pairwise" target="_blank" style="color:var(--cyan);text-decoration:none">Mở phòng luyện tập đầy đủ ↗</a>
+      </div>
+      <div id="pairwise-lab-mount"></div>
+    </div>
+
     <div class="card info frag">
       <h3>Cổng có điều khiển chỉ thêm đúng một dòng</h3>
       <p>CNOT không cần thuật toán mới: vẫn ghép cặp theo bit <b>target</b>, chỉ thêm điều kiện bỏ qua những cặp mà bit <b>control</b> đang bằng 0.</p>
@@ -459,6 +467,7 @@ assert lech &lt; 1e-10</pre>
 
 </div>
 <script src="assets/qlab.js"></script>
+<script src="assets/practice_lab.js"></script>
 <script src="assets/deck.js"></script>
 </body>
 </html>

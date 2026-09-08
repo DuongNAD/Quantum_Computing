@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phòng Luyện Tập Tương Tác & Thử Thách Lượng Tử · Zero→Hero</title>
+<link rel="stylesheet" href="assets/theme.css">
+<style>
+  html, body { height: auto; min-height: 100%; overflow: visible; }
+  body { overflow-x: hidden; background: var(--bg); color: var(--text); }
+  .practice-page {
+    max-width: 1200px; margin: 0 auto;
+    padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1rem, 3vw, 2rem) 5rem;
+    display: grid; gap: 1.8rem;
+  }
+  .prac-header {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid var(--line-soft);
+    padding-bottom: 1.2rem;
+  }
+  .prac-header-left { display: grid; gap: 0.35rem; }
+  .prac-header-left h1 { font-size: clamp(1.6rem, 3.5vw, 2.3rem); }
+  .prac-nav-links { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .prac-nav-links a {
+    text-decoration: none; font-size: 0.82rem; font-weight: 600;
+    padding: 0.35rem 0.85rem; border-radius: 99px;
+    background: var(--surface); border: 1px solid var(--line); color: var(--text-2);
+    transition: 0.15s;
+  }
+  .prac-nav-links a:hover { color: var(--cyan); border-color: var(--cyan-dim); }
+
+  /* Tab Bar */
+  .prac-tabs {
+    display: flex; gap: 0.45rem; overflow-x: auto; padding-bottom: 0.3rem;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .prac-tab-btn {
+    font: inherit; font-size: 0.84rem; font-weight: 600;
+    padding: 0.55rem 1rem; border-radius: var(--r-sm) var(--r-sm) 0 0;
+    background: var(--surface); border: 1px solid var(--line-soft); border-bottom: 0;
+    color: var(--text-2); cursor: pointer; transition: 0.14s; white-space: nowrap;
+    display: flex; align-items: center; gap: 0.4rem;
+  }
+  .prac-tab-btn:hover { color: var(--text); background: var(--surface-2); }
+  .prac-tab-btn.active {
+    color: var(--bg); background: var(--cyan); border-color: var(--cyan);
+  }
+
+  /* Pane */
+  .prac-pane { display: none; }
+  .prac-pane.active { display: grid; gap: 1.5rem; animation: fadeIn 0.2s ease-out; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+  /* Challenge Layout */
+  .ch-layout {
+    display: grid; grid-template-columns: minmax(260px, 310px) 1fr;
+    gap: 1.5rem; align-items: start;
+  }
+  @media (max-width: 860px) {
+    .ch-layout { grid-template-columns: 1fr; }
+  }
+  .ch-sidebar {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--r); padding: 1rem; display: grid; gap: 0.75rem;
+  }
+  .ch-sidebar-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-bottom: 0.5rem; border-bottom: 1px solid var(--line-soft);
+  }
+  .ch-sidebar-list { display: grid; gap: 0.35rem; max-height: 620px; overflow-y: auto; }
+  .ch-item-btn {
+    font: inherit; text-align: left; width: 100%;
+    padding: 0.5rem 0.65rem; border-radius: var(--r-sm);
+    background: transparent; border: 1px solid transparent;
+    color: var(--text-2); cursor: pointer; display: flex; align-items: center; gap: 0.65rem;
+    transition: 0.12s;
+  }
+  .ch-item-btn:hover { background: var(--surface-2); color: var(--text); }
+  .ch-item-btn.active {
+    background: rgba(94, 234, 212, 0.12); border-color: var(--cyan-dim); color: #ffffff;
+  }
+  .ch-item-btn.done .ch-dot {
+    background: var(--green); color: var(--bg); font-weight: 800;
+  }
+  .ch-dot {
+    width: 1.45rem; height: 1.45rem; border-radius: 50%;
+    background: var(--surface-2); border: 1px solid var(--line);
+    font-size: 0.72rem; font-family: var(--mono);
+    display: grid; place-items: center; flex-shrink: 0; color: var(--text-3);
+  }
+  .ch-item-info { display: grid; gap: 0.1rem; overflow: hidden; }
+  .ch-item-t { font-size: 0.82rem; font-weight: 600; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
+  .ch-item-sub { font-size: 0.7rem; color: var(--text-3); }
+
+  .ch-main { display: grid; gap: 1.1rem; }
+  .ch-header-card {
+    background: linear-gradient(180deg, rgba(94,234,212,.08), rgba(94,234,212,.02));
+    border: 1px solid rgba(94,234,212,.3); border-radius: var(--r); padding: 1.2rem 1.4rem;
+    display: grid; gap: 0.6rem;
+  }
+  .ch-header-row { display: flex; align-items: center; justify-content: space-between; gap: 0.8rem; flex-wrap: wrap; }
+  .ch-target-box {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: rgba(0,0,0,0.35); padding: 0.35rem 0.8rem; border-radius: var(--r-sm);
+    border: 1px solid var(--line-soft); font-family: var(--mono); font-size: 0.9rem;
+    color: var(--cyan);
+  }
+  .ch-nav-btns { display: flex; gap: 0.4rem; }
+
+  /* Meter */
+  .ch-meter-wrap {
+    display: grid; gap: 0.3rem; background: rgba(0,0,0,0.25);
+    padding: 0.6rem 0.8rem; border-radius: var(--r-sm); border: 1px solid var(--line-soft);
+  }
+  .ch-meter-head { display: flex; justify-content: space-between; font-size: 0.78rem; }
+  .ch-track { height: 7px; background: var(--surface-2); border-radius: 99px; overflow: hidden; }
+  .ch-fill { height: 100%; background: linear-gradient(90deg, var(--cyan), var(--green)); width: 0%; transition: width 0.3s ease; }
+
+  .ch-actions-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+  .ch-hint-box {
+    display: none; background: rgba(251,191,36,.08); border: 1px solid var(--amber);
+    border-radius: var(--r-sm); padding: 0.8rem 1rem; font-size: 0.84rem; line-height: 1.5;
+  }
+  .ch-hint-line { padding: 0.2rem 0; color: #fde68a; }
+  .ch-sol-line { padding-top: 0.4rem; border-top: 1px dashed rgba(251,191,36,.4); margin-top: 0.4rem; color: var(--cyan); }
+  .ch-result-card {
+    display: none; border-radius: var(--r); padding: 1.1rem 1.3rem; line-height: 1.5;
+  }
+  .ch-result-card.success {
+    background: rgba(74, 222, 128, 0.1); border: 1px solid var(--green); color: #bbf7d0;
+  }
+  .ch-result-card.fail {
+    background: rgba(244, 63, 94, 0.1); border: 1px solid var(--rose); color: #fecdd3;
+  }
+  .ch-res-head { font-size: 1rem; margin-bottom: 0.4rem; }
+  .ch-res-body { font-size: 0.86rem; margin-bottom: 0.8rem; }
+  .ch-res-nav { display: flex; justify-content: flex-end; }
+
+  /* Bloch Module */
+  .bloch-grid {
+    display: grid; grid-template-columns: minmax(320px, 1.2fr) 1fr;
+    gap: 1.5rem; align-items: start;
+  }
+  @media (max-width: 860px) { .bloch-grid { grid-template-columns: 1fr; } }
+  .bloch-canvas-card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--r); padding: 1rem; display: grid; gap: 0.7rem; text-align: center;
+  }
+  .bloch-canvas-card canvas { width: 100%; border-radius: var(--r-sm); background: #030408; cursor: grab; }
+  .bloch-canvas-card canvas:active { cursor: grabbing; }
+  .bloch-tools-card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--r); padding: 1.2rem; display: grid; gap: 1rem;
+  }
+  .bloch-gate-palette { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+
+  /* Pairwise Module */
+  .pw-controls {
+    display: flex; gap: 1.2rem; flex-wrap: wrap; align-items: center;
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--r); padding: 0.8rem 1.1rem;
+  }
+  .pw-control-group { display: flex; gap: 0.35rem; align-items: center; flex-wrap: wrap; }
+  .pw-summary-banner {
+    background: rgba(94,234,212,.08); border: 1px solid var(--cyan-dim);
+    border-radius: var(--r-sm); padding: 0.75rem 1rem; font-size: 0.88rem; line-height: 1.5;
+  }
+  .pw-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 0.9rem;
+  }
+  .pw-card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--r); padding: 0.9rem 1.05rem; display: grid; gap: 0.55rem;
+    transition: 0.15s;
+  }
+  .pw-card.active-pair { border-color: rgba(94,234,212,.4); background: rgba(94,234,212,.03); }
+  .pw-card.skipped-pair { opacity: 0.55; }
+  .pw-card-head { display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; }
+  .pw-pair-badge { font-weight: 700; color: var(--cyan); }
+  .pw-status-badge { font-size: 0.72rem; color: var(--text-3); font-family: var(--mono); }
+  .pw-indices {
+    display: flex; justify-content: space-around; align-items: center;
+    background: #050711; padding: 0.5rem; border-radius: var(--r-sm); border: 1px solid var(--line-soft);
+  }
+  .pw-idx-item { text-align: center; display: grid; gap: 0.1rem; }
+  .pw-idx-no { font-family: var(--mono); font-size: 0.78rem; color: var(--text-3); }
+  .pw-ket-label { font-family: var(--mono); font-weight: 700; font-size: 0.95rem; color: var(--text); }
+  .pw-bit-hl { font-size: 0.68rem; color: var(--cyan); }
+  .pw-arrow { font-size: 1.1rem; color: var(--cyan-dim); }
+  .pw-formula {
+    font-size: 0.72rem; font-family: var(--mono); color: var(--text-3);
+    background: rgba(0,0,0,0.3); padding: 0.4rem 0.6rem; border-radius: 4px; line-height: 1.4;
+  }
+
+  /* Grover Module */
+  .grover-layout {
+    display: grid; grid-template-columns: minmax(320px, 1.4fr) 1fr;
+    gap: 1.5rem; align-items: start;
+  }
+  @media (max-width: 860px) { .grover-layout { grid-template-columns: 1fr; } }
+  .grover-card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--r); padding: 1.2rem; display: grid; gap: 0.8rem;
+  }
+  .grover-card canvas { width: 100%; border-radius: var(--r-sm); background: #04050d; }
+
+  /* QEC Module */
+  .qec-station { display: grid; gap: 1rem; }
+  .qec-step-card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--r); padding: 1rem 1.2rem; display: grid; gap: 0.65rem;
+  }
+  .qec-qubit-row { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+  .qec-qubit-chip {
+    flex: 1; min-width: 140px; padding: 0.65rem 0.85rem; border-radius: var(--r-sm);
+    background: rgba(0,0,0,0.3); border: 1px solid var(--line-soft);
+    display: grid; gap: 0.2rem; font-size: 0.82rem;
+  }
+  .qec-qubit-chip.c-ok { border-color: rgba(74, 222, 128, 0.4); }
+  .qec-qubit-chip.c-err { border-color: var(--rose); background: rgba(244, 63, 94, 0.12); color: #fca5a5; }
+  .qec-qubit-chip.c-fixed { border-color: var(--cyan); background: rgba(94, 234, 212, 0.12); color: #5eead4; }
+  .qec-btn-row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .qec-syn-val { font-family: var(--mono); font-size: 0.95rem; color: var(--amber); margin-left: 0.8rem; }
+  .qec-diagnosis {
+    background: rgba(0,0,0,0.35); border: 1px solid var(--line);
+    border-radius: var(--r-sm); padding: 0.65rem 0.85rem; font-size: 0.85rem;
+    display: flex; align-items: center; flex-wrap: wrap; gap: 0.8rem;
+  }
+  .qec-success-box {
+    background: rgba(74, 222, 128, 0.15); border: 1px solid var(--green);
+    border-radius: var(--r-sm); padding: 0.75rem 1rem; color: #86efac; font-size: 0.85rem;
+  }
+
+  /* CHSH Module */
+  .chsh-box { display: grid; gap: 1rem; }
+  .chsh-strat-sel { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .chsh-score-board {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0.8rem;
+  }
+  .chsh-metric {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--r); padding: 0.85rem 1rem; display: grid; gap: 0.25rem;
+  }
+  .chsh-lbl { font-size: 0.74rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; }
+  .chsh-num { font-size: 1.5rem; font-weight: 800; font-family: var(--mono); color: var(--text); }
+  .chsh-num.highlight { color: var(--cyan); }
+  .chsh-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+  .chsh-table {
+    background: #050711; border: 1px solid var(--line-soft);
+    border-radius: var(--r); overflow: hidden; display: grid; font-size: 0.8rem;
+  }
+  .chsh-th, .chsh-tr {
+    display: grid; grid-template-columns: 4rem 1fr 1fr 1.3fr 5.5rem;
+    padding: 0.55rem 0.85rem; align-items: center; gap: 0.5rem;
+  }
+  .chsh-th { background: rgba(255,255,255,0.04); font-weight: 700; color: var(--text-3); font-size: 0.74rem; }
+  .chsh-tr { border-top: 1px solid var(--line-soft); }
+  .chsh-tr.win { background: rgba(74, 222, 128, 0.04); color: #86efac; }
+  .chsh-tr.lose { background: rgba(244, 63, 94, 0.04); color: #fda4af; }
+</style>
+</head>
+<body>
+<div class="practice-page">
+
+  <!-- Header -->
+  <header class="prac-header">
+    <div class="prac-header-left">
+      <div class="row"><span class="chip cyan">Phòng Thí Nghiệm & Luyện Tập</span><span class="chip">Tương Tác 100%</span></div>
+      <h1>Phòng Thực Hành Lượng Tử</h1>
+      <p class="tiny" style="color:var(--text-3)">Chạy simulator trực tiếp trên trình duyệt · Tự tay bấm mạch, kiểm chứng lý thuyết & thử thách bản thân.</p>
+    </div>
+    <div class="prac-nav-links">
+      <a href="index.html">⌂ Trang Chủ</a>
+      <a href="phase0.html">Phase 0</a>
+      <a href="phase1.html">Phase 1</a>
+      <a href="phase2.html">Phase 2</a>
+      <a href="phase3.html">Phase 3</a>
+      <a href="phase4_5.html">Phase 4–5</a>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <div class="prac-tabs">
+    <button onclick="switchPracticeTab('challenges')" id="tab-btn-challenges" class="prac-tab-btn active">
+      🎯 12 Thử Thách Mạch (Mini-Katas)
+    </button>
+    <button onclick="switchPracticeTab('bloch')" id="tab-btn-bloch" class="prac-tab-btn">
+      🌐 Quả Cầu Bloch 3D Động
+    </button>
+    <button onclick="switchPracticeTab('pairwise')" id="tab-btn-pairwise" class="prac-tab-btn">
+      ⚡ Ghép Cặp Biên Độ (Phase 1 & 3)
+    </button>
+    <button onclick="switchPracticeTab('grover')" id="tab-btn-grover" class="prac-tab-btn">
+      🔄 Vòng Xoay Không Gian Grover (Phase 2)
+    </button>
+    <button onclick="switchPracticeTab('qec')" id="tab-btn-qec" class="prac-tab-btn">
+      🛡️ Mã Sửa Lỗi Bit-Flip (Phase 4)
+    </button>
+    <button onclick="switchPracticeTab('chsh')" id="tab-btn-chsh" class="prac-tab-btn">
+      🎲 Trò Chơi Bất Đẳng Thức Bell CHSH
+    </button>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       PANE 1: 12 INTERACTIVE CHALLENGES (MINI-KATAS)
+       ══════════════════════════════════════════════════════════════════════ -->
+  <div id="tab-pane-challenges" class="prac-pane active">
+    <div class="ch-layout">
+      <!-- Sidebar -->
+      <aside class="ch-sidebar">
+        <div class="ch-sidebar-head">
+          <span style="font-size:0.86rem;font-weight:700">Danh Sách Bài Tập</span>
+          <span id="ch-completed-count" class="chip green" style="font-size:0.72rem">0/12</span>
+        </div>
+        <div id="ch-sidebar-list" class="ch-sidebar-list"></div>
+      </aside>
+
+      <!-- Main Challenge Area -->
+      <main class="ch-main">
+        <div class="ch-header-card">
+          <div class="ch-header-row">
+            <h2 id="ch-cur-title" style="font-size:1.25rem">Bài 1: Chồng Chập Cơ Bản</h2>
+            <div class="ch-nav-btns">
+              <button onclick="prevChallenge()" class="ql-btn">← Bài trước</button>
+              <button onclick="nextChallenge()" class="ql-btn">Bài sau →</button>
+            </div>
+          </div>
+          <p id="ch-cur-desc" style="font-size:0.9rem;color:var(--text-2);line-height:1.5">
+            Từ trạng thái ban đầu |0⟩, hãy áp cổng phù hợp để tạo ra trạng thái chồng chập đều |+⟩.
+          </p>
+          <div class="row" style="align-items:center">
+            <span class="ql-plabel">Trạng thái mục tiêu:</span>
+            <div class="ch-target-box" id="ch-cur-target">|+⟩ = (|0⟩ + |1⟩) / √2</div>
+          </div>
+        </div>
+
+        <!-- Mount point cho QLab -->
+        <div id="ch-qlab-mount"></div>
+
+        <!-- Fidelity Meter & Actions -->
+        <div class="ch-meter-wrap">
+          <div class="ch-meter-head">
+            <span>Độ trùng khớp với trạng thái mục tiêu (Fidelity):</span>
+            <b id="ch-fidelity-val" style="color:var(--cyan);font-family:var(--mono)">0.0%</b>
+          </div>
+          <div class="ch-track"><div id="ch-fidelity-meter" class="ch-fill"></div></div>
+        </div>
+
+        <div class="ch-actions-bar">
+          <button onclick="verifyChallenge()" class="ql-btn primary" style="padding:0.45rem 1.1rem;font-size:0.86rem">
+            ▶ KIỂM TRA KẾT QUẢ
+          </button>
+          <button onclick="showChallengeHint()" class="ql-btn" style="padding:0.45rem 0.85rem">
+            💡 Gợi Ý
+          </button>
+          <button onclick="showChallengeSolution()" class="ql-btn" style="padding:0.45rem 0.85rem">
+            🔑 Hiện Lời Giải
+          </button>
+        </div>
+
+        <!-- Hint Box -->
+        <div id="ch-hint-box" class="ch-hint-box"></div>
+
+        <!-- Result Status Card -->
+        <div id="ch-result-status" class="ch-result-card"></div>
+      </main>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       PANE 2: INTERACTIVE 3D BLOCH SPHERE
+       ══════════════════════════════════════════════════════════════════════ -->
+  <div id="tab-pane-bloch" class="prac-pane">
+    <div class="bloch-grid">
+      <!-- 3D Canvas Card -->
+      <div class="bloch-canvas-card">
+        <canvas id="canvas-bloch-interactive" height="340"></canvas>
+        <span class="tiny" style="color:var(--text-3)">💡 Kéo chuột trên quả cầu để xoay góc nhìn 3D · Mũi tên xanh là vector trạng thái |ψ⟩</span>
+      </div>
+
+      <!-- Controls & Readout -->
+      <div class="bloch-tools-card">
+        <div>
+          <span class="eyebrow">Thử Nghiệm Cổng Lượng Tử</span>
+          <h3 style="margin-top:0.2rem">Tác Động Lên Quả Cầu</h3>
+        </div>
+
+        <div class="bloch-gate-palette">
+          <button onclick="applyBlochGate('0')" class="ql-btn">|0⟩ (Bắc)</button>
+          <button onclick="applyBlochGate('1')" class="ql-btn">|1⟩ (Nam)</button>
+          <button onclick="applyBlochGate('X')" class="ql-btn primary">X (NOT)</button>
+          <button onclick="applyBlochGate('Y')" class="ql-btn">Y</button>
+          <button onclick="applyBlochGate('Z')" class="ql-btn">Z (Đổi Pha)</button>
+          <button onclick="applyBlochGate('H')" class="ql-btn primary">H (Hadamard)</button>
+          <button onclick="applyBlochGate('S')" class="ql-btn">S (π/2)</button>
+          <button onclick="applyBlochGate('T')" class="ql-btn">T (π/4)</button>
+        </div>
+
+        <!-- State Vector Display -->
+        <div style="background:rgba(0,0,0,0.3);padding:0.75rem 0.9rem;border-radius:var(--r-sm);border:1px solid var(--line-soft)">
+          <div id="bloch-state-eq" style="font-family:var(--mono);font-size:0.92rem;color:var(--cyan)">
+            |ψ⟩ = <b>0.707</b>|0⟩ + <b>0.707</b> e<sup>i(0°)</sup>|1⟩
+          </div>
+          <div class="row" style="margin-top:0.4rem;font-size:0.78rem;color:var(--text-3);font-family:var(--mono)">
+            <span>x: <b id="bloch-val-x" style="color:var(--text)">1.000</b></span>
+            <span>y: <b id="bloch-val-y" style="color:var(--text)">0.000</b></span>
+            <span>z: <b id="bloch-val-z" style="color:var(--text)">0.000</b></span>
+          </div>
+        </div>
+
+        <!-- Measurement Probabilities -->
+        <div style="display:grid;gap:0.4rem">
+          <div style="display:flex;justify-content:space-between;font-size:0.8rem">
+            <span>Xác suất đo |0⟩: <b id="bloch-val-p0">50.0%</b></span>
+            <span>Xác suất đo |1⟩: <b id="bloch-val-p1">50.0%</b></span>
+          </div>
+          <div style="display:flex;gap:4px;height:9px">
+            <div id="bloch-bar-0" style="background:#5eead4;width:50%;border-radius:3px 0 0 3px"></div>
+            <div id="bloch-bar-1" style="background:#c4a2ff;width:50%;border-radius:0 3px 3px 0"></div>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:0.8rem;margin-top:0.4rem">
+          <button onclick="measureBlochQubit()" class="ql-btn primary" style="flex:1">
+            🎯 Đo Qubit (Làm Sập Trạng Thái)
+          </button>
+          <span id="bloch-meas-result" class="elab-badge" style="min-width:110px;text-align:center">Chưa đo</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       PANE 3: PAIRWISE INDEXING EXPLORER (PHASE 1 & 3)
+       ══════════════════════════════════════════════════════════════════════ -->
+  <div id="tab-pane-pairwise" class="prac-pane">
+    <div class="card info" style="margin-bottom:0.5rem">
+      <h3>⭐ Trái Tim Thuật Toán Của Simulator (Phase 1 NumPy &amp; Phase 3 Rust)</h3>
+      <p style="font-size:0.88rem;color:var(--text-2)">
+        Đừng bao giờ tạo ma trận 2ⁿ×2ⁿ (O(4ⁿ) làm máy treo ở 12 qubit!).
+        Bất kỳ cổng 1-qubit nào cũng chỉ ghép các trạng thái thành <b>2ⁿ⁻¹ cặp độc lập</b>.
+        Hãy bấm chọn số Qubit (N), Qubit Đích (t) và Control dưới đây để nhìn thấy từng cặp số nguyên nhị phân được ghép đôi như thế nào:
+      </p>
+    </div>
+
+    <!-- Mount point cho Pairwise Lab -->
+    <div id="pairwise-lab-mount"></div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       PANE 4: GROVER 2D ROTATION EXPLORER
+       ══════════════════════════════════════════════════════════════════════ -->
+  <div id="tab-pane-grover" class="prac-pane">
+    <div class="grover-layout">
+      <!-- 2D Canvas -->
+      <div class="grover-card">
+        <div class="row" style="justify-content:space-between;align-items:center">
+          <h3>Mặt Phẳng 2D Trực Quan Thuật Toán Grover</h3>
+          <span id="grover-status-badge" class="elab-badge">Vòng 0 / 1</span>
+        </div>
+        <canvas id="canvas-grover-2d" height="280"></canvas>
+        <p class="tiny" style="color:var(--text-3)">
+          Grover không phải là phép thuật — nó là <b>phép quay hình học đều đặn</b> một góc <code>2θ</code> trên mặt phẳng 2 chiều giữa tập hợp các phần tử sai |ω^⊥⟩ và phần tử đúng |ω⟩.
+        </p>
+      </div>
+
+      <!-- Controls & Parameters -->
+      <div class="grover-card">
+        <div>
+          <span class="eyebrow">Điều Khiển Vòng Lặp</span>
+          <h3 style="margin-top:0.2rem">Khuếch Đại Biên Độ</h3>
+        </div>
+
+        <div class="pw-control-group">
+          <span class="ql-plabel">Quy mô cơ sở dữ liệu (N phần tử):</span>
+          <button onclick="setGroverN(4)" class="ql-sbtn on" data-gn="4">N=4</button>
+          <button onclick="setGroverN(8)" class="ql-sbtn" data-gn="8">N=8</button>
+          <button onclick="setGroverN(16)" class="ql-sbtn" data-gn="16">N=16</button>
+          <button onclick="setGroverN(64)" class="ql-sbtn" data-gn="64">N=64</button>
+        </div>
+
+        <div style="display:grid;gap:0.4rem">
+          <div style="display:flex;justify-content:space-between;font-size:0.84rem">
+            <span>Số vòng lặp Grover (k):</span>
+            <b id="grover-slider-val" style="color:var(--cyan);font-family:var(--mono)">0</b>
+          </div>
+          <input type="range" min="0" max="10" value="0" id="grover-slider-k"
+                 oninput="setGroverK(+this.value); document.getElementById('grover-slider-val').innerText = this.value;"
+                 style="width:100%;accent-color:var(--cyan)">
+        </div>
+
+        <div style="background:rgba(0,0,0,0.3);padding:0.75rem 0.9rem;border-radius:var(--r-sm);border:1px solid var(--line-soft);display:grid;gap:0.35rem;font-size:0.84rem">
+          <div class="row" style="justify-content:space-between">
+            <span style="color:var(--text-3)">Góc quay hiện tại:</span>
+            <b id="grover-val-angle" style="font-family:var(--mono);color:var(--text)">30.0°</b>
+          </div>
+          <div class="row" style="justify-content:space-between">
+            <span style="color:var(--text-3)">Xác suất tìm trúng mục tiêu:</span>
+            <b id="grover-val-prob" style="font-family:var(--mono);color:var(--cyan);font-size:1.05rem">25.0%</b>
+          </div>
+          <div class="row" style="justify-content:space-between">
+            <span style="color:var(--text-3)">Số vòng tối ưu lý thuyết:</span>
+            <b id="grover-val-optk" style="font-family:var(--mono);color:var(--green)">1 vòng</b>
+          </div>
+        </div>
+
+        <div class="note warn" style="font-size:0.8rem">
+          <b>Bẫy phỏng vấn kinh điển:</b> Nếu kéo quá số vòng tối ưu, góc quay sẽ vượt qua trục |ω⟩ khiến xác suất <b>tụt dốc không phanh</b>!
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       PANE 5: QUANTUM ERROR CORRECTION (QEC) LAB
+       ══════════════════════════════════════════════════════════════════════ -->
+  <div id="tab-pane-qec" class="prac-pane">
+    <div class="card info" style="margin-bottom:0.5rem">
+      <h3>🛡️ Mã Sửa Lỗi Bit-Flip 3-Qubit &amp; Hội Chứng Phụ (Syndrome Decoding)</h3>
+      <p style="font-size:0.88rem;color:var(--text-2)">
+        Không thể đo trực tiếp các qubit dữ liệu vì sẽ làm hỏng chồng chập (No-Cloning &amp; Wave Collapse).
+        Thay vào đó, ta đo <b>tính chẵn lẻ</b> thông qua 2 qubit phụ (ancilla). Hội chứng cho ta biết chính xác vị trí qubit bị lỗi để sửa lại mà không nhìn trộm dữ liệu!
+      </p>
+    </div>
+
+    <!-- Mount point cho QEC Lab -->
+    <div id="qec-lab-mount"></div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       PANE 6: CHSH BELL GAME
+       ══════════════════════════════════════════════════════════════════════ -->
+  <div id="tab-pane-chsh" class="prac-pane">
+    <div class="card info" style="margin-bottom:0.5rem">
+      <h3>🎲 Trò Chơi Bất Đẳng Thức Bell CHSH — Chứng Minh Lượng Tử Vượt Trội Cổ Điển</h3>
+      <p style="font-size:0.88rem;color:var(--text-2)">
+        Trọng tài phát câu hỏi x, y ∈ {0, 1} cho Alice và Bob. Họ thắng nếu câu trả lời a ⊕ b = x · y.
+        <b>Vật lý cổ điển (biến ẩn cục bộ):</b> tỉ lệ thắng bị giới hạn tuyệt đối ở <b>75.0%</b>.<br>
+        <b>Vật lý lượng tử (cặp vướng víu Bell):</b> đạt tới giới hạn Tsirelson <b>cos²(π/8) ≈ 85.4%</b>! Hãy tự tay chơi và kiểm chứng:
+      </p>
+    </div>
+
+    <!-- Mount point cho CHSH Game -->
+    <div id="chsh-game-mount"></div>
+  </div>
+
+</div>
+
+<!-- Scripts -->
+<script src="assets/qlab.js"></script>
+<script src="assets/practice_lab.js"></script>
+</body>
+</html>

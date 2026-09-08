@@ -414,8 +414,10 @@
       shots: +(root.dataset.shots || 1024),
       step: null,          // null = chạy hết mạch; số = dừng trước cổng thứ k
       target: 0,
+      target2: (root.dataset.n && +root.dataset.n > 1) ? 1 : 0,
       angle: Math.PI / 2,
     };
+    root._qlab = W;
     const initial = W.gates.slice();
     const show = function (k) { return W.hide.indexOf(k) === -1; };
 
@@ -477,7 +479,8 @@
       if (two && W.n < 2) return;
       let g;
       if (two) {
-        const a = W.target, b = (W.target + 1) % W.n;
+        const a = W.target;
+        let b = (W.target2 !== undefined && W.target2 !== a) ? W.target2 : ((a + 1) % W.n);
         g = op === "SWAP" ? { op: "SWAP", t: a, t2: b }
           : { op: op === "CX" ? "X" : "Z", t: b, ctrl: [a] };
       } else {
@@ -485,6 +488,11 @@
         if (arg) g.arg = W.angle;
       }
       W.gates.push(g);
+      W.step = null;
+      draw();
+    };
+    W.loadGates = function (strOrArray) {
+      W.gates = typeof strOrArray === "string" ? parseGates(strOrArray) : strOrArray.slice();
       W.step = null;
       draw();
     };
@@ -513,24 +521,74 @@
     /* ── dựng bảng cổng ───────────────────────────────────────────────── */
     if (pal) {
       const qsel = el("div", "ql-qsel");
-      qsel.appendChild(el("span", "ql-plabel", "đặt lên"));
+      qsel.appendChild(el("span", "ql-plabel", W.n >= 2 ? "qubit (ctrl):" : "đặt lên:"));
+      const qbtns1 = [];
+      const qbtns2 = [];
+
+      function updateQBtns() {
+        qbtns1.forEach((b, q) => {
+          b.classList.toggle("on", q === W.target);
+        });
+        qbtns2.forEach((b, q) => {
+          b.classList.toggle("on", q === W.target2);
+          b.classList.toggle("dim", q === W.target);
+          b.disabled = (q === W.target);
+        });
+        pal.querySelectorAll(".ql-pbtn.two").forEach(b => {
+          const op = b.dataset.op || b.textContent.trim();
+          const t2 = (W.target2 !== undefined && W.target2 !== W.target) ? W.target2 : ((W.target + 1) % W.n);
+          if (op === "CX") {
+            b.title = `CNOT: control q${W.target} → target q${t2}`;
+          } else if (op === "CZ") {
+            b.title = `CZ: q${W.target} và q${t2}`;
+          } else if (op === "SWAP") {
+            b.title = `SWAP: tráo q${W.target} ↔ q${t2}`;
+          }
+        });
+      }
+
       for (let q = 0; q < W.n; q++) {
-        const b = el("button", "ql-qbtn" + (q === 0 ? " on" : ""), "q" + q);
+        const b = el("button", "ql-qbtn" + (q === W.target ? " on" : ""), "q" + q);
         b.type = "button";
         b.dataset.q = q;
         b.addEventListener("click", function () {
           W.target = +this.dataset.q;
-          qsel.querySelectorAll(".ql-qbtn").forEach(function (x) { x.classList.toggle("on", x === b); });
+          if (W.target === W.target2) {
+            W.target2 = (W.target + 1) % W.n;
+          }
+          updateQBtns();
         });
+        qbtns1.push(b);
         qsel.appendChild(b);
       }
       pal.appendChild(qsel);
+
+      if (W.n >= 2) {
+        const qsel2 = el("div", "ql-qsel");
+        qsel2.appendChild(el("span", "ql-plabel", "đích (CX/CZ/SW):"));
+        for (let q = 0; q < W.n; q++) {
+          const b = el("button", "ql-qbtn" + (q === W.target2 ? " on" : "") + (q === W.target ? " dim" : ""), "q" + q);
+          b.type = "button";
+          b.dataset.q = q;
+          if (q === W.target) b.disabled = true;
+          b.addEventListener("click", function () {
+            if (+this.dataset.q !== W.target) {
+              W.target2 = +this.dataset.q;
+              updateQBtns();
+            }
+          });
+          qbtns2.push(b);
+          qsel2.appendChild(b);
+        }
+        pal.appendChild(qsel2);
+      }
 
       const gwrap = el("div", "ql-gates");
       PALETTE.forEach(function (P) {
         if (P.two && W.n < 2) return;
         const b = el("button", "ql-pbtn" + (P.two ? " two" : "") + (P.op === "M" ? " meas" : ""), P.label);
         b.type = "button";
+        b.dataset.op = P.op;
         b.title = P.hint;
         b.addEventListener("click", function () { W.add(P.op, P.arg); });
         gwrap.appendChild(b);
@@ -548,6 +606,7 @@
       });
       ang.appendChild(sl); ang.appendChild(av);
       pal.appendChild(ang);
+      updateQBtns();
     }
 
     function currentState() { return run(W.n, W.gates, W.step === null ? undefined : W.step); }
@@ -625,5 +684,12 @@
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", function () { init(); });
   else init();
 
-  window.QLab = { Sim: Sim, init: init, parseGates: parseGates };
+  window.QLab = {
+    Sim: Sim,
+    init: init,
+    parseGates: parseGates,
+    getWidget: function (el) { return el ? el._qlab : null; },
+    getGates: function (el) { return el && el._qlab ? el._qlab.gates : []; },
+    loadGates: function (el, gates) { if (el && el._qlab) el._qlab.loadGates(gates); }
+  };
 })();

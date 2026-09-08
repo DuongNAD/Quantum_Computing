@@ -100,6 +100,41 @@
       </div>
     </div>
     <div class="note">Đây chính là design principle của <b>Spinoza</b> (<code>github.com/QuState/spinoza</code>, arXiv:2303.01493). <b>Đọc source của nó SAU KHI bạn tự nghĩ ra</b>, không phải trước — nếu đọc trước, bạn mất đúng phần giá trị nhất của phase này.</div>
+
+    <!-- ── Interactive Simulator RAM & Complexity Calculator ── -->
+    <div style="margin-top:0.8rem;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:1rem 1.2rem">
+      <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:0.6rem">
+        <span class="eyebrow" style="color:var(--cyan)">⚡ Bộ Tính Toán RAM Simulator Tương Tác · Kéo slider số Qubit</span>
+        <a class="tiny" href="practice.html#pairwise" target="_blank" style="color:var(--cyan);text-decoration:none">Mở phòng luyện tập đầy đủ ↗</a>
+      </div>
+      <div style="display:grid;gap:0.4rem;margin-bottom:0.8rem">
+        <div style="display:flex;justify-content:space-between;font-size:0.86rem">
+          <span>Số lượng Qubit (N): <b id="ram-n-val" style="color:var(--cyan);font-family:var(--mono)">16</b></span>
+          <span style="color:var(--text-3)">Biên độ: <b id="ram-states-val" style="color:var(--text);font-family:var(--mono)">65,536</b></span>
+        </div>
+        <input type="range" min="4" max="34" value="16" id="ram-slider"
+               oninput="updateRamCalc(+this.value)"
+               style="width:100%;accent-color:var(--cyan)">
+      </div>
+      <div class="ram-calc-grid">
+        <div class="ram-metric-card good">
+          <span class="ram-lbl">Ghép Cặp (Statevector O(2ⁿ))</span>
+          <b id="ram-vec-val" style="color:var(--cyan);font-family:var(--mono);font-size:1.15rem">1.0 MB</b>
+        </div>
+        <div class="ram-metric-card danger">
+          <span class="ram-lbl">Ma Trận Đầy Đủ (Naive O(4ⁿ))</span>
+          <b id="ram-mat-val" style="color:var(--rose);font-family:var(--mono);font-size:1.15rem">68.7 GB</b>
+        </div>
+        <div class="ram-metric-card">
+          <span class="ram-lbl">Số Cặp Độc Lập</span>
+          <b id="ram-pairs-val" style="color:var(--violet);font-family:var(--mono);font-size:1.15rem">32,768 cặp</b>
+        </div>
+        <div id="ram-status-card" class="ram-metric-card good">
+          <span class="ram-lbl">Đánh Giá Phần Cứng</span>
+          <b style="color:var(--green)">🟢 Cực nhanh trên Laptop thông thường (RAM &lt; 1 GB)</b>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -274,6 +309,7 @@
 
 </div>
 <script src="assets/qlab.js"></script>
+<script src="assets/practice_lab.js"></script>
 <script src="assets/deck.js"></script>
 </body>
 </html>

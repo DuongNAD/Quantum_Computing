@@ -429,6 +429,7 @@
     updateFragDots();
     runBars(slides[cur]);
     if (window.QLab) window.QLab.init(slides[cur]);
+    window.dispatchEvent(new Event("resize"));
     try { localStorage.setItem(key, String(cur)); } catch (e) { /* riêng tư */ }
     if (push !== false) history.replaceState(null, "", "#" + (cur + 1));
   }

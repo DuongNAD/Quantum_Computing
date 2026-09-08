@@ -9,9 +9,10 @@ Bộ tài liệu tự học điện toán lượng tử theo hướng **thực h
 Toàn bộ chạy offline, không cần mạng sau khi đã cài xong.
 
 ```
-├── slides/          5 deck bài giảng có mạch lượng tử bấm được (mở bằng trình duyệt)
+├── slides/          5 deck bài giảng + Phòng luyện tập tương tác & 12 mini-katas (practice.html)
 ├── docs/            6 trang tra cứu: thuật ngữ, bảng cổng, ký hiệu, FAQ, kế hoạch
 ├── katas/           350 bài tập chấm tự động, xếp theo 9 bậc
+├── phase0/          Bài thực hành tương tác terminal (thuc_hanh_tuong_tac.py) + Bell test
 ├── qsim/            khung code Phase 1 — bạn tự viết simulator, có 39 test
 └── lo-trinh-quantum-zero-to-hero.md    lộ trình đầy đủ dạng văn bản
 ```
@@ -101,19 +102,39 @@ Sáu trang, không trang nào cần đọc từ đầu tới cuối — mở khi
 Mở `slides/index.html` bằng trình duyệt bất kỳ. Không cần build, không cần mạng,
 không phụ thuộc CDN nào.
 
-### Mạch lượng tử bấm được ngay trong slide
+### Mạch lượng tử & Bàn thí nghiệm bấm được ngay trong slide
 
-Mỗi deck có vài **bàn thí nghiệm** chạy simulator state-vector viết bằng JavaScript
-thuần (`slides/assets/qlab.js`). Bấm cổng vào mạch, xem biên độ phức, đĩa pha, quả
+Mỗi deck có các **bàn thí nghiệm tương tác** chạy simulator state-vector viết bằng JavaScript
+thuần (`slides/assets/qlab.js` và `slides/assets/practice_lab.js`). Bấm cổng vào mạch, xem biên độ phức, đĩa pha, quả
 cầu Bloch, và histogram thay đổi tức thì — kèm nút tua **"xem trạng thái sau bước k"**
 để mổ xẻ giao thoa từng bước, và khối hiện **mã Qiskit tương ứng** với mạch đang có.
 
-| Deck | Bàn thí nghiệm |
+| Deck | Bàn thí nghiệm & Mô phỏng tương tác |
 |---|---|
 | Phase 0 | 1 qubit tự do · giao thoa H·H từng bước · quả cầu Bloch · Bell state & vướng víu |
-| Phase 1 | endianness trên 3 qubit · ghép cặp biên độ |
-| Phase 2 | phase kickback (so hai mạch) · Grover 2 qubit chạy đủ vòng |
-| Phase 4–5 | mã sửa lỗi bit-flip — tự tạo lỗi rồi tự thấy syndrome |
+| Phase 1 | Endianness trên 3 qubit · **Bàn mổ ghép cặp biên độ tương tác (Pairwise Indexing)** |
+| Phase 2 | Phase kickback (so hai mạch) · **Vòng quay không gian 2D Grover & kiểm tra quá vòng** |
+| Phase 3 | **Bộ tính toán RAM & hiệu năng Simulator (từ 4 đến 34 qubit)** |
+| Phase 4–5 | **Trạm mô phỏng mã sửa lỗi Bit-Flip & Ancilla Syndrome** · **Trò chơi Bất đẳng thức Bell CHSH** |
+
+### Phòng Luyện Tập & 12 Mini-Katas Trực Quan (`slides/practice.html`)
+
+Mở `slides/practice.html` để trải nghiệm trung tâm thực hành toàn diện:
+- **12 Thử thách mạch lượng tử (Mini-Katas)**: Tự tay ráp mạch giải đố, có chấm tự động theo độ trùng khớp trạng thái (Fidelity $\ge 99.9\%$), gợi ý 3 mức, và lưu tiến độ `0/12`.
+- **Quả cầu Bloch 3D động**: Kéo chuột xoay tự do trong không gian 3 chiều, bấm các cổng Pauli $X, Y, Z, H, S, T$ để xem vector trạng thái $|\psi\rangle$ xoay mượt mà và thử nghiệm đo sụp đổ hàm sóng.
+- **Bàn mổ ghép cặp biên độ (Pairwise Lab)**: Tự chọn số qubit $N$, qubit đích $t$ và qubit điều khiển để thấy cách $2^{N-1}$ cặp độc lập được biến đổi mà không cần ma trận $2^N \times 2^N$.
+- **Mặt phẳng 2D thuật toán Grover**: Kéo thanh trượt số vòng lặp $k$ để thấy rõ biên độ quay $2\theta$ và chứng kiến hiện tượng "quay quá vòng" tụt dốc xác suất.
+- **Trạm sửa lỗi Bit-Flip 3-qubit**: Tự chọn qubit để tạo nhiễu, bấm đo hội chứng ancilla, đọc bảng chẩn đoán và bấm sửa lỗi tự động.
+- **Trò chơi Bất đẳng thức Bell CHSH**: Chơi đối kháng giữa chiến lược cổ điển (trần 75%) và chiến lược vướng víu lượng tử (đạt giới hạn Tsirelson ~85.4%).
+
+### Workshop Thực Hành Terminal (`phase0/thuc_hanh_tuong_tac.py`)
+
+Nếu muốn thực hành ngay trong terminal không cần trình duyệt:
+```bash
+py phase0/thuc_hanh_tuong_tac.py
+# hoặc: python phase0/thuc_hanh_tuong_tac.py
+```
+Gồm 5 chương tương tác: tự nhập góc tính biên độ, áp ma trận cổng, bắn 1000 lần shots đo lường, đo cặp vướng víu Bell, và làm mini-quiz có chấm điểm.
 
 ### Điều hướng
 

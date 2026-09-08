@@ -34,6 +34,17 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 from curriculum import BAC, build_order, short_topic, topic_of  # noqa: E402
 
+if hasattr(sys.stdout, "reconfigure"):
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+if hasattr(sys.stderr, "reconfigure"):
+    try:
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
 ROOT = Path(__file__).parent
 DATA = ROOT / "data" / "qiskit_quantumkatas.jsonl"
 EXDIR = ROOT / "exercises"

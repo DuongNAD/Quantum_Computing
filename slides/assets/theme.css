@@ -1382,3 +1382,121 @@ body.show-notes .slide.active .notes::before {
   padding: 0.45rem 0.7rem;
   line-height: 1.45;
 }
+
+/* ═══ Practice Lab & Interactive Explorer ════════════════════════════════ */
+.pw-controls {
+  display: flex; gap: 1.2rem; flex-wrap: wrap; align-items: center;
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--r); padding: 0.8rem 1.1rem;
+}
+.pw-control-group { display: flex; gap: 0.35rem; align-items: center; flex-wrap: wrap; }
+.pw-summary-banner {
+  background: rgba(94,234,212,.08); border: 1px solid var(--cyan-dim);
+  border-radius: var(--r-sm); padding: 0.75rem 1rem; font-size: 0.88rem; line-height: 1.5;
+}
+.pw-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.8rem;
+}
+.pw-card {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--r); padding: 0.8rem 1rem; display: grid; gap: 0.5rem;
+  transition: 0.15s;
+}
+.pw-card.active-pair { border-color: rgba(94,234,212,.4); background: rgba(94,234,212,.03); }
+.pw-card.skipped-pair { opacity: 0.55; }
+.pw-card-head { display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; }
+.pw-pair-badge { font-weight: 700; color: var(--cyan); }
+.pw-status-badge { font-size: 0.72rem; color: var(--text-3); font-family: var(--mono); }
+.pw-indices {
+  display: flex; justify-content: space-around; align-items: center;
+  background: #050711; padding: 0.45rem; border-radius: var(--r-sm); border: 1px solid var(--line-soft);
+}
+.pw-idx-item { text-align: center; display: grid; gap: 0.1rem; }
+.pw-idx-no { font-family: var(--mono); font-size: 0.76rem; color: var(--text-3); }
+.pw-ket-label { font-family: var(--mono); font-weight: 700; font-size: 0.92rem; color: var(--text); }
+.pw-bit-hl { font-size: 0.66rem; color: var(--cyan); }
+.pw-arrow { font-size: 1.05rem; color: var(--cyan-dim); }
+.pw-formula {
+  font-size: 0.7rem; font-family: var(--mono); color: var(--text-3);
+  background: rgba(0,0,0,0.3); padding: 0.35rem 0.55rem; border-radius: 4px; line-height: 1.4;
+}
+
+/* Grover Visualizer */
+.grover-card {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--r); padding: 1rem; display: grid; gap: 0.7rem;
+}
+.grover-card canvas { width: 100%; border-radius: var(--r-sm); background: #04050d; }
+
+/* QEC Station */
+.qec-station { display: grid; gap: 0.8rem; }
+.qec-step-card {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--r); padding: 0.9rem 1.1rem; display: grid; gap: 0.6rem;
+}
+.qec-qubit-row { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+.qec-qubit-chip {
+  flex: 1; min-width: 120px; padding: 0.55rem 0.75rem; border-radius: var(--r-sm);
+  background: rgba(0,0,0,0.3); border: 1px solid var(--line-soft);
+  display: grid; gap: 0.15rem; font-size: 0.8rem;
+}
+.qec-qubit-chip.c-ok { border-color: rgba(74, 222, 128, 0.4); }
+.qec-qubit-chip.c-err { border-color: var(--rose); background: rgba(244, 63, 94, 0.12); color: #fca5a5; }
+.qec-qubit-chip.c-fixed { border-color: var(--cyan); background: rgba(94, 234, 212, 0.12); color: #5eead4; }
+.qec-btn-row { display: flex; gap: 0.45rem; flex-wrap: wrap; }
+.qec-syn-val { font-family: var(--mono); font-size: 0.95rem; color: var(--amber); margin-left: 0.8rem; }
+.qec-diagnosis {
+  background: rgba(0,0,0,0.35); border: 1px solid var(--line);
+  border-radius: var(--r-sm); padding: 0.6rem 0.8rem; font-size: 0.84rem;
+  display: flex; align-items: center; flex-wrap: wrap; gap: 0.6rem;
+}
+.qec-success-box {
+  background: rgba(74, 222, 128, 0.15); border: 1px solid var(--green);
+  border-radius: var(--r-sm); padding: 0.65rem 0.9rem; color: #86efac; font-size: 0.84rem;
+}
+
+/* CHSH Game */
+.chsh-box { display: grid; gap: 0.8rem; }
+.chsh-strat-sel { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.chsh-score-board {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.7rem;
+}
+.chsh-metric {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--r); padding: 0.75rem 0.9rem; display: grid; gap: 0.2rem;
+}
+.chsh-lbl { font-size: 0.7rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; }
+.chsh-num { font-size: 1.4rem; font-weight: 800; font-family: var(--mono); color: var(--text); }
+.chsh-num.highlight { color: var(--cyan); }
+.chsh-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.chsh-table {
+  background: #050711; border: 1px solid var(--line-soft);
+  border-radius: var(--r); overflow: hidden; display: grid; font-size: 0.78rem;
+}
+.chsh-th, .chsh-tr {
+  display: grid; grid-template-columns: 3.8rem 1fr 1fr 1.3fr 5.2rem;
+  padding: 0.5rem 0.75rem; align-items: center; gap: 0.4rem;
+}
+.chsh-th { background: rgba(255,255,255,0.04); font-weight: 700; color: var(--text-3); font-size: 0.72rem; }
+.chsh-tr { border-top: 1px solid var(--line-soft); }
+.chsh-tr.win { background: rgba(74, 222, 128, 0.04); color: #86efac; }
+.chsh-tr.lose { background: rgba(244, 63, 94, 0.04); color: #fda4af; }
+
+/* Simulator RAM Calculator */
+.ram-calc-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.8rem; margin-top: 0.6rem;
+}
+.ram-metric-card {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--r); padding: 0.85rem 1rem; display: grid; gap: 0.25rem;
+}
+.ram-metric-card.danger {
+  border-color: var(--rose); background: rgba(244, 63, 94, 0.08);
+}
+.ram-metric-card.good {
+  border-color: var(--cyan-dim); background: rgba(94, 234, 212, 0.05);
+}
+

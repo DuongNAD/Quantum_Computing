@@ -281,6 +281,51 @@ qc.cz(0,1); qc.x([0,1]); qc.h([0,1])
       <p class="tiny">Đây là câu hỏi phỏng vấn kinh điển và cũng là bug hay gặp nhất khi tự cài Grover.</p>
     </div>
 
+    <!-- ── Interactive Grover 2D Visualizer ── -->
+    <div style="margin-top:0.8rem">
+      <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:0.4rem">
+        <span class="eyebrow" style="color:var(--cyan)">🔄 Mô Phỏng Vòng Quay 2D Grover · Kéo thanh trượt để thấy hiện tượng Quá Vòng</span>
+        <a class="tiny" href="practice.html#grover" target="_blank" style="color:var(--cyan);text-decoration:none">Mở phòng luyện tập đầy đủ ↗</a>
+      </div>
+      <div class="grover-layout">
+        <div class="grover-card">
+          <div class="row" style="justify-content:space-between;align-items:center">
+            <h3 style="font-size:0.95rem">Mặt Phẳng 2D Trực Quan Thuật Toán Grover</h3>
+            <span id="grover-status-badge" class="elab-badge">Vòng 0 / 1</span>
+          </div>
+          <canvas id="canvas-grover-2d" height="260"></canvas>
+        </div>
+        <div class="grover-card">
+          <div class="pw-control-group">
+            <span class="ql-plabel">Quy mô N:</span>
+            <button onclick="setGroverN(4)" class="ql-sbtn on" data-gn="4">N=4</button>
+            <button onclick="setGroverN(8)" class="ql-sbtn" data-gn="8">N=8</button>
+            <button onclick="setGroverN(16)" class="ql-sbtn" data-gn="16">N=16</button>
+            <button onclick="setGroverN(64)" class="ql-sbtn" data-gn="64">N=64</button>
+          </div>
+          <div style="display:grid;gap:0.3rem">
+            <div style="display:flex;justify-content:space-between;font-size:0.8rem">
+              <span>Số vòng lặp (k):</span>
+              <b id="grover-slider-val" style="color:var(--cyan);font-family:var(--mono)">0</b>
+            </div>
+            <input type="range" min="0" max="10" value="0" id="grover-slider-k"
+                   oninput="setGroverK(+this.value); document.getElementById('grover-slider-val').innerText = this.value;"
+                   style="width:100%;accent-color:var(--cyan)">
+          </div>
+          <div style="background:rgba(0,0,0,0.3);padding:0.6rem 0.8rem;border-radius:var(--r-sm);border:1px solid var(--line-soft);font-size:0.8rem;display:grid;gap:0.25rem">
+            <div class="row" style="justify-content:space-between">
+              <span>Xác suất trúng mục tiêu:</span>
+              <b id="grover-val-prob" style="color:var(--cyan);font-family:var(--mono)">25.0%</b>
+            </div>
+            <div class="row" style="justify-content:space-between">
+              <span>Số vòng tối ưu:</span>
+              <b id="grover-val-optk" style="color:var(--green);font-family:var(--mono)">1 vòng</b>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="notes">Nếu người học chỉ nhớ một điều: oracle đổi PHA chứ không đổi XÁC SUẤT. Slide này cho họ tự thấy điều đó ở bước 3.</div>
   </div>
 </div>
@@ -469,6 +514,7 @@ result = sampler.run([isa_qc], shots=4096).result()</pre>
 
 </div>
 <script src="assets/qlab.js"></script>
+<script src="assets/practice_lab.js"></script>
 <script src="assets/deck.js"></script>
 </body>
 </html>

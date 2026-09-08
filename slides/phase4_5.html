@@ -134,13 +134,22 @@
       <p class="tiny">Và bit-flip code chỉ chống được lỗi X. Chống cả X lẫn Z cần <b>9 qubit</b> (mã Shor). Chống lỗi tuỳ ý với ngưỡng chịu được thì cần <b>surface code</b> — hàng nghìn qubit vật lý cho một qubit logic. Đó là lý do cả ngành đang ở đâu hôm nay.</p>
     </div>
 
+    <!-- ── Interactive QEC Bit-Flip Station ── -->
+    <div style="margin-top:0.8rem">
+      <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:0.4rem">
+        <span class="eyebrow" style="color:var(--cyan)">🛡️ Trạm Mô Phỏng Sửa Lỗi Tương Tác · Tự tạo lỗi rồi tự đo hội chứng</span>
+        <a class="tiny" href="practice.html#qec" target="_blank" style="color:var(--cyan);text-decoration:none">Mở phòng luyện tập đầy đủ ↗</a>
+      </div>
+      <div id="qec-lab-mount"></div>
+    </div>
+
     <div class="notes">Đây là slide chuyển tiếp tốt nhất sang nhánh A. Ai bấm ra được "bit lẻ loi = vị trí lỗi" là đã có trực giác đúng về syndrome decoding.</div>
   </div>
 </div>
 
 <!-- ══ 5 ══ -->
 <div class="slide" data-title="Kata Bậc 9">
-  <div class="wrap">
+  <div class="wrap wide">
     <h2><span class="k">05</span> Kata Bậc 9 — nghịch lý lượng tử &amp; sửa lỗi</h2>
     <p>39 bài cuối cùng. Ba trò chơi đầu <b>chứng minh</b> lượng tử thật sự khác cổ điển — không phải bằng lời, bằng con số bạn tự tính ra.</p>
     <div class="table-scroll">
@@ -152,6 +161,16 @@
         <tr><td><code>QEC_BitFlipCode</code></td><td>12</td><td>Viên gạch đầu tiên của error correction — mã sửa lỗi lật bit.</td></tr>
       </table>
     </div>
+
+    <!-- ── Interactive CHSH Bell Game Simulator ── -->
+    <div style="margin-top:0.8rem">
+      <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:0.4rem">
+        <span class="eyebrow" style="color:var(--cyan)">🎲 Trò Chơi Bất Đẳng Thức Bell CHSH Tương Tác</span>
+        <a class="tiny" href="practice.html#chsh" target="_blank" style="color:var(--cyan);text-decoration:none">Mở phòng luyện tập đầy đủ ↗</a>
+      </div>
+      <div id="chsh-game-mount"></div>
+    </div>
+
     <div class="card info">
       <h3>Vì sao để 3 trò chơi ở cuối</h3>
       <p>Chúng cần bạn <b>thoải mái</b> với đo lường, entanglement và thay đổi cơ sở đo — tức toàn bộ Bậc 1–7. Làm sớm sẽ chỉ chép mạch. Làm đúng lúc này, chúng là phần thoả mãn nhất trong cả 350 bài.</p>
@@ -260,6 +279,7 @@
 
 </div>
 <script src="assets/qlab.js"></script>
+<script src="assets/practice_lab.js"></script>
 <script src="assets/deck.js"></script>
 </body>
 </html>

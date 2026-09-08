@@ -202,16 +202,16 @@ def test_moc4_do_lai_ra_ket_qua_cu():
 # ══════════════════════════════════════════════════════════════════════════════
 # MỐC 5 · kiểm chứng chéo với qiskit-aer  ⟵ BÀI KIỂM TRA THẬT
 # ══════════════════════════════════════════════════════════════════════════════
-qiskit = pytest.importorskip("qiskit", reason="cần qiskit để kiểm chứng chéo")
-from qiskit import QuantumCircuit                      # noqa: E402
-from qiskit.quantum_info import Statevector            # noqa: E402
-
 G1 = ["h", "x", "y", "z", "s", "t"]
 ROT = ["rx", "ry", "rz"]
 G2 = ["cx", "cz", "swap"]
 
 
 def _mach_ngau_nhien(rng, n, do_dai):
+    try:
+        from qiskit import QuantumCircuit
+    except ImportError:
+        pytest.skip("cần qiskit để kiểm chứng chéo Mốc 5")
     qc = QuantumCircuit(n)
     sim = Q.QSim(n)
     for _ in range(do_dai):
@@ -235,6 +235,10 @@ def _mach_ngau_nhien(rng, n, do_dai):
 @pytest.mark.parametrize("seed", range(12))
 def test_khop_qiskit_mach_ngau_nhien(seed):
     """12 mạch ngẫu nhiên — yêu cầu Phase 1 là ≥ 10 mạch."""
+    try:
+        from qiskit.quantum_info import Statevector
+    except ImportError:
+        pytest.skip("cần qiskit để kiểm chứng chéo Mốc 5")
     rng = np.random.default_rng(seed)
     n = int(rng.integers(1, 6))
     qc, sim = _mach_ngau_nhien(rng, n, int(rng.integers(4, 16)))
@@ -247,6 +251,10 @@ def test_khop_qiskit_mach_ngau_nhien(seed):
 
 
 def test_khop_qiskit_mach_lon():
+    try:
+        from qiskit.quantum_info import Statevector
+    except ImportError:
+        pytest.skip("cần qiskit để kiểm chứng chéo Mốc 5")
     rng = np.random.default_rng(1234)
     qc, sim = _mach_ngau_nhien(rng, 10, 120)
     lech = np.max(np.abs(Statevector(qc).data - np.asarray(sim.state)))

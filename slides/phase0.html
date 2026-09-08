@@ -15,10 +15,11 @@
     <div class="orb">⚛</div>
     <h1>Phase 0 · Khởi động</h1>
     <p class="lead" style="max-width:660px">Hết deck này bạn sẽ hiểu qubit thật sự là gì, tự tay chạy được mạch lượng tử đầu tiên, và <em class="q">tận mắt thấy giao thoa lượng tử</em> — thứ khiến máy tính lượng tử khác máy tính thường.</p>
-    <div class="row" style="justify-content:center">
+    <div class="row" style="justify-content:center;gap:0.45rem;flex-wrap:wrap">
       <span class="chip cyan">~45 phút</span>
       <span class="chip">Không cần biết toán trước</span>
       <span class="chip violet">6 bài thực hành</span>
+      <a class="chip amber" href="practice.html" target="_blank" style="text-decoration:none">⚡ Phòng Luyện Tập &amp; Katas ↗</a>
     </div>
     <p class="kbd-hint">Dùng phím <kbd>→</kbd> để đi tiếp · <kbd>O</kbd> xem tổng quan · <kbd>?</kbd> xem phím tắt</p>
   </div>
@@ -156,6 +157,7 @@ python -c "import qiskit, qiskit_aer; print(qiskit.__version__, qiskit_aer.__ver
       <div class="card frag">
         <h3>Quả cầu Bloch</h3>
         <p class="tiny">Mọi trạng thái 1 qubit là một điểm trên mặt cầu này. Đỉnh = <span class="ket">|0⟩</span>, đáy = <span class="ket">|1⟩</span>, xích đạo = các chồng chập 50/50.</p>
+        <div style="margin-top:0.35rem"><a class="tiny" href="practice.html#bloch" target="_blank" style="color:var(--cyan);text-decoration:none;font-weight:600">🌐 Mở Quả Cầu Bloch 3D Tương Tác ↗</a></div>
       </div>
     </div>
 
@@ -237,7 +239,12 @@ python -c "import qiskit, qiskit_aer; print(qiskit.__version__, qiskit_aer.__ver
     <p>Đọc mạch từ <b>trái sang phải</b> như dòng thời gian: qubit bắt đầu ở <span class="ket">|0⟩</span>, đi qua cổng H, rồi bị đo.</p>
 
     <div class="ex">
-      <div class="ex-head"><span class="ex-tag">Thực hành 0.2</span><span class="ex-title">Chạy cổng H và đếm kết quả</span><span class="chip">5 phút</span></div>
+      <div class="ex-head">
+        <span class="ex-tag">Thực hành 0.2</span>
+        <span class="ex-title">Chạy cổng H và đếm kết quả</span>
+        <span class="chip">5 phút</span>
+        <a class="tiny" href="practice.html#ch-1" target="_blank" style="color:var(--cyan);text-decoration:none;margin-left:auto;font-weight:600">⚡ Thử trên web (Mini-Kata 1) ↗</a>
+      </div>
       <div class="ex-body">
         <p>Tạo file <code>h_test.py</code> rồi chạy <code>python h_test.py</code>:</p>
         <div class="code-head"><div class="dots"><i></i><i></i><i></i></div><span>h_test.py</span></div>
@@ -367,7 +374,12 @@ print(qc.draw("text"))</pre>
   <div class="wrap">
     <h2><span class="k">11</span> Tự tay dựng lại thí nghiệm đó</h2>
     <div class="ex">
-      <div class="ex-head"><span class="ex-tag">Thực hành 0.3</span><span class="ex-title">Ba mạch, ba kết quả</span><span class="chip">10 phút</span></div>
+      <div class="ex-head">
+        <span class="ex-tag">Thực hành 0.3</span>
+        <span class="ex-title">Ba mạch, ba kết quả</span>
+        <span class="chip">10 phút</span>
+        <a class="tiny" href="practice.html#ch-7" target="_blank" style="color:var(--cyan);text-decoration:none;margin-left:auto;font-weight:600">⚡ Thử mạch H·H = I (Mini-Kata 7) ↗</a>
+      </div>
       <div class="ex-body">
         <p>Chạy file này. <b>Đừng đọc kết quả trước</b> — hãy đoán từng dòng rồi so.</p>
         <div class="code-head"><div class="dots"><i></i><i></i><i></i></div><span>giao_thoa.py</span></div>
@@ -591,7 +603,12 @@ C  H,đo,H -> {'1': 2042, '0': 2054}</pre>
   <div class="wrap">
     <h2><span class="k">17</span> Deliverable của Phase 0</h2>
     <div class="ex">
-      <div class="ex-head"><span class="ex-tag">Thực hành 0.4</span><span class="ex-title">bell_test.py — bài nộp chính thức</span><span class="chip">10 phút</span></div>
+      <div class="ex-head">
+        <span class="ex-tag">Thực hành 0.4</span>
+        <span class="ex-title">bell_test.py — bài nộp chính thức</span>
+        <span class="chip">10 phút</span>
+        <a class="tiny" href="practice.html#ch-3" target="_blank" style="color:var(--cyan);text-decoration:none;margin-left:auto;font-weight:600">⚡ Thử tạo cặp Bell (Mini-Kata 3–5) ↗</a>
+      </div>
       <div class="ex-body">
         <div class="code-head"><div class="dots"><i></i><i></i><i></i></div><span>bell_test.py</span></div>
 <pre class="code" data-lang="python">from qiskit import QuantumCircuit
@@ -673,7 +690,9 @@ print(Statevector(qc).data.round(3))   # bỏ measure_all() đi trước khi ch�
           <span class="elab-tag">Trực Quan Hóa</span>
           <span class="elab-title">Phòng Thí Nghiệm & Mô Phỏng Entanglement</span>
         </div>
-        <div class="elab-tabs">
+        <a class="tiny" href="practice.html" target="_blank" style="color:var(--cyan);text-decoration:none;margin-left:auto;font-size:0.78rem">Mở phòng luyện tập đầy đủ ↗</a>
+      </div>
+      <div class="elab-tabs">
           <button onclick="switchElabTab('intuition')" id="elab-tab-intuition" class="elab-tab-btn active">
             ⚛️ 1. Cổ Điển vs Lượng Tử
           </button>
@@ -1108,6 +1127,9 @@ python qk.py next       # đọc đề bài kế tiếp
 python qk.py run        # chấm bài đang làm</pre>
         <p>Bài đầu tiên là <code>tutorials/ComplexArithmetic/1</code> — tính module của số phức. Thuần Python, chưa động tới qubit. Mục đích là để bạn quen vòng lặp <b>đọc đề → viết code → chấm</b>.</p>
         <p><b>Mục tiêu Phase 0:</b> xong <b>Bậc 1 (4 bài)</b> và <b>Bậc 2 (21 bài)</b>. Bậc 2 là toàn bộ cổng 1-qubit — chính là thứ bạn vừa học ở deck này.</p>
+        <div class="note" style="margin-top:0.7rem">
+          💡 <b>Muốn luyện tập ngay trên trình duyệt?</b> Mở <a href="practice.html#challenges" target="_blank" style="color:var(--cyan);font-weight:700">12 Thử thách mạch (Mini-Katas trực quan)</a> có sẵn tự động chấm điểm, gợi ý 3 mức và lời giải mẫu.
+        </div>
       </div>
       <details class="reveal"><summary>Chế độ watch — cách dùng thoải mái nhất</summary>
         <div class="reveal-in">
@@ -1183,9 +1205,10 @@ python qk.py run        # chấm bài đang làm</pre>
       </ul>
       <p class="tiny">Trả lời trôi chảy cả ba câu = sẵn sàng sang Phase 1. Còn ngập ngừng câu nào thì quay lại slide tương ứng — đừng đi tiếp.</p>
     </div>
-    <div class="row" style="justify-content:center;margin-top:.5rem">
+    <div class="row" style="justify-content:center;margin-top:.5rem;gap:0.6rem;flex-wrap:wrap">
       <a class="btn" href="index.html" style="background:var(--surface);border:1px solid var(--line);color:var(--text-2);border-radius:99px;padding:.55rem 1.1rem">⌂ Trang chủ</a>
-      <a class="btn" href="phase1.html" style="background:rgba(94,234,212,.14);border:1px solid var(--cyan-dim);color:var(--cyan);border-radius:99px;padding:.55rem 1.1rem">Phase 1 · Tự viết simulator →</a>
+      <a class="btn" href="practice.html" style="background:rgba(94,234,212,.14);border:1px solid var(--cyan-dim);color:var(--cyan);border-radius:99px;padding:.55rem 1.1rem;font-weight:700">⚡ Phòng Luyện Tập &amp; Mini-Katas ↗</a>
+      <a class="btn" href="phase1.html" style="background:rgba(129,140,248,.14);border:1px solid rgba(129,140,248,.4);color:var(--indigo,#818cf8);border-radius:99px;padding:.55rem 1.1rem">Phase 1 · Tự viết simulator →</a>
     </div>
   </div>
 </div>
@@ -1193,6 +1216,7 @@ python qk.py run        # chấm bài đang làm</pre>
 </div>
 <script src="assets/qlab.js"></script>
 <script src="assets/entangle_lab.js"></script>
+<script src="assets/practice_lab.js"></script>
 <script src="assets/deck.js"></script>
 </body>
 </html>
